@@ -43,7 +43,9 @@
 </template>
 
 <script lang="ts">
-export default {
+import Vue from 'vue';
+
+export default Vue.extend({
   name: 'DefaultLayout',
 
   data() {
@@ -60,7 +62,7 @@ export default {
       return names as string[];
     },
   },
-};
+});
 </script>
 
 <style lang="scss">
