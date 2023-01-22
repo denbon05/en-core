@@ -1,12 +1,12 @@
 <template>
   <div>
     <img class="vuetify-logo" alt="Vuetify Logo" src="/vuetify-logo.svg" />
-    <h1 @click="ping">{{ message }}</h1>
+    <h1 @click="ping">{{ $t('lang') }}</h1>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   name: 'VuetifyLogo',
@@ -19,11 +19,11 @@ export default Vue.extend({
     async ping() {
       const res = await this.$api('ping', 'check', {
         message: 'Client says hi!',
-      })
-      console.log(res)
+      });
+      console.log(res);
     },
   },
-})
+});
 </script>
 
 <style>
