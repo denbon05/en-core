@@ -2,3 +2,8 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+
+@font-face {
+  font-family: 'Kalam-Bold';
+  src: url('@/assets/fonts/Kalam-Bold.ttf') format('ttf');
+}

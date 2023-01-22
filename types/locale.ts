@@ -1,5 +1,20 @@
+/**
+ * Common language locale interface.
+ */
 export interface Locale {
-  lang: string;
+  lang: string; // todo: remove
+
+  menu: {
+    about: {
+      title: string;
+    };
+    programs: {
+      title: string;
+    };
+    contact: {
+      title: string;
+    };
+  };
 }
 
 // export type LocalePath<L> = {
