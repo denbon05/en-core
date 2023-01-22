@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "framework": "nuxtjs",
+  "devCommand": "nuxt",
+  "buildCommand": "nuxt build",
+  "outputDirectory": "dist",
+  "regions": ["fra1"],
+  "builds": [
+    {
+      "src": "nuxt.config.js",
+      "use": "@nuxtjs/vercel-builder",
+      "config": {
+        "distDir": "build",
+        "serverFiles": ["api/**", "server-middleware/**", "plugins/**/*server*"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/sw.js",
+      "continue": true,
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate",
+        "Service-Worker-Allowed": "/"
+      }
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  }
+}
