@@ -1,24 +1,25 @@
 <template>
   <v-app>
-    <v-app-bar class="black" :height="appBarMinHeight" fixed>
+    <v-app-bar id="appBar" :height="appBarHeight" fixed app>
       <div
         class="d-flex justify-center align-center justify-space-between width-available"
       >
         <div class="d-flex flex-basis-half">
-          <v-app-bar-nav-icon class="flex-basis-half">
+          <div class="flex-basis-half d-flex justify-center align-center">
             <v-img
-              src="/logo.png"
-              :max-height="logoSize"
-              :max-width="logoSize"
+              src="/logo.svg"
+              :height="logoSize"
+              :width="logoSize"
               contain
-            ></v-img
-          ></v-app-bar-nav-icon>
+            ></v-img>
+          </div>
         </div>
 
         <div
           id="appNavMenu"
-          class="d-flex align-center flex-basis-half justify-space-around px-3"
+          class="d-flex align-center flex-basis-half justify-space-around px-md-10"
         >
+          <!-- todo: use v-btn 'to' -->
           <a
             v-for="name of menuItemNames"
             :key="name"
@@ -31,13 +32,13 @@
     </v-app-bar>
 
     <v-main>
-      <v-container>
+      <v-container class="pa-0" fluid>
         <Nuxt />
       </v-container>
     </v-main>
 
-    <v-footer app>
-      <span>&copy; {{ menuItemNames }}</span>
+    <v-footer>
+      <span>&copy; Info</span>
     </v-footer>
   </v-app>
 </template>
@@ -45,19 +46,27 @@
 <script lang="ts">
 import Vue from 'vue';
 
+const appBarHeight = 77;
+
 export default Vue.extend({
   name: 'DefaultLayout',
+
+  provide: (): { appBarHeight: number } => {
+    return {
+      appBarHeight,
+    };
+  },
 
   data() {
     return {
       logoSize: 59,
-      appBarMinHeight: 77,
+      appBarHeight,
       menuItems: ['about', 'contact', 'programs'],
     };
   },
 
   computed: {
-    menuItemNames() {
+    menuItemNames(): string[] {
       const names = this.menuItems.map((item) => this.$t(`menu.${item}.title`));
       return names as string[];
     },
@@ -66,7 +75,11 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-$menu-item-font: 20px;
+$menu-item-font-size: 20px;
+
+#appBar {
+  background-color: $app-bar-color;
+}
 
 .flex-basis-half {
   flex-basis: 50%;
@@ -77,7 +90,7 @@ $menu-item-font: 20px;
 }
 
 .menu-item {
-  font-size: $menu-item-font;
-  font-family: 'Kalam-Bold';
+  font-size: $menu-item-font-size;
+  font-family: 'Inter-Regular';
 }
 </style>

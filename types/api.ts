@@ -11,7 +11,7 @@
 // };
 
 export type ApiMethodByController = {
-  ping: 'check'
-}
+  ping: 'check';
+};
 
-export type ApiController = keyof ApiMethodByController
+export type ApiController = keyof ApiMethodByController;

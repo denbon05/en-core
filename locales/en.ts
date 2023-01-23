@@ -14,6 +14,20 @@ const en: Locale = {
       title: 'Programs',
     },
   },
+
+  intro: {
+    tagline: 'Learn at the comfort from your home!',
+    name: 'The core',
+    description: 'Private english class',
+    representation: 'With Desmond',
+    action: 'Book',
+  },
+
+  lesson: {
+    price: {
+      trial: 'Just {amount} $ for trial lesson',
+    },
+  },
 };
 
 export default en;

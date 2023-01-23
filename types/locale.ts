@@ -15,6 +15,20 @@ export interface Locale {
       title: string;
     };
   };
+
+  intro: {
+    tagline: string;
+    name: string;
+    description: string;
+    representation: string;
+    action: string;
+  };
+
+  lesson: {
+    price: {
+      trial: string;
+    };
+  };
 }
 
 // export type LocalePath<L> = {

@@ -10,6 +10,8 @@ declare module 'vue/types/vue' {
     ) => Promise<T2>;
     // Todo: return type Promise<ApiResponse[ApiController][ApiMethod]>;
 
+    appBarHeight: number; // provided property from layout
+
     // $t:
   }
 }
