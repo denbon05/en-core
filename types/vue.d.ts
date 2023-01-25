@@ -1,5 +1,5 @@
-import 'vue'
-import type { ApiController, ApiMethodByController } from './api'
+import 'vue';
+import type { ApiController, ApiMethodByController } from './api';
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -7,7 +7,11 @@ declare module 'vue/types/vue' {
       controller: C,
       method: M,
       params: T
-    ) => Promise<T2>
+    ) => Promise<T2>;
     // Todo: return type Promise<ApiResponse[ApiController][ApiMethod]>;
+
+    appBarHeight: number; // provided property from layout
+
+    // $t:
   }
 }

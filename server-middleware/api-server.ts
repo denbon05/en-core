@@ -1,15 +1,16 @@
-import type { IncomingMessage, ServerResponse } from 'http'
+import type { IncomingMessage, ServerResponse } from 'http';
 
 // ? this module watched without additional config in nuxt
 export default async (
   req: IncomingMessage,
   res: ServerResponse,
   _next: (err: Error) => void
+  // eslint-disable-next-line require-await
 ) => {
   // console.log({ res })
   // console.log({ req })
   // todo: use req.url to extract method from api
-  console.log('url: ', req.url)
+  console.log('url: ', req.url);
   // @ts-ignore
   // console.log('url: ', req._parsedUrl)
   // console.log({ _next: _next.toString() })
@@ -23,5 +24,5 @@ export default async (
   // }
   // const result = await api[method](req.params);
 
-  res.end(JSON.stringify({ hi: 'from api-server' }))
-}
+  res.end(JSON.stringify({ hi: 'from api-server' }));
+};

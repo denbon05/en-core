@@ -41,7 +41,17 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/i18n',
   ],
+
+  i18n: {
+    locales: [{ code: 'en', iso: 'en-US', file: 'en.ts' }],
+    defaultLocale: 'en',
+    langDir: '@/locales/',
+    vueI18n: {
+      fallbackLocale: 'en',
+    },
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
@@ -49,11 +59,15 @@ export default {
     baseURL: '/',
   },
 
-  watch: ['~/plugins/*'],
+  watch: ['@/plugins/*'],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
+    customVariables: [
+      '@/assets/style/variables.scss',
+      '@/assets/style/media.scss',
+      '@/assets/style/fonts.scss',
+    ],
     theme: {
       dark: true,
       themes: {
@@ -74,6 +88,6 @@ export default {
   build: {},
 
   serverMiddleware: [
-    { path: '/api', handler: '~/server-middleware/api-server.ts' },
+    { path: '/api', handler: '@/server-middleware/api-server.ts' },
   ],
 };

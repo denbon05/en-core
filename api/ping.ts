@@ -19,6 +19,7 @@
 
 // start();
 
+// eslint-disable-next-line require-await
 export async function check(...params: any) {
   console.log({ params });
 
