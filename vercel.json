@@ -7,7 +7,7 @@
   "regions": ["fra1"],
   "builds": [
     {
-      "src": "nuxt.config.ts",
+      "src": "nuxt.config.js",
       "use": "@nuxtjs/vercel-builder",
       "config": {
         "distDir": "build",
