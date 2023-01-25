@@ -8,6 +8,9 @@ on:
       - main
     types:
       - completed
+  push:
+    branches:
+      - main
 
 jobs:
   build:
