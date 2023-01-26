@@ -21,6 +21,7 @@
 
 // eslint-disable-next-line require-await
 export async function check(...params: any) {
+  // eslint-disable-next-line no-console
   console.log({ params });
 
   return { done: 'pong' };

@@ -2,8 +2,6 @@
  * Common language locale interface.
  */
 export interface Locale {
-  lang: string; // todo: remove
-
   menu: {
     about: {
       title: string;
@@ -28,6 +26,19 @@ export interface Locale {
     price: {
       trial: string;
     };
+  };
+
+  advantage: {
+    experience: string;
+    students: string;
+    approach: string;
+  };
+
+  tutor: {
+    hello: string;
+    about: string;
+    tagline: string;
+    students: string;
   };
 }
 

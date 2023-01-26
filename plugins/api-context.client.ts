@@ -1,5 +1,6 @@
+/* eslint-disable no-console */
 import type { Context, Inject } from '@nuxt/types/app';
-
+// todo: remove console
 export default <T>(context: Context, inject: Inject) => {
   // todo: specify controller and method types
   inject('api', async (controller: 'ping', method: 'check', params: T) => {

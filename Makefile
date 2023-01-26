@@ -1,3 +1,5 @@
+all: lint test build
+
 fix:
 	npm run lintfix
 

@@ -1,5 +1,6 @@
+/* eslint-disable no-console */
 import type { IncomingMessage, ServerResponse } from 'http';
-
+// todo: remove console
 // ? this module watched without additional config in nuxt
 export default async (
   req: IncomingMessage,

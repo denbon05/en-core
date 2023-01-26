@@ -11,6 +11,7 @@ module.exports = {
     'prettier',
   ],
   plugins: ['jest'],
-  // add your custom rules here
-  rules: {},
+  rules: {
+    'no-console': 'warn',
+  },
 };

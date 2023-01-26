@@ -13,8 +13,14 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
+      { name: 'darkreader-lock' },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+  },
+
+  server: {
+    port: 3000,
+    host: '0.0.0.0',
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -67,6 +73,7 @@ export default {
       '@/assets/style/variables.scss',
       '@/assets/style/media.scss',
       '@/assets/style/fonts.scss',
+      '@/assets/style/global.scss',
     ],
     theme: {
       dark: true,

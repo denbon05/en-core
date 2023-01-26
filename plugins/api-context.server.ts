@@ -1,6 +1,7 @@
+/* eslint-disable no-console */
 import type { Context, Inject } from '@nuxt/types/app';
 import type { ApiController, ApiMethodByController } from '@/types/api';
-
+// todo: remove console
 export default <P>(_context: Context, inject: Inject) => {
   inject(
     'api',

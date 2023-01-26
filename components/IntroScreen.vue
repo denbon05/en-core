@@ -1,25 +1,26 @@
 <template>
   <section id="introScreen">
-    <no-ssr>
-      <img
-        src="/intro_screen.svg"
-        alt="Desk with books, cubes and apple."
-        class="intro-bg"
-        :height="introHeight"
-    /></no-ssr>
+    <img
+      src="/intro_screen.svg"
+      alt="Desk with books, cubes and apple."
+      class="intro-bg"
+      :height="introHeight"
+    />
 
     <section class="intro" width="100%">
       <p class="intro-tagline">{{ $t('intro.tagline') }}</p>
 
       <section class="d-flex flex-column justify-end">
-        <section class="d-flex flex-column align-center">
+        <section class="d-flex flex-column align-center my-10">
           <h1 class="text-h1 intro-name">{{ $t('intro.name') }}</h1>
           <h1 class="text-h1 intro-description">
             {{ $t('intro.description') }}
           </h1>
         </section>
 
-        <h3 class="text-h3 my-5 intro-representation d-flex justify-end">
+        <h3
+          class="text-h3 mr-5 mr-md-15 intro-representation d-flex justify-end"
+        >
           {{ $t('intro.representation') }}
         </h3>
       </section>
@@ -44,18 +45,15 @@ export default Vue.extend({
   name: 'IntroScreen',
 
   data: () => ({
-    amount: 2,
+    amount: 2, // todo: make dynamic data from settled by admin
+    introHeight: 0,
   }),
 
-  computed: {
-    introHeight(): number {
-      // to count window size
-      if (typeof document !== 'undefined') {
-        const appBar = document.getElementById('appBar');
-        return window.innerHeight - (appBar?.clientHeight || 0);
-      }
-      return 0;
-    },
+  mounted() {
+    // to count window size
+    const appBar = document.getElementById('appBar');
+    this.introHeight = window.innerHeight - (appBar?.clientHeight || 0);
+    // todo: event on resize
   },
 });
 </script>
@@ -84,37 +82,43 @@ export default Vue.extend({
 
   &-tagline {
     color: $main-text-color;
-    font-family: 'Inter-Bold';
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
     font-size: 1.5em;
   }
 
   &-name {
     color: $main-title;
-    font-family: 'Kalam-Bold' !important;
+    font-family: 'Kalam', cursive !important;
     text-transform: uppercase;
+    font-weight: bolder;
   }
 
   &-description {
     color: $main-title;
-    font-family: 'Inter-Bold' !important;
+    font-family: 'Inter', sans-serif !important;
     font-style: italic;
     text-transform: uppercase;
   }
 
   &-representation {
     color: $main-text-color;
-    font-family: 'Inter-Regular';
+    font-family: 'Inter', sans-serif !important;
   }
 
   &-action {
     height: $app-bar-height !important;
     width: 285px;
-    font-family: 'Inter-Bold';
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
     font-size: 1.7em;
   }
 
   &-price {
     color: $main-title;
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    font-size: 1.3em;
   }
 }
 

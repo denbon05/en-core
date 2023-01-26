@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app id="appRoot">
     <v-app-bar id="appBar" :height="appBarHeight" fixed app>
       <div
         class="d-flex justify-center align-center justify-space-between width-available"
@@ -17,13 +17,13 @@
 
         <div
           id="appNavMenu"
-          class="d-flex align-center flex-basis-half justify-space-around px-md-10"
+          class="d-flex align-center flex-basis-half justify-end mr-md-15 mr-5"
         >
           <!-- todo: use v-btn 'to' -->
           <a
             v-for="name of menuItemNames"
             :key="name"
-            class="menu-item text-uppercase text-decoration-none white--text"
+            class="menu-item text-uppercase text-decoration-none white--text pr-5 pr-md-15"
             href="#"
             >{{ name }}</a
           >
@@ -32,9 +32,7 @@
     </v-app-bar>
 
     <v-main>
-      <v-container class="pa-0" fluid>
-        <Nuxt />
-      </v-container>
+      <Nuxt />
     </v-main>
 
     <v-footer>
@@ -75,7 +73,11 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-$menu-item-font-size: 20px;
+$menu-item-font-size: 1.4em;
+
+#appRoot {
+  background-color: $app-bg-color-root;
+}
 
 #appBar {
   background-color: $app-bar-color;
