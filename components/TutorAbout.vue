@@ -7,9 +7,12 @@
       width="100%"
     />
 
-    <div class="tutor d-flex flex-column align-center my-10 px-5 px-md-15">
-      <h4 class="tutor-hello text-h4 my-5">{{ $t('tutor.hello') }}</h4>
-      <p class="tutor-about px-md-15">{{ $t('tutor.about') }}</p>
+    <div
+      class="tutor d-flex flex-column align-center my-0 my-lg-5 px-5 px-md-10 px-lg-15"
+      :class="{ 'tutor-content-absolute': !smAndDown, 'mx-10': smAndDown }"
+    >
+      <h4 class="tutor-hello my-1 my-lg-3">{{ tutorHello }}</h4>
+      <p class="tutor-about px-xl-15">{{ $t('tutor.about') }}</p>
     </div>
   </section>
 </template>
@@ -19,6 +22,20 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'TutorAbout',
+
+  props: {
+    smAndDown: {
+      required: true,
+      type: Boolean,
+    },
+  },
+
+  computed: {
+    tutorHello(): string {
+      const hiKey = this.smAndDown ? 'hello' : 'nice';
+      return this.$t(`tutor.${hiKey}`) as string;
+    },
+  },
 });
 </script>
 
@@ -26,11 +43,14 @@ export default Vue.extend({
 #about {
   position: relative;
   .tutor {
-    position: absolute;
-    top: 0;
-    width: 60%;
+    &-content-absolute {
+      position: absolute;
+      top: 0;
+      width: 60%;
+    }
 
     &-hello {
+      font-size: 1.4em;
       color: $main-title;
     }
 

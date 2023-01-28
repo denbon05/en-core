@@ -94,3 +94,9 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Github
+.github
+
+# Vercel
+.vercel

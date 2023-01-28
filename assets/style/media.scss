@@ -1,0 +1,44 @@
+@media (min-width: $breakpoint-md) {
+  .description-card {
+    font-size: 1.6em;
+  }
+
+  .menu-item {
+    font-size: 1.3em;
+  }
+
+  .tutor-about {
+    font-size: 1.2em !important;
+  }
+
+  .intro {
+    align-items: flex-end !important;
+    padding-right: calc(100vw - 90%);
+
+    &-name {
+      font-size: 4em !important;
+    }
+
+    &-description {
+      font-size: 4em !important;
+    }
+
+    &-price {
+      color: $main-title;
+    }
+  }
+
+  #introAction {
+    margin-right: 10vw;
+  }
+}
+
+@media (min-width: $breakpoint-lg) {
+  .tutor-about {
+    font-size: 1.5em !important;
+  }
+
+  .tutor-hello {
+    font-size: 1.8em !important;
+  }
+}

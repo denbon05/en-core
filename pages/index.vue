@@ -2,29 +2,34 @@
   <v-container class="pa-0" fluid>
     <v-row id="intro" justify="center" align="center">
       <v-col cols="12" class="px-0">
-        <IntroScreen />
+        <IntroScreen :sm-and-down="smAndDown" />
       </v-col>
     </v-row>
-    <v-row id="advantages" justify="center" align="center">
+    <v-row
+      id="advantages"
+      class="ma-2 ma-md-10 my-lg-15"
+      justify="center"
+      align="start"
+    >
       <v-col
         v-for="{ imgSrc, description } of advantages"
         :key="imgSrc"
-        lg="3"
-        cols="12"
+        class="advantage"
+        cols="4"
       >
         <AdvantageCard :img-src="imgSrc" :description="description" />
       </v-col>
     </v-row>
     <v-row>
       <v-col class="ma-0 pa-0" cols="12">
-        <TutorAbout />
+        <TutorAbout :sm-and-down="smAndDown" />
       </v-col>
     </v-row>
-    <v-row>
+    <!-- <v-row>
       <v-col class="ma-0 pa-0 mt-n2" cols="12">
         <TutorPrograms />
       </v-col>
-    </v-row>
+    </v-row> -->
   </v-container>
 </template>
 
@@ -37,6 +42,7 @@ const tutorBeginDate = new Date('2019-01-01');
 
 export default Vue.extend({
   name: 'IndexPage',
+
   data() {
     return {
       advantages: [
@@ -57,13 +63,16 @@ export default Vue.extend({
       ],
     };
   },
-  computed: {},
+  computed: {
+    smAndDown(): boolean {
+      return this.$vuetify.breakpoint.smAndDown;
+    },
+  },
 });
 </script>
 
 <style lang="scss">
-#advantages {
-  margin-top: $section-margin;
-  margin-bottom: $section-margin;
+.advantage {
+  width: 30%;
 }
 </style>

@@ -9,7 +9,5 @@ declare module 'vue/types/vue' {
       params: T
     ) => Promise<T2>;
     // Todo: return type Promise<ApiResponse[ApiController][ApiMethod]>;
-
-    // $t:
   }
 }

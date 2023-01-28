@@ -35,10 +35,11 @@ export interface Locale {
   };
 
   tutor: {
+    nice: string;
     hello: string;
     about: string;
     tagline: string;
-    students: string;
+    audience: string;
   };
 }
 

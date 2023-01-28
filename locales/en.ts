@@ -34,7 +34,8 @@ const en: Locale = {
   },
 
   tutor: {
-    hello: 'Nice to meet you!',
+    nice: 'Nice to meet you!',
+    hello: 'Hello everybody!',
     about: `Hello! I'm teacher Desmond from Cameroon and I am here to walk with you
     on your English mystery ride. Have you had difficulties speaking the
     English Language? Worry no more as with me as your ESL teacher, it'll be a ride
@@ -46,7 +47,7 @@ const en: Locale = {
     me for your lessons and I will have you bragging about your mastery of the English
     language in no time. `,
     tagline: 'English classes for everyone',
-    students: 'for kids, beginners, intermediate and advanced students',
+    audience: 'for kids, beginners, intermediate and advanced students',
   },
 };
 

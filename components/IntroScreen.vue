@@ -1,7 +1,7 @@
 <template>
   <section id="introScreen">
     <img
-      src="/intro_screen.svg"
+      :src="bgImg"
       alt="Desk with books, cubes and apple."
       class="intro-bg"
       :height="introHeight"
@@ -10,17 +10,18 @@
     <section class="intro" width="100%">
       <p class="intro-tagline">{{ $t('intro.tagline') }}</p>
 
-      <section class="d-flex flex-column justify-end">
-        <section class="d-flex flex-column align-center my-10">
-          <h1 class="text-h1 intro-name">{{ $t('intro.name') }}</h1>
-          <h1 class="text-h1 intro-description">
+      <section
+        class="d-flex flex-column"
+        :class="{ 'justify-center': smAndDown, 'justify-end': !smAndDown }"
+      >
+        <section class="d-flex flex-column align-center my-10 ml-5">
+          <h1 class="intro-name">{{ $t('intro.name') }}</h1>
+          <h1 class="intro-description">
             {{ $t('intro.description') }}
           </h1>
         </section>
 
-        <h3
-          class="text-h3 mr-5 mr-md-15 intro-representation d-flex justify-end"
-        >
+        <h3 class="mr-5 mr-md-15 intro-representation d-flex justify-end">
           {{ $t('intro.representation') }}
         </h3>
       </section>
@@ -44,10 +45,23 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'IntroScreen',
 
+  props: {
+    smAndDown: {
+      required: true,
+      type: Boolean,
+    },
+  },
+
   data: () => ({
     amount: 2, // todo: make dynamic data from settled by admin
     introHeight: 0,
   }),
+
+  computed: {
+    bgImg(): string {
+      return this.smAndDown ? '/intro_screen_mobile.svg' : '/intro_screen.svg';
+    },
+  },
 
   mounted() {
     // to count window size
@@ -71,8 +85,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  align-items: flex-end;
-  padding-right: calc(100vw - 90%);
+  align-items: center;
 
   &-bg {
     z-index: 0;
@@ -92,18 +105,23 @@ export default Vue.extend({
     font-family: 'Kalam', cursive !important;
     text-transform: uppercase;
     font-weight: bolder;
+    font-size: 2.8em;
   }
 
   &-description {
     color: $main-title;
     font-family: 'Inter', sans-serif !important;
     font-style: italic;
+    font-weight: 500;
     text-transform: uppercase;
+    font-size: 2.8em;
   }
 
   &-representation {
     color: $main-text-color;
     font-family: 'Inter', sans-serif !important;
+    font-size: 2.5em;
+    font-weight: 500;
   }
 
   &-action {
@@ -115,14 +133,9 @@ export default Vue.extend({
   }
 
   &-price {
-    color: $main-title;
     font-family: 'Inter', sans-serif;
     font-weight: bold;
     font-size: 1.3em;
   }
-}
-
-#introAction {
-  margin-right: 10vw;
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <section class="d-flex justify-center">
     <div class="d-flex flex-column align-center">
-      <img :src="imgSrc" :alt="description" />
-      <p class="text-h6 py-5 description-card">{{ description }}</p>
+      <img class="advantage-img" :src="imgSrc" :alt="description" />
+      <p class="py-2 py-md-5 description-card">{{ description }}</p>
     </div>
   </section>
 </template>
@@ -30,5 +30,12 @@ export default Vue.extend({
 .description-card {
   color: $main-text-color;
   font-weight: 400;
+  font-size: 1em;
+  text-align: center;
+}
+
+.advantage-img {
+  object-fit: contain;
+  width: 30vw;
 }
 </style>
