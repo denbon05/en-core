@@ -31,14 +31,28 @@
   #introAction {
     margin-right: 10vw;
   }
+
+  .programs {
+    height: 100% !important;
+
+    &-tagline {
+      font-size: 3em !important;
+    }
+  }
 }
 
 @media (min-width: $breakpoint-lg) {
   .tutor-about {
     font-size: 1.5em !important;
+    padding-right: 2vw;
+    padding-left: 3vw;
   }
 
   .tutor-hello {
     font-size: 1.8em !important;
   }
+
+  // .programs {
+  //   height: 100% !important;
+  // }
 }

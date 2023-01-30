@@ -40,6 +40,34 @@ export interface Locale {
     about: string;
     tagline: string;
     audience: string;
+    price: string;
+  };
+
+  program: {
+    kids: {
+      title: string;
+      description: string;
+    };
+    beginners: {
+      title: string;
+      description: string;
+    };
+    advanced: {
+      title: string;
+      description: string;
+    };
+    work: {
+      title: string;
+      description: string;
+    };
+  };
+
+  platform: {
+    description: string;
+  };
+
+  action: {
+    book: string;
   };
 }
 

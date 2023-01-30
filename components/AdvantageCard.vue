@@ -1,5 +1,5 @@
 <template>
-  <section class="d-flex justify-center">
+  <section class="d-flex justify-center px-5 px-md-15">
     <div class="d-flex flex-column align-center">
       <img class="advantage-img" :src="imgSrc" :alt="description" />
       <p class="py-2 py-md-5 description-card">{{ description }}</p>
@@ -36,6 +36,6 @@ export default Vue.extend({
 
 .advantage-img {
   object-fit: contain;
-  width: 30vw;
+  width: 22vw;
 }
 </style>

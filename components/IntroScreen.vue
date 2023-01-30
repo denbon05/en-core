@@ -130,6 +130,7 @@ export default Vue.extend({
     font-family: 'Inter', sans-serif;
     font-weight: bold;
     font-size: 1.7em;
+    border-radius: $btn-radius;
   }
 
   &-price {

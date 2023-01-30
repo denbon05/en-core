@@ -100,3 +100,6 @@ sw.*
 
 # Vercel
 .vercel
+
+# ts
+tsconfig.json
