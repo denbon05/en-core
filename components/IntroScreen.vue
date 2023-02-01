@@ -32,7 +32,7 @@
         </v-btn>
 
         <span class="text-h6 intro-price">{{
-          $t('lesson.price.trial', { amount })
+          $t('lesson.trial.price', { amount })
         }}</span>
       </section>
     </section>

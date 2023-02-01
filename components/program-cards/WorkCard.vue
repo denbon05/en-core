@@ -1,14 +1,18 @@
 <template>
-  <section id="worksCard">
-    <img src="/work_card_bg.svg" alt="A queen and a pawn on a chessboard" />
+  <section id="worksCard" class="program">
+    <img
+      class="program-card-bg"
+      src="/work_card_bg.svg"
+      alt="A queen and a pawn on a chessboard"
+    />
 
-    <div
-      class="works-contend px-10 py-5 d-flex flex-column align-end justify-end"
-    >
-      <h4 class="works-contend-title">{{ $t('program.work.title') }}</h4>
-      <p class="works-contend-description">
-        {{ $t('program.work.description') }}
-      </p>
+    <div class="program-card-content program-card align-end justify-end">
+      <h4 class="program-card-title">{{ $t('program.work.title') }}</h4>
+      <div class="work-card-description pl-12 pa-sm-5">
+        <p class="program-card-description">
+          {{ $t('program.work.description') }}
+        </p>
+      </div>
     </div>
   </section>
 </template>
@@ -22,29 +26,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-#worksCard {
-  position: relative;
-
-  .works-contend {
-    position: absolute;
-    height: 100%;
-    top: 0;
-    left: 0;
-
-    &-title {
-      color: $main-title;
-      font-family: Kalam, sans-serif;
-      font-weight: bold;
-      font-size: 5em;
-    }
-
-    &-description {
-      color: $main-text-color;
-      font-family: Inter, sans-serif;
-      font-weight: 500;
-      font-size: 1.2em;
-      width: 50%;
-    }
-  }
+.work-card-description {
+  width: 60%;
 }
 </style>

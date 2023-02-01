@@ -21,13 +21,13 @@ export default Vue.extend({
         case 'sm':
           return 400;
         case 'md':
-          return 500;
-        case 'lg':
-          return 600;
-        case 'xl':
           return 800;
+        case 'lg':
+          return 950;
+        case 'xl':
+          return 1000;
         default: // xs
-          return 300;
+          return 350;
       }
     },
     playerHeight(): number {

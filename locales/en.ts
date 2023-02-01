@@ -22,9 +22,15 @@ const en: Locale = {
   },
 
   lesson: {
-    price: {
-      trial: 'Just {amount} $ for trial lesson',
+    trial: {
+      price: 'Just {amount} $ for trial lesson',
+      description: 'Start with a 30 minute trial lesson',
     },
+  },
+
+  user: {
+    email: 'E-mail',
+    name: 'Name',
   },
 
   advantage: {
@@ -81,6 +87,7 @@ const en: Locale = {
 
   action: {
     book: 'Book a lesson',
+    signUp: 'Sing up',
   },
 };
 

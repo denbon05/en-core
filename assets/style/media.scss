@@ -1,3 +1,23 @@
+@media (max-width: $breakpoint-sm) {
+  .container-program-card {
+    width: 90%;
+  }
+
+  .program-card {
+    &-bg {
+      width: 100%;
+    }
+
+    &-title {
+      font-size: 3em !important;
+    }
+
+    &-description {
+      font-size: 1em !important;
+    }
+  }
+}
+
 @media (min-width: $breakpoint-md) {
   .description-card {
     font-size: 1.6em;

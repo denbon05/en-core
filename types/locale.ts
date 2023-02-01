@@ -23,9 +23,15 @@ export interface Locale {
   };
 
   lesson: {
-    price: {
-      trial: string;
+    trial: {
+      price: string;
+      description: string;
     };
+  };
+
+  user: {
+    email: string;
+    name: string;
   };
 
   advantage: {
@@ -68,6 +74,7 @@ export interface Locale {
 
   action: {
     book: string;
+    signUp: string;
   };
 }
 
