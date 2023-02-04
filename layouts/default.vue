@@ -1,63 +1,37 @@
 <template>
   <v-app id="appRoot">
-    <v-app-bar id="appBar" fixed app>
-      <div
-        class="d-flex justify-center align-center justify-space-between width-available"
-      >
-        <div class="d-flex flex-basis-half mt-3">
-          <div class="flex-basis-half d-flex justify-center align-center">
-            <v-img
-              src="/logo.svg"
-              :height="logoSize"
-              :width="logoSize"
-              contain
-            ></v-img>
-          </div>
-        </div>
-
-        <div
-          id="appNavMenu"
-          class="d-flex align-center flex-basis-half justify-end mt-3 mr-md-15 mr-0"
-        >
-          <!-- todo: use v-btn 'to' -->
-          <a
-            v-for="name of menuItemNames"
-            :key="name"
-            class="menu-item text-uppercase text-decoration-none white--text pr-2 pr-sm-5 pr-lg-10"
-            href="#"
-            >{{ name }}</a
-          >
-        </div>
-      </div>
-    </v-app-bar>
+    <AppBar :menu-item-names="menuItemNames" />
 
     <v-main>
       <Nuxt />
     </v-main>
 
-    <v-footer>
-      <span>&copy; Info</span>
-    </v-footer>
+    <AppFooter :menu-item-names="menuItemNames" />
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import AppBar from '@/components/AppBar.vue';
+import AppFooter from '@/components/AppFooter.vue';
 
 export default Vue.extend({
   name: 'DefaultLayout',
 
+  components: { AppFooter, AppBar },
+
   data() {
     return {
-      logoSize: 59,
       menuItems: ['about', 'contact', 'programs'],
     };
   },
 
   computed: {
     menuItemNames(): string[] {
-      const names = this.menuItems.map((item) => this.$t(`menu.${item}.title`));
-      return names as string[];
+      const names = this.menuItems.map((item: string) =>
+        this.$t(`menu.${item}.title`)
+      );
+      return names;
     },
   },
 });

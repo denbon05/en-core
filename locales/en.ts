@@ -13,7 +13,7 @@ const en: Locale = {
     },
   },
 
-  intro: {
+  main: {
     tagline: 'Learn at the comfort from your home!',
     name: 'The core',
     description: 'Private english class',
@@ -25,6 +25,10 @@ const en: Locale = {
     trial: {
       price: 'Just {amount} $ for trial lesson',
       description: 'Start with a 30 minute trial lesson',
+    },
+    normal: {
+      // eslint-disable-next-line no-template-curly-in-string
+      price: 'Only ${price} for a {minutes}-minutes lesson',
     },
   },
 
@@ -51,11 +55,17 @@ const en: Locale = {
     communicating with it and I am also certified as having mastered the language to
     a highly considerable level. Are you ready to learn English? If yes, then choose
     me for your lessons and I will have you bragging about your mastery of the English
-    language in no time. `,
+    language in no time.`,
     tagline: 'English classes for everyone',
     audience: 'for kids, beginners, intermediate and advanced students',
-    // eslint-disable-next-line no-template-curly-in-string
-    price: 'Only ${price} for a {minutes}-minutes lesson',
+    email: 'Email',
+    phone: 'Phone',
+    question: {
+      header: 'If you have some questions, please fill out the form below',
+      email: '@:(user.email)',
+      name: '@:(user.name)',
+      message: 'Message',
+    },
   },
 
   program: {
@@ -88,6 +98,13 @@ const en: Locale = {
   action: {
     book: 'Book a lesson',
     signUp: 'Sing up',
+    send: 'Send',
+  },
+
+  error: {
+    lenMin: '{title} must be less than {len} characters',
+    valid: '{title} must be valid',
+    required: '{title} is required!',
   },
 };
 

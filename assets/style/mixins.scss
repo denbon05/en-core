@@ -1,0 +1,7 @@
+@mixin btn-default() {
+  font-size: 1.4em !important;
+  font-weight: bold !important;
+  font-family: Inter, sans-serif !important;
+  letter-spacing: 0.05em !important;
+  border-radius: $btn-border-radius;
+}

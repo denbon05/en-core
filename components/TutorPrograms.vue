@@ -8,15 +8,19 @@
         alt="Wave rectangle with arrow to the programs"
       />
 
-      <div class="programs d-flex flex-column justify-space-between">
+      <div
+        class="programs d-flex flex-column justify-start justify-md-space-between"
+      >
         <div>
-          <h3 class="ml-0 pl-10 ml-lg-15 mt-10 mt-md-15 programs-tagline">
+          <h3
+            class="ml-0 pl-10 ml-lg-15 mt-10 mt-md-15 mb-15 mb-md-0 programs-tagline"
+          >
             {{ $t('tutor.tagline') }}
           </h3>
         </div>
 
-        <div class="d-flex justify-end">
-          <h4 class="text-h4 pr-5 pr-md-10 programs-audience">
+        <div class="d-flex justify-end mt-10 mt-md-0">
+          <h4 class="pr-5 pr-md-10 programs-audience">
             {{ $t('tutor.audience') }}
           </h4>
         </div>
@@ -50,7 +54,7 @@ export default Vue.extend({
   #programShort {
     #programsBG {
       width: 100%;
-      height: 400px !important;
+      height: 200px;
       object-fit: cover;
     }
 
@@ -72,6 +76,7 @@ export default Vue.extend({
         font-style: italic;
         font-weight: 500;
         flex-basis: 60%;
+        font-size: 2rem;
       }
     }
   }

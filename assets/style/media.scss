@@ -16,6 +16,10 @@
       font-size: 1em !important;
     }
   }
+
+  #platformDescription {
+    font-size: 1.3rem;
+  }
 }
 
 @media (min-width: $breakpoint-md) {
@@ -59,6 +63,46 @@
       font-size: 3em !important;
     }
   }
+
+  #programsBG {
+    height: 400px !important;
+  }
+
+  .programs-audience {
+    font-size: 2.5rem;
+  }
+
+  .sticker {
+    width: 25vw;
+    height: 24em;
+    min-width: 240px;
+    min-height: 260px;
+    object-fit: contain;
+  }
+
+  #timePrice {
+    font-size: 3rem;
+  }
+
+  #platformDescription {
+    font-size: 2rem;
+  }
+
+  #questionForm {
+    width: 80%;
+  }
+
+  #footerMediaIcons img {
+    width: 70px;
+  }
+
+  #footerSiteInfo {
+    font-size: 1rem;
+  }
+
+  #trialDescription {
+    font-size: 3em;
+  }
 }
 
 @media (min-width: $breakpoint-lg) {
@@ -72,7 +116,35 @@
     font-size: 1.8em !important;
   }
 
-  // .programs {
-  //   height: 100% !important;
-  // }
+  #questionForm {
+    width: 60%;
+  }
+
+  #appFooter {
+    background: url('/footer_wave.png');
+    background-size: cover;
+    height: 600px;
+    width: 100%;
+    background-repeat: no-repeat;
+    color: $main-text-color;
+    padding: 80px;
+  }
+
+  .footer-section {
+    height: 70%;
+  }
+
+  #footerLogo {
+    height: $footer-logo-size;
+    width: $footer-logo-size;
+  }
+
+  #footerInfo {
+    font-size: 0.9rem;
+  }
+
+  #footerMenuItems {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
 }

@@ -88,6 +88,11 @@
         <TrialLesson />
       </v-col>
     </v-row>
+    <v-row justify="center" align="center">
+      <v-col cols="11" md="10" lg="9">
+        <TutorQuestion />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

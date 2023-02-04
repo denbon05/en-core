@@ -14,7 +14,7 @@ export interface Locale {
     };
   };
 
-  intro: {
+  main: {
     tagline: string;
     name: string;
     description: string;
@@ -26,6 +26,9 @@ export interface Locale {
     trial: {
       price: string;
       description: string;
+    };
+    normal: {
+      price: string;
     };
   };
 
@@ -46,7 +49,14 @@ export interface Locale {
     about: string;
     tagline: string;
     audience: string;
-    price: string;
+    email: string;
+    phone: string;
+    question: {
+      header: string;
+      email: string;
+      name: string;
+      message: string;
+    };
   };
 
   program: {
@@ -75,6 +85,13 @@ export interface Locale {
   action: {
     book: string;
     signUp: string;
+    send: string;
+  };
+
+  error: {
+    lenMin: string;
+    valid: string;
+    required: string;
   };
 }
 

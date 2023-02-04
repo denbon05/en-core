@@ -3,6 +3,38 @@
   font-size: 16px !important;
 }
 
-.w-100 {
-  width: 100%;
+.btn-lg {
+  @include btn-default;
+  height: $app-bar-height !important;
+  width: 285px;
+  font-size: 1.7em !important;
+  padding: 30px 40px !important;
+}
+
+.btn-md {
+  @include btn-default;
+  padding: 30px 40px !important;
+}
+
+.btn-sm {
+  @include btn-default;
+  padding: 25px 35px !important;
+}
+
+@for $num from 1 through 150 {
+  .w-#{$num} {
+    width: #{$num} + '%';
+  }
+}
+
+@for $num from 1 through 150 {
+  .h-#{$num} {
+    height: #{$num} + '%';
+  }
+}
+
+@for $num from 1 through 100 {
+  .flex-basis-#{$num} {
+    flex-basis: #{$num} + '%';
+  }
 }

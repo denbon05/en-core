@@ -74,6 +74,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+// TODO define styles up to sm
 $platform-description-font-size: 2em;
 
 #platforms {
@@ -85,14 +86,11 @@ $platform-description-font-size: 2em;
   font-family: Inter, sans-serif;
   font-style: italic;
   font-weight: 500;
-  font-size: $platform-description-font-size;
+  font-size: 1rem;
 }
 
 .sticker {
-  width: 25vw;
-  height: 24em;
-  min-width: 240px;
-  min-height: 260px;
+  width: 150px;
   object-fit: contain;
 }
 
