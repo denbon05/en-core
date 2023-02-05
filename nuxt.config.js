@@ -10,7 +10,8 @@ export default {
     },
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      // TODO sm and down version
+      // { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
       { name: 'darkreader-lock' },
@@ -30,6 +31,7 @@ export default {
   plugins: [
     '@/plugins/api-context.client.ts',
     '@/plugins/api-context.server.ts',
+    '@/plugins/meeting-selector.client.ts',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

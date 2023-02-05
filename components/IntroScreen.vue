@@ -1,5 +1,8 @@
 <template>
   <section id="introScreen">
+    <template v-if="isCalendarOpen">
+      <LessonsCalendar v-model="isCalendarOpen"
+    /></template>
     <img
       :src="bgImg"
       alt="Desk with books, cubes and apple."
@@ -27,7 +30,7 @@
       </section>
 
       <section id="introAction" class="d-flex flex-column align-center">
-        <v-btn class="btn-lg my-3" elevation="2" x-large>
+        <v-btn class="btn-lg my-3" elevation="2" @click.stop="openCalendar">
           <span class="mx-5 my-5">{{ $t('main.action') }}</span>
         </v-btn>
 
@@ -41,9 +44,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import LessonsCalendar from './LessonsCalendar.vue';
 
 export default Vue.extend({
   name: 'IntroScreen',
+
+  components: { LessonsCalendar },
 
   props: {
     smAndDown: {
@@ -52,10 +58,13 @@ export default Vue.extend({
     },
   },
 
-  data: () => ({
-    amount: 2, // todo: make dynamic data from settled by admin
-    introHeight: 0,
-  }),
+  data() {
+    return {
+      amount: 2, // todo: make dynamic data from settled by admin
+      introHeight: 0,
+      isCalendarOpen: false,
+    };
+  },
 
   computed: {
     bgImg(): string {
@@ -68,6 +77,15 @@ export default Vue.extend({
     const appBar = document.getElementById('appBar');
     this.introHeight = window.innerHeight - (appBar?.clientHeight || 0);
     // todo: event on resize
+  },
+
+  methods: {
+    openCalendar() {
+      this.isCalendarOpen = true;
+    },
+    closeCalendar() {
+      this.isCalendarOpen = false;
+    },
   },
 });
 </script>
