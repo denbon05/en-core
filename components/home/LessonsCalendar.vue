@@ -44,7 +44,7 @@
       />
 
       <v-card-actions class="d-flex justify-end">
-        <v-btn class="btn-sm">BOOK</v-btn>
+        <v-btn class="btn-sm" @click="bookLesson">BOOK</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -205,6 +205,8 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
     async updateCalendarByMonth(_monthIdx: number) {
       // TODO
       // this.lessonDays =
+      // const res = await this.$api('ping', 'calendar', { some: 'param' });
+      // console.log({ clientRes: res });
     },
 
     async prevMonth() {
@@ -215,13 +217,14 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
         displayedDate,
         p: currentDate < displayedDate,
       });
-      if (currentDate > displayedDate) {
-        return;
-      }
+      // if (currentDate > displayedDate) {
+      //   return;
+      // }
 
       const prevMonthIdx = displayedDate.getMonth();
       this.date = new Date(this.date.setMonth(prevMonthIdx - 1));
-      await this.updateCalendarByMonth(prevMonthIdx);
+      // await this.updateCalendarByMonth(prevMonthIdx);
+      // await this.$api('google/auth', 'login');
     },
 
     async nextMonth() {
@@ -231,6 +234,11 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       this.date = new Date(this.date.setMonth(nextMonthIdx + 1));
       console.log('after: ', this.date);
       await this.updateCalendarByMonth(nextMonthIdx);
+    },
+
+    async bookLesson(...args: any) {
+      console.log('bookLesson', { args });
+      // await this.$api('auth', 'login', { email: '' });
     },
   },
 });

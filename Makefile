@@ -10,7 +10,7 @@ test:
 	npm run test
 
 start:
-	npm run dev
+	clear && DEBUG=app:* npm run dev
 
 build:
 	npm run build

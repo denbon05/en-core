@@ -12,8 +12,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import AppBar from '@/components/AppBar.vue';
-import AppFooter from '@/components/AppFooter.vue';
+import AppBar from '@/components/default/AppBar.vue';
+import AppFooter from '@/components/default/AppFooter.vue';
 
 export default Vue.extend({
   name: 'DefaultLayout',

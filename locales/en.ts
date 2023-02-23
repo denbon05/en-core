@@ -1,6 +1,5 @@
-import { Locale } from '@/types/locale';
-
-const en: Locale = {
+// this is etalon locale type
+const en = {
   menu: {
     about: {
       title: 'About',

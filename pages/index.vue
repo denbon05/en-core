@@ -98,10 +98,22 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import KidsCard from '@/components/program-cards/KidsCard.vue';
-import BeginnersCard from '@/components/program-cards/BeginnersCard.vue';
-import WorkCard from '@/components/program-cards/WorkCard.vue';
-import AdvancedCard from '@/components/program-cards/AdvancedCard.vue';
+import {
+  KidsCard,
+  BeginnersCard,
+  WorkCard,
+  AdvancedCard,
+  AdvantageCard,
+  IntroScreen,
+  MainAction,
+  TrialLesson,
+  TutorAbout,
+  TutorIntro,
+  TutorPlatforms,
+  TutorPrice,
+  TutorPrograms,
+  TutorQuestion,
+} from '@/components/home';
 import { getTutorYearExperience } from '@/utils';
 
 // todo: dynamic data from server
@@ -111,7 +123,22 @@ export default Vue.extend({
   name: 'IndexPage',
 
   // * each card is going to have itself uniq animation
-  components: { KidsCard, BeginnersCard, WorkCard, AdvancedCard },
+  components: {
+    KidsCard,
+    BeginnersCard,
+    WorkCard,
+    AdvancedCard,
+    AdvantageCard,
+    IntroScreen,
+    MainAction,
+    TrialLesson,
+    TutorAbout,
+    TutorIntro,
+    TutorPlatforms,
+    TutorPrice,
+    TutorPrograms,
+    TutorQuestion,
+  },
 
   data() {
     return {

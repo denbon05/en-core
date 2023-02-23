@@ -68,7 +68,8 @@ export default Vue.extend({
 
   computed: {
     bgImg(): string {
-      return this.smAndDown ? '/intro_screen_mobile.svg' : '/intro_screen.svg';
+      // return this.smAndDown ? '/intro_screen_mobile.svg' : '/intro_screen.svg';
+      return '/intro_screen.svg';
     },
   },
 

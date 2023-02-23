@@ -1,13 +1,13 @@
 import 'vue';
-import type { ApiController, ApiMethodByController } from './api';
+import type { ApiControllerPath, ApiParams, ApiResponse } from './api';
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $api: <C extends ApiController, M extends ApiMethodByController[C], T, T2>(
-      controller: C,
-      method: M,
-      params: T
-    ) => Promise<T2>;
-    // Todo: return type Promise<ApiResponse[ApiController][ApiMethod]>;
+    $api: <CPath extends ApiControllerPath, Params extends ApiParams<CPath>>(
+      controllerPath: CPath,
+      params?: Params
+    ) => ApiResponse<CPath> extends Promise<ApiResponse<CPath>>
+      ? ApiResponse<CPath>
+      : Promise<ApiResponse<CPath>>;
   }
 }

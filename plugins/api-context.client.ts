@@ -1,18 +1,26 @@
-/* eslint-disable no-console */
+import debug from 'debug';
 import type { Context, Inject } from '@nuxt/types/app';
-// todo: remove console
-export default <T>(context: Context, inject: Inject) => {
-  // todo: specify controller and method types
-  inject('api', async (controller: 'ping', method: 'check', params: T) => {
-    console.log('I AM IN THE api-context.client.ts');
-    try {
-      return await context.$axios.$post(
-        '/api/' + controller + '/' + method,
-        params
-      );
-    } catch (e) {
-      console.error(e);
-      throw e;
+import type { ApiControllerPath } from '@/types/api';
+
+const log = debug('app:api');
+
+export default (context: Context, inject: Inject) => {
+  inject(
+    'api',
+    async <T, CPath extends ApiControllerPath>(
+      controller: CPath,
+      params?: T
+    ) => {
+      log('api-context.client %O', { params });
+      try {
+        return await context.$axios['$' + (params ? 'post' : 'get')](
+          '/api/' + controller,
+          params
+        );
+      } catch (e) {
+        log('api-context.client %O', e);
+        throw e;
+      }
     }
-  });
+  );
 };

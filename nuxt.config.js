@@ -1,4 +1,8 @@
+// @ts-check
+import url from 'url';
 import colors from 'vuetify/es5/util/colors';
+
+const apiPath = '/api';
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -20,7 +24,7 @@ export default {
   },
 
   server: {
-    port: 3000,
+    port: 8000,
     host: '0.0.0.0',
   },
 
@@ -29,8 +33,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    // TODO screen plugin for client side
     '@/plugins/api-context.client.ts',
-    '@/plugins/api-context.server.ts',
     '@/plugins/meeting-selector.client.ts',
   ],
 
@@ -67,7 +71,13 @@ export default {
     baseURL: '/',
   },
 
-  watch: ['@/plugins/*'],
+  watch: ['@/plugins/*', '@/utils/'],
+
+  vue: {
+    config: {
+      productionTip: true,
+    },
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -79,7 +89,8 @@ export default {
       '@/assets/style/media.scss',
     ],
     theme: {
-      dark: true,
+      dark: false,
+      // TODO set own colors
       themes: {
         dark: {
           primary: colors.blue.darken2,
@@ -95,9 +106,32 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    // ? https://github.com/nuxt/typescript/issues/339#issuecomment-802891723
+    // extend(config, _ctx) {
+    //   if (!config.resolve) {
+    //     config.resolve = {};
+    //   }
+    //   if (!config.resolve.plugins) {
+    //     config.resolve.plugins = [];
+    //   }
+    //   config.resolve.plugins.push(
+    //     new TsconfigPathsPlugin({ configFile: './tsconfig.json' })
+    //   );
+    // },
+  },
 
   serverMiddleware: [
-    { path: '/api', handler: '@/server-middleware/api-server.ts' },
+    { path: apiPath, handler: require('body-parser').json() },
+    {
+      path: apiPath,
+      handler: (req, _res, next) => {
+        // eslint-disable-next-line n/no-deprecated-api
+        req.query = url.parse(req.url, true).query;
+        req.params = { ...req.query, ...req.body };
+        next();
+      },
+    },
+    { path: apiPath, handler: '@/server-middleware/api-server.ts' },
   ],
 };

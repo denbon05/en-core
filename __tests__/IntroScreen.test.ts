@@ -1,5 +1,5 @@
 import { mount, createLocalVue, Wrapper } from '@vue/test-utils';
-import IntroScreen from '@/components/IntroScreen.vue';
+import IntroScreen from '@/components/home/IntroScreen.vue';
 
 const localVue = createLocalVue();
 

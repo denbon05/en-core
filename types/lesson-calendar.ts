@@ -21,4 +21,5 @@ export interface ILessonCalendar {
   nextMonth: () => void;
   updateCalendarByMonth: (monthIdx: number) => Promise<void>;
   getMeetings: () => string[];
+  bookLesson: (args: any) => Promise<void>;
 }

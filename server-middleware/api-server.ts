@@ -1,29 +1,53 @@
-/* eslint-disable no-console */
-import type { IncomingMessage, ServerResponse } from 'http';
-// todo: remove console
-// ? this module watched without additional config in nuxt
-export default async (
-  req: IncomingMessage,
+import type { ServerResponse } from 'http';
+import path from 'path';
+import debug from 'debug';
+import camelCase from 'lodash/camelCase';
+import appMode from '../api/config/mode';
+import type { ApiControllerPath, ApiIncomingMsg } from '@/types/api';
+
+const log = debug('app:api');
+
+const apiDirpath = path.join(__dirname, '..', 'api');
+
+// TODO infer server response according to func and controller names
+export default async <CPath extends ApiControllerPath>(
+  req: ApiIncomingMsg<CPath>,
   res: ServerResponse,
   _next: (err: Error) => void
-  // eslint-disable-next-line require-await
 ) => {
-  // console.log({ res })
-  // console.log({ req })
-  // todo: use req.url to extract method from api
-  console.log('url: ', req.url);
-  // @ts-ignore
-  // console.log('url: ', req._parsedUrl)
-  // console.log({ _next: _next.toString() })
-  // let url = req._parsedUrl.pathname.replace(/^\/+|\/+$|\.+/g, '')
-  // url = url.split('/');
-  // console.log({ url });
-  // const method = url.pop();
-  // const controller = url.slice(1).join('/');
-  // const api = require(`../api/${controller}.ts`);
-  // if (req.headers.authorization) {
-  // }
-  // const result = await api[method](req.params);
+  // make from url module path
+  const moduleParsedPath = path.parse(req.url);
+  const { name: funcSnakeName, dir: controllerPath } = moduleParsedPath;
 
-  res.end(JSON.stringify({ hi: 'from api-server' }));
+  // TODO paths in a snake case, funcNames in camel case
+  const funcCamelName = camelCase(funcSnakeName);
+
+  const apiPath = path.join(apiDirpath, controllerPath);
+
+  if (!appMode.isProd()) {
+    log('api path %O', {
+      reqUrl: req.url,
+      apiPath,
+      funcCamelName,
+      params: req.params,
+    });
+  }
+
+  try {
+    const api = require(`${apiPath}.ts`);
+    const result = await api[funcCamelName](req.params);
+
+    res.end(JSON.stringify(result));
+  } catch (err) {
+    if (funcSnakeName.startsWith('_')) {
+      log('The api is not allowed by the client %O', {
+        funcName: funcCamelName,
+      });
+      res.end(`Can't reach the api function: "${funcCamelName}"`);
+      return;
+    }
+
+    log('Api error %O', err);
+    res.end(err.message);
+  }
 };

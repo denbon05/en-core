@@ -88,4 +88,8 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Custom
 .vercel
+*credentials*.json
+.gauth.json
