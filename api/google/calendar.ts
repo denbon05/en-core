@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import { google } from 'googleapis';
-import type { GoogleTokenData } from '../types/api/auth';
-import { GOOGLE_API_KEY } from './config/';
-import { oauth } from './helpers/google';
+import type { GoogleTokenData } from '../../types/api/auth';
+import { GOOGLE_API_KEY } from '../config/';
+import { oauth } from '../helpers/google';
 
 export async function events(...params: any) {
   console.log('calendar: ', params);

@@ -12,6 +12,7 @@ declare global {
       GOOGLE_REDIRECT_URI_PROD: string;
       GOOGLE_AUTH_FILENAME: string;
       GOOGLE_CALENDAR_ID_DEV: string;
+      JWT_SECRET: string;
 
       /**
        * JSON format

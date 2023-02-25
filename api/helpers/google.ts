@@ -64,7 +64,6 @@ export const getAuthenticatedClient = (): Promise<OAuth2Client> => {
             const authData = await oAuth2Client.getToken(code);
             // Make sure to set the credentials on the OAuth2 client.
             oAuth2Client.setCredentials(authData.tokens);
-            console.log('!!!!', authData);
             await oauth.setTokenData(JSON.stringify(authData.tokens));
             resolve(oAuth2Client);
           }

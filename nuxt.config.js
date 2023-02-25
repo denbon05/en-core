@@ -35,6 +35,7 @@ export default {
   plugins: [
     // TODO screen plugin for client side
     '@/plugins/api-context.client.ts',
+    '@/plugins/api-context.server.ts',
     '@/plugins/meeting-selector.client.ts',
   ],
 

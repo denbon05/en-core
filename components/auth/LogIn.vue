@@ -70,6 +70,7 @@ export default Vue.extend({
         console.log('login', { isSuccess });
         if (isSuccess) {
           await this.$api('google/auth/login');
+          // this.$router.push('/');
           return;
         }
 

@@ -12,6 +12,7 @@ const {
   GOOGLE_REDIRECT_URI_PROD,
   GOOGLE_AUTH_FILENAME = '.gauth.json',
   GOOGLE_CALENDAR_ID_DEV,
+  JWT_SECRET = 'secret',
 } = process.env;
 
 const GOOGLE_REDIRECT_URI_DEV =
@@ -34,4 +35,5 @@ export {
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,
   GOOGLE_AUTH_FILENAME,
+  JWT_SECRET,
 };
