@@ -36,7 +36,8 @@ export default {
     // TODO screen plugin for client side
     '@/plugins/api-context.client.ts',
     '@/plugins/api-context.server.ts',
-    '@/plugins/meeting-selector.client.ts',
+    '@/plugins/axios.ts',
+    '@/plugins/components.client.ts',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -55,6 +56,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/i18n',
+    'cookie-universal-nuxt',
   ],
 
   i18n: {
@@ -124,6 +126,7 @@ export default {
 
   serverMiddleware: [
     { path: apiPath, handler: require('body-parser').json() },
+    { path: apiPath, handler: require('cookie-parser')() },
     {
       path: apiPath,
       handler: (req, _res, next) => {

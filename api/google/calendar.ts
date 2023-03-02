@@ -42,3 +42,7 @@ export async function events(...params: any) {
 
   return JSON.stringify(res);
 }
+
+export async function list() {
+  // todo
+}

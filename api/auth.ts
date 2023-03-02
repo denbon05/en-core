@@ -1,10 +1,10 @@
 // import debug from 'debug';
-import { sign } from 'jsonwebtoken';
 import { isPasswordValid } from './helpers/crypto';
-import { APP_ADMIN, JWT_SECRET } from './config';
+import { APP_ADMIN } from './config';
+import { getJWT } from './helpers/auth';
 import type { LoginParam, AdminEnv } from '@/types/api/auth';
 
-// const log = debug('app:api:auth');
+// const log = debug('api:auth');
 const admin: AdminEnv = JSON.parse(APP_ADMIN);
 
 export function login({ email, password }: LoginParam) {
@@ -26,6 +26,6 @@ export function login({ email, password }: LoginParam) {
 
   return {
     isSuccess: true,
-    accessToken: sign(email, JWT_SECRET),
+    accessToken: getJWT({ email }),
   };
 }

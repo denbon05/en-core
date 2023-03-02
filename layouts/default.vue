@@ -1,5 +1,11 @@
 <template>
   <v-app id="appRoot">
+    <div class="text-center ma-2">
+      <v-snackbar v-model="snackbar.isVisible" :color="snackbar.color" right>
+        {{ snackbar.message }}
+      </v-snackbar>
+    </div>
+
     <AppBar :menu-item-names="menuItemNames" />
 
     <v-main>
@@ -20,9 +26,20 @@ export default Vue.extend({
 
   components: { AppFooter, AppBar },
 
+  provide() {
+    return {
+      showSnackbar: this.showSnackbar,
+    };
+  },
+
   data() {
     return {
       menuItems: ['about', 'contact', 'programs'],
+      snackbar: {
+        isVisible: false,
+        message: '',
+        color: 'red',
+      },
     };
   },
 
@@ -32,6 +49,22 @@ export default Vue.extend({
         this.$t(`menu.${item}.title`)
       );
       return names;
+    },
+  },
+
+  methods: {
+    showSnackbar({
+      message,
+      isSuccess,
+    }: {
+      message: string;
+      isSuccess: boolean;
+    }) {
+      this.$set(this, 'snackbar', {
+        isVisible: true,
+        message,
+        color: isSuccess ? 'green darken-2' : 'red darken-2',
+      });
     },
   },
 });

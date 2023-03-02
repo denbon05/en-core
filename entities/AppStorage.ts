@@ -5,6 +5,10 @@ class AppStorage implements IAppStorage {
     return JSON.parse(localStorage.getItem(key));
   }
 
+  hasItem<T extends StorageKeys>(key: T): boolean {
+    return Boolean(this.getItem(key));
+  }
+
   setItem<T>(key: StorageKeys, value: T) {
     if (typeof value !== 'string') {
       localStorage.setItem(key, JSON.stringify(value));

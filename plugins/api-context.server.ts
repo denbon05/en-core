@@ -1,7 +1,7 @@
 import path from 'path';
 import { Plugin } from '@nuxt/types';
 import camelCase from 'lodash/camelCase';
-import { ApiControllerPath, ApiParams } from '@/types/api';
+import { ApiControllerPath, ApiParams, ApiResponse } from '@/types/api';
 
 const apiContextServer: Plugin = (_context, inject) => {
   inject(
@@ -9,7 +9,7 @@ const apiContextServer: Plugin = (_context, inject) => {
     async <CPath extends ApiControllerPath>(
       controller: CPath,
       params: ApiParams<CPath>
-    ) => {
+    ): Promise<Awaited<ApiResponse<CPath>>> => {
       try {
         const { name: funcSnakeName, dir: controllerPath } =
           path.parse(controller);

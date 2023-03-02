@@ -5,15 +5,14 @@ import camelCase from 'lodash/camelCase';
 import appMode from '../api/config/mode';
 import type { ApiControllerPath, ApiIncomingMsg } from '@/types/api';
 
-const log = debug('app:api');
+const log = debug('api');
 
 const apiDirpath = path.join(__dirname, '..', 'api');
 
-// TODO infer server response according to func and controller names
 export default async <CPath extends ApiControllerPath>(
   req: ApiIncomingMsg<CPath>,
   res: ServerResponse,
-  _next: (err: Error) => void
+  _next: (err?: Error) => void
 ) => {
   // make from url module path
   const moduleParsedPath = path.parse(req.url);
@@ -35,7 +34,7 @@ export default async <CPath extends ApiControllerPath>(
 
   try {
     const api = require(`${apiPath}.ts`);
-    const result = await api[funcCamelName](req.params);
+    const result = await api[funcCamelName](req.params, req.user);
 
     res.end(JSON.stringify(result));
   } catch (err) {

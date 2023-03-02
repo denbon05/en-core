@@ -1,31 +1,37 @@
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
-import { Guest, User, AppStorage } from '@/entities';
+import jwtDecode, { InvalidTokenError } from 'jwt-decode';
 import { ApiParams } from '@/types/api';
-import { AuthState } from '@/types/auth/state';
-import { IStorage } from '@/types/api/app-storage';
+import { AuthState } from '@/types/store';
 
 export const state = (): AuthState => ({
   accessToken: '',
-  refreshToken: '',
-  user: AppStorage.getItem('auth') ? new User() : new Guest(),
 });
 
 export const getters: GetterTree<AuthState, AuthState> = {
-  isAuthenticated({ user }) {
-    return !user.isGuest();
+  isAuthenticated(): boolean {
+    const jwt: string = this.$cookies.get('auth');
+
+    try {
+      const jwtDecoded = jwtDecode(jwt);
+      return Boolean(jwtDecoded.email);
+    } catch (err) {
+      if (!(err instanceof InvalidTokenError)) {
+        throw err;
+      }
+      return false;
+    }
   },
 };
 
 export const mutations: MutationTree<AuthState> = {
-  setTokens(state, { accessToken, refreshToken }: IStorage['auth']) {
+  setToken(state, accessToken: string) {
     state.accessToken = accessToken;
-    state.refreshToken = refreshToken;
-    AppStorage.setItem('auth', { accessToken, refreshToken });
+    this.$cookies.set('auth', accessToken);
   },
-  removeTokens(state) {
+
+  removeToken(state) {
     state.accessToken = '';
-    state.refreshToken = '';
-    AppStorage.removeItem('auth');
+    this.$cookies.remove('auth');
   },
 };
 
@@ -36,23 +42,23 @@ export const actions: ActionTree<AuthState, AuthState> = {
       password,
     });
 
-    if (!isSuccess) {
-      // ? handle above
-      throw new Error(message);
+    if (isSuccess) {
+      commit('setToken', accessToken);
+      commit('user/setUser', { email }, { root: true });
     }
 
-    commit('setTokens', accessToken);
+    return { isSuccess, message };
+  },
+
+  refresh(
+    { commit },
+    { email, jwtToken }: { email: string; jwtToken: string }
+  ) {
+    commit('user/setUser', { email }, { root: true });
+    commit('setToken', jwtToken);
   },
 
   logOut({ commit }) {
-    commit('removeTokens');
+    commit('removeToken');
   },
-
-  // async refresh({ state, commit }) {
-  //   const res = await this.$api('auth/refresh', {
-  //     refreshToken: state.refreshToken,
-  //   });
-
-  //   commit('setTokens', res);
-  // },
 };

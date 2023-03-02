@@ -1,12 +1,17 @@
 import { Context } from '@nuxt/types';
 
-export default function ({ store, app: { $axios }, redirect }: Context) {
+export default function ({
+  store,
+  app: { $axios, $cookies },
+  redirect,
+}: Context) {
   $axios.onRequest((config) => {
-    console.log('axios onRequest store=>', { store, config });
+    const { accessToken } = store.state.auth;
     // check if the user is authenticated
-    if (store.state.auth.accessToken) {
+    if (accessToken) {
+      $cookies.set('auth', accessToken);
       // set the Authorization header using the access token
-      config.headers.Authorization = 'Bearer ' + store.state.auth.accessToken;
+      config.headers.Authorization = 'Bearer ' + accessToken;
     }
 
     return config;

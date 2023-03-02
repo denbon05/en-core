@@ -1,3 +1,4 @@
+import { NuxtCookies } from 'cookie-universal-nuxt';
 import type { ApiControllerPath, ApiParams, ApiResponse } from '../api';
 
 declare module 'vuex/types/index' {
@@ -6,7 +7,9 @@ declare module 'vuex/types/index' {
   interface Store<S> {
     $api: <CPath extends ApiControllerPath>(
       cpath: CPath,
-      params: ApiParams<CPath>
-    ) => Promise<ApiResponse<CPath>>;
+      params?: ApiParams<CPath>
+    ) => ApiResponse<CPath>;
+
+    $cookies: NuxtCookies;
   }
 }

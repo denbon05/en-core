@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { getAuthenticatedClient } from '../helpers/google';
 
-const log = debug('app:api:google:auth');
+const log = debug('api:google:auth');
 
 /**
  * Start by acquiring a pre-authenticated oAuth2 client.

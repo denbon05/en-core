@@ -1,8 +1,8 @@
 <template>
-  <v-container>
+  <v-container id="profile">
     <v-row justify="center" align="start" class="py-15">
       <v-col md="10" lg="8">
-        <log-in />
+        <user-settings />
       </v-col>
     </v-row>
   </v-container>
@@ -10,11 +10,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import LogIn from '@/components/auth/LogIn.vue';
+import UserSettings from '@/components/profile/UserSettings.vue';
 
 export default Vue.extend({
+  name: 'UserProfile',
+
   components: {
-    LogIn,
+    UserSettings,
   },
 
   middleware: ['authenticated'],

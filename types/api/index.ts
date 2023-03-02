@@ -2,9 +2,8 @@ import type { IncomingMessage } from 'http';
 import * as auth from '@/api/auth';
 import * as googleCalendar from '@/api/google/calendar';
 import * as googleAuth from '@/api/google/auth';
-// Todo: define interface for each api return value
+import { Guest, User } from '@/entities';
 
-// TODO dynamic types corresponding to the api functions
 type AuthFuncName = keyof typeof auth;
 type GoogleCalendarFuncName = keyof typeof googleCalendar;
 type GoogleAuthFuncName = keyof typeof googleAuth;
@@ -57,7 +56,9 @@ export type ApiResponse<
       ? ApiResponse<Tail, Obj[Head]>
       : never
     : never
-  : ReturnType<Obj[CPath]>;
+  : ReturnType<Obj[CPath]> extends Promise<any>
+  ? ReturnType<Obj[CPath]>
+  : Promise<ReturnType<Obj[CPath]>>;
 
 export type ApiParams<
   CPath extends string,
@@ -74,4 +75,8 @@ export type ApiIncomingMsg<CPath extends ApiControllerPath> =
   IncomingMessage & {
     params: ApiParams<CPath>;
     url: ApiControllerPath;
+    user?: User | Guest;
+    cookies: {
+      [key: string]: string;
+    };
   };

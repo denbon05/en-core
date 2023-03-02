@@ -98,6 +98,8 @@ const en = {
     book: 'Book a lesson',
     signUp: 'Sing up',
     send: 'Send',
+    agree: 'Agree',
+    disagree: 'Disagree',
   },
 
   error: {

@@ -1,17 +1,21 @@
 import { ActionTree } from 'vuex';
-
-export const state = () => ({});
-
-export type RootState = typeof state;
+import jwtDecode, { InvalidTokenError } from 'jwt-decode';
+import type { RootState } from '@/types/store';
 
 export const actions: ActionTree<RootState, RootState> = {
-  async nuxtServerInit({ commit, dispatch }) {
+  nuxtServerInit({ dispatch }) {
+    const jwtToken: string = this.$cookies.get('auth');
+
     try {
-      await dispatch('auth/refresh');
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.warn('nuxtServerInit', e);
-      commit('auth/logout');
+      const { email } = jwtDecode(jwtToken) || {};
+
+      if (jwtToken && email) {
+        dispatch('auth/refresh', { email, jwtToken });
+      }
+    } catch (err) {
+      if (!(err instanceof InvalidTokenError)) {
+        throw err;
+      }
     }
   },
 };

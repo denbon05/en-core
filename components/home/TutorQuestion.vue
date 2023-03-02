@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { VFormRef } from '@/types/vuetify';
+import { VFormRef } from '@/types/vue-specified';
 import validator from '@/utils/validator';
 
 export default Vue.extend({

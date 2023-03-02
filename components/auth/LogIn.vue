@@ -1,32 +1,38 @@
 <template>
-  <v-card elevation="5" class="pa-10" shaped>
-    <v-form ref="form" v-model="form.isValid" lazy-validation>
-      <v-text-field
-        v-model="form.email"
-        :rules="emailRules"
-        label="E-mail"
-        required
-      ></v-text-field>
+  <section id="logIn">
+    <v-card elevation="5" class="pa-10" shaped>
+      <v-form ref="form" v-model="form.isValid" lazy-validation>
+        <v-text-field
+          ref="email"
+          v-model="form.email"
+          :rules="emailRules"
+          label="E-mail"
+          required
+          @keyup.enter="logIn"
+        ></v-text-field>
 
-      <v-text-field
-        v-model="form.password"
-        :rules="passwordRules"
-        label="Password"
-        :append-icon="form.isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
-        :type="form.isPasswordVisible ? 'text' : 'password'"
-        required
-        @click:append="togglePasswordVisibility"
-      ></v-text-field>
+        <v-text-field
+          v-model="form.password"
+          :rules="passwordRules"
+          label="Password"
+          :append-icon="form.isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="form.isPasswordVisible ? 'text' : 'password'"
+          required
+          @click:append="togglePasswordVisibility"
+          @keyup.enter="logIn"
+        ></v-text-field>
 
-      <v-btn :disabled="form.isLoading" dark class="mt-4" @click="logIn">
-        Log In
-      </v-btn>
-    </v-form>
-  </v-card>
+        <v-btn :disabled="form.isLoading" dark class="mt-4" @click="logIn">
+          Log In
+        </v-btn>
+      </v-form>
+    </v-card>
+  </section>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { ComponentQuery } from '@/types/vue-specified';
 // import validator from '@/utils/validator';
 // TODO implement validator
 // TODO submit on enter key
@@ -34,13 +40,21 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'LogIn',
 
+  inject: ['showSnackbar'],
+
   data: () => ({
+    isConfirmDialogVisible: false,
     form: {
       email: '',
       password: '',
       isPasswordVisible: false,
       isLoading: false,
       isValid: true,
+    },
+    loginQuery: {
+      isLoading: false,
+      isSuccess: false,
+      message: '',
     },
     emailRules: [
       // (v) => !!v || 'E-mail is required',
@@ -50,9 +64,26 @@ export default Vue.extend({
     passwordRules: [(v: string) => !!v || 'Password is required'],
   }),
 
+  watch: {
+    loginQuery: {
+      deep: true,
+      handler({ isLoading, isSuccess, message }: ComponentQuery) {
+        if (!isLoading && !isSuccess) {
+          this.showSnackbar({ isLoading, isSuccess, message });
+        }
+      },
+    },
+  },
+
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.email.focus();
+    });
+  },
+
   methods: {
     async logIn() {
-      this.form.isLoading = true;
+      this.loginQuery.isLoading = true;
       await this.$refs.form.validate();
 
       if (!this.form.isValid) {
@@ -62,24 +93,25 @@ export default Vue.extend({
       const { email, password } = this.form;
 
       try {
-        const { isSuccess } = await this.$api('auth/login/', {
-          email,
-          password,
-        });
+        const { isSuccess, message } = await this.$store.dispatch(
+          'auth/logIn',
+          {
+            email,
+            password,
+          }
+        );
 
-        console.log('login', { isSuccess });
+        this.loginQuery = { ...this.loginQuery, isSuccess, message };
+
         if (isSuccess) {
-          await this.$api('google/auth/login');
-          // this.$router.push('/');
-          return;
+          this.$router.push('/profile');
         }
-
-        console.warn("TODO case $api('auth/login/");
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
         // TODO handle err
       }
-      this.form.isLoading = false;
+      this.loginQuery.isLoading = false;
     },
 
     togglePasswordVisibility(): void {

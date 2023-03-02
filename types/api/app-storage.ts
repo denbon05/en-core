@@ -1,8 +1,8 @@
 export type IStorage = {
-  auth?: {
-    accessToken?: string;
-    refreshToken?: string;
+  user?: {
+    email: string;
   };
+  calendarId?: string;
 };
 
 export type StorageKeys = keyof IStorage;

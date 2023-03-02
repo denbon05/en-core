@@ -12,3 +12,5 @@ export interface GoogleTokenData {
   token_type: 'Bearer';
   expiry_date: number;
 }
+
+export type JWTPayload = Pick<LoginParam, 'email'>;
