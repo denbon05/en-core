@@ -1,9 +1,14 @@
+import type { User } from 'knex/types/tables';
+
 export type LoginParam = {
   email: string;
   password: string;
 };
 
-export type AdminEnv = Omit<LoginParam, 'password'> & { passwordHash: string };
+export type SignupParam = LoginParam & {
+  firstName: User['first_name'];
+  lastName: User['last_name'];
+};
 
 export interface GoogleTokenData {
   access_token: string;

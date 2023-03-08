@@ -1,8 +1,11 @@
 /* eslint-disable no-console */
 import { google } from 'googleapis';
+import debug from 'debug';
 import type { GoogleTokenData } from '../../types/api/auth';
 import { GOOGLE_API_KEY } from '../config/';
 import { oauth } from '../helpers/google';
+
+const log = debug('api:calendar');
 
 export async function events(...params: any) {
   console.log('calendar: ', params);
@@ -44,5 +47,25 @@ export async function events(...params: any) {
 }
 
 export async function list() {
-  // todo
+  const calendar = google.calendar('v3');
+  const authData: GoogleTokenData = JSON.parse(await oauth.getTokenData());
+
+  try {
+    const {
+      data: { items },
+    } = await calendar.calendarList.list({
+      key: GOOGLE_API_KEY,
+      oauth_token: authData.access_token,
+    });
+
+    return {
+      isSuccess: true,
+      items,
+    };
+  } catch (err) {
+    log('calendarList error %p', err);
+    return {
+      isSuccess: false,
+    };
+  }
 }

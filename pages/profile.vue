@@ -1,7 +1,7 @@
 <template>
   <v-container id="profile">
-    <v-row justify="center" align="start" class="py-15">
-      <v-col md="10" lg="8">
+    <v-row justify="center" class="py-15">
+      <v-col md="10" xl="8">
         <user-settings />
       </v-col>
     </v-row>

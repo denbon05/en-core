@@ -1,0 +1,22 @@
+---
+- name: Init database
+  hosts: local
+  gather_facts: true
+  vars:
+    db_public_port: "{{ db_port_dev if app_mode == 'dev' else db_port_test }}"
+
+  tasks:
+    - name: Run pg
+      community.docker.docker_container:
+        name: '{{ db_container_name }}-{{ app_mode }}'
+        image: 'postgres:{{ pg_version }}'
+        restart_policy: always
+        state: '{{ db_container_state }}'
+        ports:
+          - '{{ db_public_port }}:5432'
+        # preserve db in dev mode
+        volumes: "{{ '/var/lib/postgresql/data' if app_mode == 'dev' else [] }}"
+        env:
+          POSTGRES_PASSWORD: '{{ db_pass }}'
+          POSTGRES_USER: '{{ db_user }}'
+          POSTGRES_DB: '{{ db_name }}'

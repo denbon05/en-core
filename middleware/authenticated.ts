@@ -6,6 +6,6 @@ export default ({ store, redirect, route }: Context) => {
   if (isUserAuthenticated && route.path === '/auth') {
     redirect('/profile');
   } else if (!isUserAuthenticated && route.path === '/profile') {
-    redirect('/');
+    redirect('/auth');
   }
 };

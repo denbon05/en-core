@@ -1,5 +1,5 @@
 <template>
-  <section id="userSettings">
+  <section id="userSettings" class="d-flex justify-space-between">
     <template v-if="isGoogleCalendarSynced">
       <v-list-item-group v-model="settings" multiple>
         <v-list-item>
@@ -59,12 +59,22 @@
     </template>
 
     <template v-else>
-      <v-btn elevation="2">SYNC GOOGLE</v-btn>
+      <v-btn elevation="2" @click="syncGoogleCalendar">SYNC GOOGLE</v-btn>
     </template>
+
+    <v-btn fab plain>
+      <img
+        id="logOutIcon"
+        src="/icons8-log-out-64.png"
+        alt="Log Out icon"
+        width="50"
+      />
+    </v-btn>
   </section>
 </template>
 
 <script lang="ts">
+import { ApiResponse } from '@/types/api';
 import Vue from 'vue';
 
 export default Vue.extend({
@@ -81,9 +91,33 @@ export default Vue.extend({
   },
 
   methods: {
-    async syncGoogleAccount() {
+    async authToGoogle() {
       await this.$api('google/auth/login');
+    },
+
+    async syncGoogleCalendar() {
+      // TODO prevent re-authentication
+      // await this.authToGoogle();
+      const res: ApiResponse<'google/calendar/list'> = await this.$api(
+        'google/calendar/list'
+      );
+      console.log({ res });
     },
   },
 });
 </script>
+
+<style lang="scss">
+#userSettings {
+  //
+}
+
+#logOutIcon {
+  // transition: width 0.2s;
+
+  // &:hover {
+  //   cursor: pointer;
+  //   width: 51.5px;
+  // }
+}
+</style>

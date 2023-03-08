@@ -2,9 +2,37 @@
 
 ## Dev-mode
 
+<p>
+  <b>Prerequisites</b>
+  <ul>
+    <li>
+      <a href="https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html">
+        ansible
+      </a>
+    </li>
+  </ul>
+</p>
+
 ```shell
-make start # launch the app
+make setup    # prepare project
+make init-db  # init local db
+make start    # launch the app
 ```
+
+<p>
+  <b>Required vars</b>
+  <ul>
+    <li>GOOGLE_API_KEY</li>
+    <li>GOOGLE_CLIENT_ID</li>
+    <li>GOOGLE_CLIENT_SECRET</li>
+    <li>GOOGLE_REDIRECT_URI_PROD</li>
+    <li>PROD_DB_CONNECTION_STRING</li>
+  </ul>
+</p>
+
+<i>
+  NOTE: The app should be registered in Google.
+</i>
 
 #### Auth
 
@@ -18,7 +46,7 @@ make start # launch the app
 #### API - server
 
 <p>
-  <b>Underscored ('_')</b> function names will be ignored by TypeScript for usage by the client.
+  <b>Underscored ('_')</b> function names will be ignored for usage by the client.
 </p>
 
 ### Build Setup

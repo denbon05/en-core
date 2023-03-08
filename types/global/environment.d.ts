@@ -1,23 +1,18 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      GITHUB_AUTH_TOKEN: string;
       NODE_ENV: 'development' | 'production' | 'test';
-      PORT?: string;
       PWD: string;
 
-      GOOGLE_API_KEY: string;
-      GOOGLE_CLIENT_ID: string;
-      GOOGLE_CLIENT_SECRET: string;
-      GOOGLE_REDIRECT_URI_PROD: string;
+      GOOGLE_API_KEY?: string;
+      GOOGLE_CLIENT_ID?: string;
+      GOOGLE_CLIENT_SECRET?: string;
+      GOOGLE_REDIRECT_URI_PROD?: string;
+      PROD_DB_CONNECTION_STRING?: string;
+      DEV_DB_CONNECTION_STRING: string;
+      TEST_DB_CONNECTION_STRING: string;
       GOOGLE_AUTH_FILENAME: string;
-      GOOGLE_CALENDAR_ID_DEV: string;
       JWT_SECRET: string;
-
-      /**
-       * JSON format
-       */
-      APP_ADMIN: string;
     }
   }
 }

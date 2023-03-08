@@ -1,9 +1,12 @@
 import path from 'path';
 import { Plugin } from '@nuxt/types';
+import debug from 'debug';
 import camelCase from 'lodash/camelCase';
 import { ApiControllerPath, ApiParams, ApiResponse } from '@/types/api';
 
-const apiContextServer: Plugin = (_context, inject) => {
+const log = debug('api:context');
+
+const apiContextServer: Plugin = (_ctx, inject) => {
   inject(
     'api',
     async <CPath extends ApiControllerPath>(
@@ -14,11 +17,11 @@ const apiContextServer: Plugin = (_context, inject) => {
         const { name: funcSnakeName, dir: controllerPath } =
           path.parse(controller);
         const funcCamelName = camelCase(funcSnakeName);
-        console.log('api-context.server!!!', controllerPath, funcCamelName);
+        log('api-context.server %p', { controllerPath, funcCamelName });
         const api = require(controllerPath);
         return await api[funcCamelName](params);
       } catch (e) {
-        console.error(e);
+        log('api err %p', e);
         throw e;
       }
     }

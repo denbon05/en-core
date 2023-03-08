@@ -1,26 +1,19 @@
-// import debug from 'debug';
-import { isPasswordValid } from './helpers/crypto';
-import { APP_ADMIN } from './config';
+import debug from 'debug';
 import { getJWT } from './helpers/auth';
-import type { LoginParam, AdminEnv } from '@/types/api/auth';
+import { hashValue } from './helpers/crypto';
+import { createUser, getUser } from './user';
+import type { LoginParam, SignupParam } from '@/types/api/auth';
 
-// const log = debug('api:auth');
-const admin: AdminEnv = JSON.parse(APP_ADMIN);
+const log = debug('api:auth');
 
-export function login({ email, password }: LoginParam) {
+export async function login({ email, password }: LoginParam) {
   const isSuccess = false;
+  const user = await getUser({ email, passwordDigest: hashValue(password) });
 
-  if (admin.email !== email) {
+  if (!user) {
     return {
       isSuccess,
-      message: 'The email is not allowed by admin. Only admin can log in.',
-    };
-  }
-
-  if (!isPasswordValid(password, admin.passwordHash)) {
-    return {
-      isSuccess,
-      message: 'The password is invalid',
+      message: 'There is no such user.',
     };
   }
 
@@ -28,4 +21,27 @@ export function login({ email, password }: LoginParam) {
     isSuccess: true,
     accessToken: getJWT({ email }),
   };
+}
+
+export async function signup({
+  email,
+  password,
+  firstName,
+  lastName,
+}: SignupParam) {
+  try {
+    await createUser({
+      email,
+      first_name: firstName,
+      last_name: lastName,
+      password_digest: hashValue(password),
+    });
+  } catch (err) {
+    log('signup err %O', err);
+    return {
+      isSuccess: false,
+      message: 'Something went wrong',
+    };
+  }
+  // todo
 }

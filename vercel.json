@@ -4,14 +4,21 @@
   "devCommand": "nuxt",
   "buildCommand": "nuxt build",
   "outputDirectory": "dist",
-  "regions": ["fra1"],
+  "regions": [
+    "fra1"
+  ],
   "builds": [
     {
       "src": "nuxt.config.js",
       "use": "@nuxtjs/vercel-builder",
       "config": {
         "distDir": "build",
-        "serverFiles": ["api/**", "server-middleware/**", "plugins/**/*server*"]
+        "serverFiles": [
+          "api/**",
+          "server-middleware/**",
+          "plugins/**/*server*",
+          "server/**"
+        ]
       }
     }
   ],

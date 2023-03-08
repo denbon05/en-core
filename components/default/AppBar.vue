@@ -3,13 +3,15 @@
     <div class="d-flex justify-center align-center justify-space-between w-100">
       <div class="d-flex flex-basis-50 mt-3">
         <div class="flex-basis-half d-flex justify-center align-center">
-          <v-img
-            src="/logo_white.svg"
-            alt="'EN' on the Moon"
-            :height="50"
-            :width="50"
-            contain
-          ></v-img>
+          <v-btn fab plain href="/">
+            <v-img
+              src="/logo_white.svg"
+              alt="'EN' on the Moon"
+              :height="50"
+              :width="50"
+              contain
+            ></v-img>
+          </v-btn>
         </div>
       </div>
 
@@ -25,6 +27,10 @@
           href="#"
           >{{ name }}</a
         >
+
+        <v-btn id="profileIcon" href="/profile" fab plain>
+          <img src="/icons8-male-user-50.png" alt="Profile icon" />
+        </v-btn>
       </div>
     </div>
   </v-app-bar>
@@ -53,5 +59,10 @@ export default Vue.extend({
 
 .menu-item {
   font-size: $menu-item-font-size;
+}
+
+#profileIcon {
+  -webkit-filter: invert(1);
+  filter: invert(1);
 }
 </style>
