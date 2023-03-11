@@ -22,7 +22,7 @@ export async function login({ email, password }: LoginParam) {
       message: 'There is no such user.',
     };
   }
-  const userData = omit(user, 'passwordDigest');
+  const userData = omit(user, 'passwordDigest', 'oauthDigest');
 
   return {
     isSuccess: true,
@@ -45,9 +45,12 @@ export async function signup({
       passwordDigest: hashValue(password),
     });
 
+    const userData = omit(user, 'passwordDigest', 'oauthDigest');
+
     return {
       isSuccess: true,
-      accessToken: getJWT(omit(user, 'passwordDigest')),
+      userData,
+      accessToken: getJWT(userData),
     };
   } catch (err) {
     log('signup err %O', err);

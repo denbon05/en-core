@@ -49,11 +49,11 @@ export const actions: ActionTree<AuthState, AuthState> = {
       };
     }
 
-    const { accessToken, isSuccess, message } = res;
+    const { accessToken, isSuccess, message, userData } = res;
 
     if (isSuccess) {
       commit('setToken', accessToken);
-      commit('user/setUser', { email }, { root: true });
+      commit('user/setUser', userData, { root: true });
     }
 
     return { isSuccess, message };
@@ -74,11 +74,11 @@ export const actions: ActionTree<AuthState, AuthState> = {
       return { isSuccess: false, message: res };
     }
 
-    const { accessToken, isSuccess, message } = res;
+    const { accessToken, isSuccess, message, userData } = res;
 
     if (isSuccess) {
       commit('setToken', accessToken);
-      commit('user/setUser', { email }, { root: true });
+      commit('user/setUser', userData, { root: true });
     }
 
     return { isSuccess, message };

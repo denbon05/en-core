@@ -1,23 +1,29 @@
-import { Person } from '@/types/auth/person';
+import AppStorage from '../AppStorage';
+import type { IUserData, Person } from '@/types/auth/person';
+import { StoragePath } from '@/types/api/app-storage';
 
 export default class User implements Person {
   private readonly email: string;
   private googleCalendarId: string;
 
-  constructor({ email }) {
-    this.email = email;
+  constructor(userData: IUserData) {
+    AppStorage.setItem('user', userData);
+  }
+
+  has(key: StoragePath): boolean {
+    return AppStorage.hasItem(key);
   }
 
   setGoogleCalendarId = (id: string) => {
-    this.googleCalendarId = id;
+    AppStorage.setItem('user.calendarId', id);
   };
 
-  getGoogleCalendarId = () => {
-    return this.googleCalendarId;
+  getGoogleCalendarId = (): string => {
+    return AppStorage.getItem('user').calendarId;
   };
 
   getEmail = (): string => {
-    return this.email;
+    return AppStorage.getItem('user').email;
   };
 
   isGuest = (): boolean => {

@@ -1,18 +1,39 @@
+import type { IUserData } from '../auth/person';
+
 export type IStorage = {
-  user?: {
-    email: string;
+  user: {
+    [Key in keyof IUserData]: IUserData[Key];
   };
-  calendarId?: string;
 };
 
-export type StorageKeys = keyof IStorage;
+export type StorageKey = keyof IStorage;
+
+export type StoragePath = StorageKey | `${StorageKey}.${keyof IUserData}`;
+
+type StoragePathPart<SPath extends string = StoragePath> =
+  SPath extends `${infer Head}.${infer Tail}`
+    ? Tail extends `${infer _Head}${infer _Rest}`
+      ? Head | StoragePathPart<Tail>
+      : Head
+    : SPath; // ? last name in the path
+
+export type StorageData<
+  SPath extends string,
+  Obj extends Record<string, any> = IStorage
+> = SPath extends `${infer Head}.${infer Tail}`
+  ? Head extends StoragePathPart
+    ? StorageData<Tail, Obj[Head]>
+    : never
+  : SPath extends StoragePathPart
+  ? Obj[SPath]
+  : never;
 
 export interface IAppStorage {
-  getItem<T extends StorageKeys>(key: T): IStorage[T];
+  getItem<T extends StorageKey>(key: T): IStorage[T];
 
-  setItem<T>(key: StorageKeys, value: T): void;
+  setItem<T>(key: StorageKey, value: T): void;
 
-  removeItem(key: StorageKeys): void;
+  removeItem(key: StorageKey): void;
 
   clear(): void;
 }

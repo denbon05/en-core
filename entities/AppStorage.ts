@@ -1,25 +1,57 @@
-import { IAppStorage, StorageKeys, IStorage } from '@/types/api/app-storage';
+import { get, has, omit, set } from 'lodash';
+import {
+  IAppStorage,
+  IStorage,
+  StorageData,
+  StorageKey,
+  StoragePath,
+} from '@/types/api/app-storage';
 
 class AppStorage implements IAppStorage {
-  getItem<T extends StorageKeys>(key: T): IStorage[T] | null {
-    return JSON.parse(localStorage.getItem(key));
+  getItem<SPath extends StoragePath>(key: SPath): StorageData<SPath> {
+    if (!key.includes('.')) {
+      // root key
+      const parsed = JSON.parse(localStorage.getItem(key));
+      return get(parsed, key);
+    }
+
+    const [rootKey, ...rest] = key.split('.');
+    const parsed = JSON.parse(localStorage.getItem(rootKey));
+    return get(parsed[rootKey], rest);
   }
 
-  hasItem<T extends StorageKeys>(key: T): boolean {
+  hasItem<SPath extends StoragePath>(key: SPath): boolean {
     return Boolean(this.getItem(key));
   }
 
-  setItem<T>(key: StorageKeys, value: T) {
+  setItem<SPath extends StoragePath, T>(key: SPath, value: T) {
     if (typeof value !== 'string') {
       localStorage.setItem(key, JSON.stringify(value));
       return;
     }
 
-    localStorage.setItem(key, value);
+    if (!key.includes('.')) {
+      // so it's a root key
+      localStorage.setItem(key, value);
+      return;
+    }
+
+    const [rootKey, ...rest] = key.split('.');
+    const parsed = JSON.parse(localStorage.getItem(rootKey));
+    set(parsed[rootKey], rest, value);
+    localStorage.setItem(rootKey, JSON.stringify(parsed));
   }
 
-  removeItem(key: StorageKeys) {
-    localStorage.removeItem(key);
+  removeItem<SPath extends StoragePath>(key: SPath) {
+    if (!key.includes('.')) {
+      localStorage.removeItem(key);
+      return;
+    }
+
+    const [rootKey, ...rest] = key.split('.');
+    const parsed = JSON.parse(localStorage.getItem(rootKey));
+    const altered = omit(parsed[rootKey], rest);
+    localStorage.setItem(rootKey, JSON.stringify(altered));
   }
 
   clear() {
