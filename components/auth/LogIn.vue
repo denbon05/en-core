@@ -1,12 +1,12 @@
 <template>
   <section id="logIn">
-    <v-card elevation="5" class="pa-10" shaped>
+    <v-card class="pa-10">
       <v-form ref="form" v-model="form.isValid" lazy-validation>
         <v-text-field
           ref="email"
           v-model="form.email"
           :rules="emailRules"
-          label="E-mail"
+          :label="$t('user.email')"
           required
           @keyup.enter="logIn"
         ></v-text-field>
@@ -14,7 +14,7 @@
         <v-text-field
           v-model="form.password"
           :rules="passwordRules"
-          label="Password"
+          :label="$t('user.password')"
           :append-icon="form.isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
           :type="form.isPasswordVisible ? 'text' : 'password'"
           required
@@ -23,7 +23,7 @@
         ></v-text-field>
 
         <v-btn :disabled="form.isLoading" dark class="mt-4" @click="logIn">
-          Log In
+          {{ $t('action.logIn') }}
         </v-btn>
       </v-form>
     </v-card>

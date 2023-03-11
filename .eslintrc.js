@@ -8,6 +8,7 @@ module.exports = {
   extends: [
     '@nuxtjs/eslint-config-typescript',
     'plugin:nuxt/recommended',
+    'plugin:@intlify/vue-i18n/recommended',
     'prettier',
   ],
   plugins: ['jest'],
@@ -15,7 +16,7 @@ module.exports = {
     'no-console': 'warn',
     'no-unused-vars': 'off',
     'import/no-named-as-default': 'off',
-    camelcase: 'off',
+    'import/named': 'off',
     '@typescript-eslint/no-unused-vars': [
       'warn', // or "error"
       {
@@ -24,5 +25,11 @@ module.exports = {
         caughtErrorsIgnorePattern: '^_',
       },
     ],
+  },
+  settings: {
+    'vue-i18n': {
+      localeDir: './locales/*.{ts}',
+      messageSyntaxVersion: '^9.0.0',
+    },
   },
 };

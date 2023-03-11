@@ -3,7 +3,7 @@
     <template v-if="isGoogleCalendarSynced">
       <v-list-item-group v-model="settings" multiple>
         <v-list-item>
-          <template v-slot:default="{ active }">
+          <template #default="{ active }">
             <v-list-item-action>
               <v-checkbox :input-value="active" color="primary"></v-checkbox>
             </v-list-item-action>
@@ -16,7 +16,7 @@
         </v-list-item>
 
         <v-list-item>
-          <template v-slot:default="{ active }">
+          <template #default="{ active }">
             <v-list-item-action>
               <v-checkbox :input-value="active" color="primary"></v-checkbox>
             </v-list-item-action>
@@ -29,7 +29,7 @@
         </v-list-item>
 
         <v-list-item>
-          <template v-slot:default="{ active }">
+          <template #default="{ active }">
             <v-list-item-action>
               <v-checkbox :input-value="active" color="primary"></v-checkbox>
             </v-list-item-action>
@@ -42,7 +42,7 @@
         </v-list-item>
 
         <v-list-item>
-          <template v-slot:default="{ active }">
+          <template #default="{ active }">
             <v-list-item-action>
               <v-checkbox :input-value="active" color="primary"></v-checkbox>
             </v-list-item-action>
@@ -59,7 +59,9 @@
     </template>
 
     <template v-else>
-      <v-btn elevation="2" @click="syncGoogleCalendar">SYNC GOOGLE</v-btn>
+      <v-btn elevation="2" @click="syncGoogleCalendar">{{
+        $t('action.syncGCalendar')
+      }}</v-btn>
     </template>
 
     <v-btn fab plain>
@@ -68,14 +70,15 @@
         src="/icons8-log-out-64.png"
         alt="Log Out icon"
         width="50"
+        @click="logOut"
       />
     </v-btn>
   </section>
 </template>
 
 <script lang="ts">
-import { ApiResponse } from '@/types/api';
 import Vue from 'vue';
+import { ApiResponse } from '@/types/api';
 
 export default Vue.extend({
   data() {
@@ -102,6 +105,11 @@ export default Vue.extend({
         'google/calendar/list'
       );
       console.log({ res });
+    },
+
+    logOut() {
+      this.$store.dispatch('auth/logOut');
+      this.$router.push('/auth');
     },
   },
 });

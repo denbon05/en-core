@@ -8,7 +8,7 @@ const log = debug('api:google:auth');
  */
 export async function login() {
   log('Log In to google');
-  const oauthClient = await getAuthenticatedClient();
+  // const oauthClient = await getAuthenticatedClient();
   log('Logged In - google');
   // TODO subscribe to specific calendar
 }

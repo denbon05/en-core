@@ -18,7 +18,14 @@ export const getters: GetterTree<UserState, UserState> = {
 };
 
 export const mutations: MutationTree<UserState> = {
-  setUser(state, arg: Pick<ApiParams<'auth/login'>, 'email'>) {
-    state.instance = new User(arg);
+  setUser(
+    state,
+    { email }: Partial<Pick<ApiParams<'auth/login'>, 'email'>> = {}
+  ) {
+    if (email) {
+      state.instance = new User({ email });
+      return;
+    }
+    state.instance = new Guest();
   },
 };

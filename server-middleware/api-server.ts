@@ -2,7 +2,8 @@ import type { ServerResponse } from 'http';
 import path from 'path';
 import debug from 'debug';
 import camelCase from 'lodash/camelCase';
-import appMode from '../api/config/mode';
+import appMode from '../server/config/mode';
+import { verifyJWT } from '../server/modules/auth';
 import type { ApiControllerPath, ApiIncomingMsg } from '@/types/api';
 
 const log = debug('api');
@@ -10,12 +11,12 @@ const log = debug('api');
 const apiDirpath = path.join(__dirname, '..', 'api');
 
 export default async <CPath extends ApiControllerPath>(
-  req: ApiIncomingMsg<CPath>,
+  { url, cookies: { auth }, params }: ApiIncomingMsg<CPath>,
   res: ServerResponse,
   _next: (err?: Error) => void
 ) => {
   // make from url module path
-  const moduleParsedPath = path.parse(req.url);
+  const moduleParsedPath = path.parse(url);
   const { name: funcSnakeName, dir: controllerPath } = moduleParsedPath;
 
   // TODO paths in a snake case, funcNames in camel case
@@ -25,27 +26,21 @@ export default async <CPath extends ApiControllerPath>(
 
   if (!appMode.isProd()) {
     log('api path %O', {
-      reqUrl: req.url,
+      reqUrl: url,
       apiPath,
       funcCamelName,
-      params: req.params,
+      params,
     });
   }
 
   try {
     const api = require(`${apiPath}.ts`);
-    const result = await api[funcCamelName](req.params, req.user);
+    const func = api[funcCamelName];
+    const userData = auth ? verifyJWT(auth) : null;
 
+    const result = await func(params, userData);
     res.end(JSON.stringify(result));
   } catch (err) {
-    if (funcSnakeName.startsWith('_')) {
-      log('The api is not allowed by the client %O', {
-        funcName: funcCamelName,
-      });
-      res.end(`Can't reach the api function: "${funcCamelName}"`);
-      return;
-    }
-
     log('Api error %O', err);
     res.end(err.message);
   }

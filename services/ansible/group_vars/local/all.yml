@@ -14,4 +14,9 @@ pg_version: "14.7-alpine"
 
 # vars
 jwt_secret: "good_day"
-google_auth_filename: ".gauth.json"
+cipher_key: "my-secret-key"
+iv: "c52a1d09a8ba8c9a036119b81793475d" # Initialization vector
+super_admin_email: admin@local.com
+super_admin_pass: admin
+super_admin_first: admin
+super_admin_last: local

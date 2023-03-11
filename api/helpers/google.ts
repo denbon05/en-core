@@ -8,12 +8,10 @@ import {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,
-  GOOGLE_AUTH_FILENAME,
-} from '../config';
+} from '../../server/config';
 
-// TODO change storage to db
 class OAuth {
-  private readonly authFilePath = path.join(__dirname, GOOGLE_AUTH_FILENAME);
+  private readonly authFilePath = path.join(__dirname, 'GOOGLE_AUTH_FILENAME');
 
   public async setTokenData(data: string) {
     await fsPromises.writeFile(this.authFilePath, data, 'utf-8');
@@ -65,7 +63,6 @@ export const getAuthenticatedClient = (): Promise<OAuth2Client> => {
             const authData = await oAuth2Client.getToken(code);
             // Make sure to set the credentials on the OAuth2 client.
             oAuth2Client.setCredentials(authData.tokens);
-            // TODO save tokenData by user credentials
             await oauth.setTokenData(JSON.stringify(authData.tokens));
             resolve(oAuth2Client);
           }

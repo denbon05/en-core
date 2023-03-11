@@ -37,10 +37,44 @@ export const mutations: MutationTree<AuthState> = {
 
 export const actions: ActionTree<AuthState, AuthState> = {
   async logIn({ commit }, { email, password }: ApiParams<'auth/login'>) {
-    const { accessToken, isSuccess, message } = await this.$api('auth/login', {
+    const res = await this.$api('auth/login', {
       email,
       password,
     });
+
+    if (typeof res === 'string') {
+      return {
+        isSuccess: false,
+        message: res,
+      };
+    }
+
+    const { accessToken, isSuccess, message } = res;
+
+    if (isSuccess) {
+      commit('setToken', accessToken);
+      commit('user/setUser', { email }, { root: true });
+    }
+
+    return { isSuccess, message };
+  },
+
+  async signUp(
+    { commit },
+    { email, password, firstName, lastName }: ApiParams<'auth/signup'>
+  ) {
+    const res = await this.$api('auth/signup', {
+      email,
+      password,
+      firstName,
+      lastName,
+    });
+
+    if (typeof res === 'string') {
+      return { isSuccess: false, message: res };
+    }
+
+    const { accessToken, isSuccess, message } = res;
 
     if (isSuccess) {
       commit('setToken', accessToken);
@@ -60,5 +94,6 @@ export const actions: ActionTree<AuthState, AuthState> = {
 
   logOut({ commit }) {
     commit('removeToken');
+    commit('user/setUser', {}, { root: true });
   },
 };

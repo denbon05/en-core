@@ -2,7 +2,7 @@
 import { google } from 'googleapis';
 import debug from 'debug';
 import type { GoogleTokenData } from '../../types/api/auth';
-import { GOOGLE_API_KEY } from '../config/';
+import { GOOGLE_API_KEY } from '../../server/config';
 import { oauth } from '../helpers/google';
 
 const log = debug('api:calendar');
@@ -46,7 +46,7 @@ export async function events(...params: any) {
   return JSON.stringify(res);
 }
 
-export async function list() {
+export async function list(_params: never) {
   const calendar = google.calendar('v3');
   const authData: GoogleTokenData = JSON.parse(await oauth.getTokenData());
 

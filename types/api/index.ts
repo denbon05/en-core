@@ -75,8 +75,14 @@ export type ApiIncomingMsg<CPath extends ApiControllerPath> =
   IncomingMessage & {
     params: ApiParams<CPath>;
     url: ApiControllerPath;
-    user?: User | Guest;
     cookies: {
       [key: string]: string;
     };
   };
+
+export type UserDecoded = null | {
+  id: number;
+  email: string;
+  iat: number;
+  exp: number;
+};

@@ -16,7 +16,7 @@ test:
 	npm run test
 
 start:
-	clear && DEBUG=api:* npm run dev
+	DEBUG=api,api:* npm run dev
 
 build:
 	npm run build
@@ -25,17 +25,12 @@ build:
 
 init-db:
 	make -C $(ANSIBLE_PATH) init-db-dev
+	npx knex migrate:latest
+	npx knex seed:run
 
 init-db-test:
 	make -C $(ANSIBLE_PATH) init-db-test
-
-# Knex
-migrate-make:
-	npx ts-node -P tsconfig.knex.json \
-	node_modules/.bin/knex migrate:make ${NAME}
-
-migrate-latest:
-	npx ts-node -P tsconfig.knex.json ./tsconfig.json \
-	node_modules/.bin/knex migrate:latest
+	npx knex migrate:latest
+	npx knex seed:run
 
 .PHONY: test

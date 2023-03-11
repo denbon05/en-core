@@ -34,6 +34,10 @@ const en = {
   user: {
     email: 'E-mail',
     name: 'Name',
+    firstName: 'First name',
+    lastName: 'Last name',
+    password: 'Password',
+    passwordRepeat: 'Repeat password',
   },
 
   advantage: {
@@ -96,10 +100,12 @@ const en = {
 
   action: {
     book: 'Book a lesson',
-    signUp: 'Sing up',
+    signUp: 'Sing Up',
+    logIn: 'Log In',
     send: 'Send',
     agree: 'Agree',
     disagree: 'Disagree',
+    syncGCalendar: 'Sync Google calendar',
   },
 
   error: {

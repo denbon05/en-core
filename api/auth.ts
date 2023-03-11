@@ -1,14 +1,20 @@
 import debug from 'debug';
-import { getJWT } from './helpers/auth';
-import { hashValue } from './helpers/crypto';
-import { createUser, getUser } from './user';
+import { omit } from 'lodash';
+import { User } from '../server/models';
+import { hashValue } from '../server/modules/crypto';
+import { getJWT } from '../server/modules/auth';
 import type { LoginParam, SignupParam } from '@/types/api/auth';
 
 const log = debug('api:auth');
 
 export async function login({ email, password }: LoginParam) {
   const isSuccess = false;
-  const user = await getUser({ email, passwordDigest: hashValue(password) });
+  const user = await User.query()
+    .findOne({
+      email,
+      passwordDigest: hashValue(password),
+    })
+    .withGraphJoined('[permissions]');
 
   if (!user) {
     return {
@@ -16,10 +22,12 @@ export async function login({ email, password }: LoginParam) {
       message: 'There is no such user.',
     };
   }
+  const userData = omit(user, 'passwordDigest');
 
   return {
     isSuccess: true,
-    accessToken: getJWT({ email }),
+    userData,
+    accessToken: getJWT(userData),
   };
 }
 
@@ -30,12 +38,17 @@ export async function signup({
   lastName,
 }: SignupParam) {
   try {
-    await createUser({
+    const user = await User.query().insertAndFetch({
       email,
-      first_name: firstName,
-      last_name: lastName,
-      password_digest: hashValue(password),
+      firstName,
+      lastName,
+      passwordDigest: hashValue(password),
     });
+
+    return {
+      isSuccess: true,
+      accessToken: getJWT(omit(user, 'passwordDigest')),
+    };
   } catch (err) {
     log('signup err %O', err);
     return {
@@ -43,5 +56,4 @@ export async function signup({
       message: 'Something went wrong',
     };
   }
-  // todo
 }

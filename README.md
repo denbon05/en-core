@@ -21,13 +21,7 @@ make start    # launch the app
 
 <p>
   <b>Required vars</b>
-  <ul>
-    <li>GOOGLE_API_KEY</li>
-    <li>GOOGLE_CLIENT_ID</li>
-    <li>GOOGLE_CLIENT_SECRET</li>
-    <li>GOOGLE_REDIRECT_URI_PROD</li>
-    <li>PROD_DB_CONNECTION_STRING</li>
-  </ul>
+  <i>types/global/environment.d.ts</i>
 </p>
 
 <i>

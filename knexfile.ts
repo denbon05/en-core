@@ -1,5 +1,6 @@
 import type { Knex as KnexType } from 'knex';
-const path = require('path');
+const { join } = require('path');
+const { knexSnakeCaseMappers } = require('objection');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -10,17 +11,23 @@ const {
   PROD_DB_CONNECTION_STRING,
 } = process.env;
 
-const migrations = {
-  directory: path.join(__dirname, 'server', 'migrations'),
-  extension: 'ts',
-  noDown: true,
+const commonConfig = {
+  migrations: {
+    directory: join(__dirname, 'server', 'migrations'),
+    extension: 'ts',
+    noDown: true,
+  },
+  seeds: {
+    directory: join(__dirname, 'server', 'seeds'),
+  },
+  ...knexSnakeCaseMappers(),
 };
 
 const config: { [key: string]: KnexType.Config } = {
   development: {
     client: 'postgresql',
     connection: DEV_DB_CONNECTION_STRING,
-    migrations,
+    ...commonConfig,
   },
 
   test: {
@@ -30,7 +37,7 @@ const config: { [key: string]: KnexType.Config } = {
       min: 2,
       max: 10,
     },
-    migrations,
+    ...commonConfig,
   },
 
   production: {
@@ -40,7 +47,7 @@ const config: { [key: string]: KnexType.Config } = {
       min: 2,
       max: 20,
     },
-    migrations,
+    ...commonConfig,
   },
 };
 
