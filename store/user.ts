@@ -1,32 +1,52 @@
 import { GetterTree, MutationTree } from 'vuex';
-import { User, Guest } from '@/entities';
+import { UserData } from '@/types/auth/person';
 import { UserState } from '@/types/store';
-import { IUserData } from '@/types/auth/person';
+
+const defaultData: UserData = {
+  email: '',
+  firstName: '',
+  lastName: '',
+  id: null,
+  role: null,
+  calendarId: null,
+};
 
 export const state = (): UserState => ({
-  instance: new Guest(),
+  data: defaultData,
 });
 
 export const getters: GetterTree<UserState, UserState> = {
-  isAuthenticated({ instance }) {
-    return !instance.isGuest();
+  isAuthenticated({ data: { email } }): boolean {
+    return Boolean(email);
   },
 
-  isGoogleCalendarSynced({ instance }) {
-    if (instance.isGuest()) {
-      return false;
-    }
+  isGoogleCalendarSynced({ data: { calendarId } }) {
+    return Boolean(calendarId);
+  },
 
-    return (instance as User).has('user.calendarId');
+  isGuest({ data: { role } }) {
+    return !role;
+  },
+
+  isStudent({ data: { role } }) {
+    return role.name === 'student';
+  },
+
+  isTutor({ data: { role } }) {
+    return role.name === 'tutor';
+  },
+
+  isAdmin({ data: { role } }) {
+    return role.name === 'admin';
+  },
+
+  isSuperAdmin({ data: { role } }) {
+    return role.name === 'superadmin';
   },
 };
 
 export const mutations: MutationTree<UserState> = {
-  setUser(state, userData: IUserData) {
-    if (userData) {
-      state.instance = new User(userData);
-      return;
-    }
-    state.instance = new Guest();
+  setUser(state, userData: UserData) {
+    state.data = userData || defaultData;
   },
 };

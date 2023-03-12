@@ -1,7 +1,7 @@
-import { Guest, User } from '@/entities';
+import type { UserData } from '../auth/person';
 
 export type UserState = {
-  instance: User | Guest;
+  data: UserData;
 };
 
 export interface AuthState {

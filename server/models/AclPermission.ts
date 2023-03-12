@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { Model } from 'objection';
+import { Model, Modifiers } from 'objection';
 
 export default class AclPermission extends Model {
   static tableName = 'acl_permissions';
@@ -11,6 +11,14 @@ export default class AclPermission extends Model {
       properties: {
         id: { type: 'integer' },
         name: { type: 'string' },
+      },
+    };
+  }
+
+  static get modifiers(): Modifiers {
+    return {
+      getName(qb) {
+        qb.select('name');
       },
     };
   }

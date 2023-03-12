@@ -1,14 +1,14 @@
-import type { IUserData } from '../auth/person';
+import type { UserData } from '../auth/person';
 
 export type IStorage = {
   user: {
-    [Key in keyof IUserData]: IUserData[Key];
+    [Key in keyof UserData]: UserData[Key];
   };
 };
 
 export type StorageKey = keyof IStorage;
 
-export type StoragePath = StorageKey | `${StorageKey}.${keyof IUserData}`;
+export type StoragePath = StorageKey | `${StorageKey}.${keyof UserData}`;
 
 type StoragePathPart<SPath extends string = StoragePath> =
   SPath extends `${infer Head}.${infer Tail}`

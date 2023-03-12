@@ -7,10 +7,10 @@ export const actions: ActionTree<RootState, RootState> = {
     const jwtToken: string = this.$cookies.get('auth');
 
     try {
-      const { email } = jwtDecode(jwtToken) || {};
+      const userData = jwtDecode(jwtToken);
 
-      if (jwtToken && email) {
-        dispatch('auth/refresh', { email, jwtToken });
+      if (jwtToken && userData.email) {
+        dispatch('auth/refresh', { jwtToken, userData });
       }
     } catch (err) {
       if (!(err instanceof InvalidTokenError)) {

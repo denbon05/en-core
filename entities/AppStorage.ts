@@ -1,11 +1,5 @@
-import { get, has, omit, set } from 'lodash';
-import {
-  IAppStorage,
-  IStorage,
-  StorageData,
-  StorageKey,
-  StoragePath,
-} from '@/types/api/app-storage';
+import { get, omit, set } from 'lodash';
+import { IAppStorage, StorageData, StoragePath } from '@/types/api/app-storage';
 
 class AppStorage implements IAppStorage {
   getItem<SPath extends StoragePath>(key: SPath): StorageData<SPath> {
@@ -59,13 +53,6 @@ class AppStorage implements IAppStorage {
   }
 }
 
-export default new Proxy(new AppStorage(), {
-  get(target, key) {
-    if (process.client) {
-      return target[key];
-    }
-
-    // ? localStorage available only on client side
-    return (..._params: any) => null;
-  },
-});
+export default process.client
+  ? new AppStorage()
+  : new Error('AppStorage for client side only');

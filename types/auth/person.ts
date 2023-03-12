@@ -1,20 +1,8 @@
-export interface Person {
-  isGuest(): boolean;
-}
+import type { UserData as ApiUserData } from '../api/user';
 
-type UserPermission = {
+export type UserPermission = {
   id: number;
   name: string;
 };
 
-export interface IUserData {
-  firstName: string;
-  lastName: string;
-  id: number;
-  email: string;
-  createdAt: Date;
-  updatedAt: Date;
-  roleId: number;
-  permissions: UserPermission[];
-  calendarId?: string;
-}
+export type UserData = Omit<ApiUserData, 'oauthDigest'>;

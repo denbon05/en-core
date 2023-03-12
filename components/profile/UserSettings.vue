@@ -93,18 +93,28 @@ export default Vue.extend({
     },
   },
 
+  beforeMount() {
+    this.fetchUserConfig();
+  },
+
   methods: {
     async authToGoogle() {
       await this.$api('google/auth/login');
     },
 
     async syncGoogleCalendar() {
-      // TODO prevent re-authentication
-      // await this.authToGoogle();
-      const res: ApiResponse<'google/calendar/list'> = await this.$api(
+      await this.authToGoogle();
+      const res: Awaited<ApiResponse<'google/calendar/list'>> = await this.$api(
         'google/calendar/list'
       );
-      console.log({ res });
+      console.log('syncGoogleCalendar', { res });
+    },
+
+    async fetchUserConfig() {
+      const res: Awaited<ApiResponse<'user/config'>> = await this.$api(
+        'user/config'
+      );
+      console.log('u config', res);
     },
 
     logOut() {

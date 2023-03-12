@@ -1,10 +1,18 @@
 import { join } from 'path';
-import { Model } from 'objection';
+import {
+  AnyQueryBuilder,
+  JSONSchema,
+  Model,
+  ModelOptions,
+  Modifiers,
+  Pojo,
+  RelationMappings,
+} from 'objection';
 
 export default class User extends Model {
   static tableName = 'users';
 
-  $parseJson(json, options) {
+  $parseJson(json: Pojo, options: ModelOptions): Pojo {
     const parsed = super.$parseJson(json, options);
     return {
       ...parsed,
@@ -12,36 +20,46 @@ export default class User extends Model {
     };
   }
 
-  fullName() {
-    return this.$pick('firstName') + ' ' + this.$pick('lastName');
-  }
+  static modifiers: Modifiers<AnyQueryBuilder> = {
+    withRole(qb) {
+      qb.select(
+        'users.id',
+        'email',
+        'firstName',
+        'lastName',
+        'oauthDigest'
+      ).withGraphJoined('[roles as role]', {
+        maxBatchSize: 1,
+      });
+    },
+  };
 
-  static get jsonSchema() {
+  static get jsonSchema(): JSONSchema {
     return {
       type: 'object',
-      required: ['email', 'password'],
+      required: ['email', 'passwordDigest'],
       properties: {
         id: { type: 'integer' },
         roleId: { type: 'integer' },
-        email: { type: 'string', format: 'email' },
+        email: { type: 'string' },
         passwordDigest: { type: 'string' },
         firstName: { type: 'string' },
         lastName: { type: 'string' },
-        createdAt: { type: 'Date' },
-        updatedAt: { type: 'Date' },
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' },
         oauthDigest: { type: 'string' },
       },
     };
   }
 
-  static get relationMappings() {
+  static get relationMappings(): RelationMappings {
     return {
       roles: {
         relation: Model.HasOneRelation,
-        modelClass: join(__dirname, 'AclRole'),
+        modelClass: join(__dirname, 'AclRole.ts'),
         join: {
-          from: 'users.id',
-          to: 'acl_role.id',
+          from: 'users.roleId',
+          to: 'acl_roles.id',
         },
       },
       permissions: {
