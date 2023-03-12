@@ -1,70 +1,37 @@
 <template>
   <section id="userSettings" class="d-flex justify-space-between">
-    <template v-if="isGoogleCalendarSynced">
-      <v-list-item-group v-model="settings" multiple>
-        <v-list-item>
-          <template #default="{ active }">
-            <v-list-item-action>
-              <v-checkbox :input-value="active" color="primary"></v-checkbox>
-            </v-list-item-action>
+    <v-card elevation="5" shaped class="w-90 pa-4" color="fade">
+      <v-tabs
+        v-model="tab"
+        grow
+        align-with-title
+        background-color="fade"
+        slider-color="fade"
+      >
+        <v-tabs-slider color="blue"></v-tabs-slider>
+        <v-tab
+          v-for="key in settings"
+          :key="key"
+          :to="`#${key}`"
+          nuxt
+          class="h-100"
+        >
+          {{ $t(`user.settings.${key}`) }}
+        </v-tab>
+      </v-tabs>
 
-            <v-list-item-content>
-              <v-list-item-title>Notifications</v-list-item-title>
-              <v-list-item-subtitle>Allow notifications</v-list-item-subtitle>
-            </v-list-item-content>
-          </template>
-        </v-list-item>
+      <v-tabs-items v-model="tab" class="h-90" :class="tabItemsClasses">
+        <v-tab-item
+          v-for="(component, idx) in components"
+          :id="settings[idx]"
+          :key="`setting-tab-${idx}`"
+        >
+          <component :is="component" />
+        </v-tab-item>
+      </v-tabs-items>
+    </v-card>
 
-        <v-list-item>
-          <template #default="{ active }">
-            <v-list-item-action>
-              <v-checkbox :input-value="active" color="primary"></v-checkbox>
-            </v-list-item-action>
-
-            <v-list-item-content>
-              <v-list-item-title>Sound</v-list-item-title>
-              <v-list-item-subtitle>Hangouts message</v-list-item-subtitle>
-            </v-list-item-content>
-          </template>
-        </v-list-item>
-
-        <v-list-item>
-          <template #default="{ active }">
-            <v-list-item-action>
-              <v-checkbox :input-value="active" color="primary"></v-checkbox>
-            </v-list-item-action>
-
-            <v-list-item-content>
-              <v-list-item-title>Video sounds</v-list-item-title>
-              <v-list-item-subtitle>Hangouts video call</v-list-item-subtitle>
-            </v-list-item-content>
-          </template>
-        </v-list-item>
-
-        <v-list-item>
-          <template #default="{ active }">
-            <v-list-item-action>
-              <v-checkbox :input-value="active" color="primary"></v-checkbox>
-            </v-list-item-action>
-
-            <v-list-item-content>
-              <v-list-item-title>Invites</v-list-item-title>
-              <v-list-item-subtitle
-                >Notify when receiving invites</v-list-item-subtitle
-              >
-            </v-list-item-content>
-          </template>
-        </v-list-item>
-      </v-list-item-group>
-    </template>
-
-    <template v-else>
-      <v-btn elevation="2" @click="syncGoogleCalendar">{{
-        $t('action.syncGCalendar')
-      }}</v-btn>
-    </template>
-
-    <v-btn fab plain>
+    <v-btn fab plain class="flex-shrink-1">
       <img
         id="logOutIcon"
         src="/icons8-log-out-64.png"
@@ -78,18 +45,26 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import CalendarSettings from './calendar/CalendarSettings.vue';
+import DataSettings from './DataSettings.vue';
 import { ApiResponse } from '@/types/api';
 
 export default Vue.extend({
+  name: 'UserSettings',
+
   data() {
     return {
-      settings: [],
+      settings: ['calendar', 'data'],
+      tab: null,
+      components: [CalendarSettings, DataSettings],
     };
   },
 
   computed: {
-    isGoogleCalendarSynced() {
-      return this.$store.getters['user/isGoogleCalendarSynced'];
+    tabItemsClasses(): string {
+      const isThemeDark: boolean = this.$vuetify.theme.isDark;
+      // the same as in nuxt.config.js
+      return isThemeDark ? 'grey lighten-1' : 'grey lighten-5';
     },
   },
 
@@ -98,18 +73,6 @@ export default Vue.extend({
   },
 
   methods: {
-    async authToGoogle() {
-      await this.$api('google/auth/login');
-    },
-
-    async syncGoogleCalendar() {
-      await this.authToGoogle();
-      const res: Awaited<ApiResponse<'google/calendar/list'>> = await this.$api(
-        'google/calendar/list'
-      );
-      console.log('syncGoogleCalendar', { res });
-    },
-
     async fetchUserConfig() {
       const res: Awaited<ApiResponse<'user/config'>> = await this.$api(
         'user/config'
@@ -127,7 +90,7 @@ export default Vue.extend({
 
 <style lang="scss">
 #userSettings {
-  //
+  height: 500px;
 }
 
 #logOutIcon {

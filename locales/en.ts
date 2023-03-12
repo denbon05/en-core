@@ -38,6 +38,10 @@ const en = {
     lastName: 'Last name',
     password: 'Password',
     passwordRepeat: 'Repeat password',
+    settings: {
+      calendar: 'Calendar',
+      data: 'Data',
+    },
   },
 
   advantage: {

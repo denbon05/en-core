@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
-import { google } from 'googleapis';
 import debug from 'debug';
+import { google } from 'googleapis';
+import { GOOGLE_API_KEY } from '../../config';
 import type { GoogleTokenData } from '../../types/api/auth';
-import { GOOGLE_API_KEY } from '../../server/config';
 import { oauth } from '../helpers/google';
 
 const log = debug('api:calendar');

@@ -1,14 +1,14 @@
-import http from 'http';
-import url from 'url';
-import path from 'path';
 import { promises as fsPromises } from 'fs';
 import { OAuth2Client } from 'google-auth-library';
+import http from 'http';
 import openBrowser from 'open';
+import path from 'path';
+import url from 'url';
 import {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,
-} from '../../server/config';
+} from '../../config';
 
 class OAuth {
   private readonly authFilePath = path.join(__dirname, 'GOOGLE_AUTH_FILENAME');

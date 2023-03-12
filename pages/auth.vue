@@ -32,10 +32,6 @@ import LogIn from '@/components/auth/LogIn.vue';
 import SignUp from '@/components/auth/SignUp.vue';
 
 export default Vue.extend({
-  components: {
-    LogIn,
-  },
-
   middleware: ['authenticated'],
 
   data() {

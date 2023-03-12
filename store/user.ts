@@ -29,19 +29,23 @@ export const getters: GetterTree<UserState, UserState> = {
   },
 
   isStudent({ data: { role } }) {
-    return role.name === 'student';
+    return role?.name === 'student';
   },
 
   isTutor({ data: { role } }) {
-    return role.name === 'tutor';
+    return role?.name === 'tutor';
   },
 
   isAdmin({ data: { role } }) {
-    return role.name === 'admin';
+    return role?.name === 'admin';
   },
 
   isSuperAdmin({ data: { role } }) {
-    return role.name === 'superadmin';
+    return role?.name === 'superadmin';
+  },
+
+  isAdminAndUp({ data: { role = {} } }) {
+    return role.name === 'admin' || role.name === 'superadmin';
   },
 };
 

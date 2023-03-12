@@ -93,7 +93,7 @@ export default {
     ],
     theme: {
       dark: false,
-      // TODO set own colors
+      // TODO set own colors https://v2.vuetifyjs.com/en/styles/colors/#material-colors
       themes: {
         dark: {
           primary: colors.blue.darken2,
@@ -103,6 +103,17 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
+          fade: colors.grey.lighten1,
+        },
+        light: {
+          primary: colors.shades.black,
+          accent: colors.grey.darken3,
+          secondary: colors.amber.darken3,
+          info: colors.teal.lighten1,
+          warning: colors.amber.base,
+          error: colors.deepOrange.accent4,
+          success: colors.green.accent3,
+          fade: colors.grey.lighten5,
         },
       },
     },
