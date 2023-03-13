@@ -36,6 +36,7 @@ const en = {
     name: 'Name',
     firstName: 'First name',
     lastName: 'Last name',
+    roleName: 'Role',
     password: 'Password',
     passwordRepeat: 'Repeat password',
     settings: {
@@ -110,12 +111,17 @@ const en = {
     agree: 'Agree',
     disagree: 'Disagree',
     syncGCalendar: 'Sync Google calendar',
+    save: 'Save',
   },
 
   error: {
     lenMin: '{title} must be less than {len} characters',
     valid: '{title} must be valid',
     required: '{title} is required!',
+  },
+
+  notification: {
+    success: 'Success',
   },
 };
 

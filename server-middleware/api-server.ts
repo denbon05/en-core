@@ -3,7 +3,7 @@ import debug from 'debug';
 import type { ServerResponse } from 'http';
 import camelCase from 'lodash/camelCase';
 import path from 'path';
-import appMode from '../config/mode';
+import appMode from '../server/config/mode';
 import { verifyJWT } from '../server/modules/auth';
 
 const log = debug('api');

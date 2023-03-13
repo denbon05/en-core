@@ -1,13 +1,13 @@
 import type { IncomingMessage } from 'http';
 import * as auth from '@/api/auth';
-import * as user from '@/api/user';
+import * as userData from '@/api/user/data';
 import * as googleCalendar from '@/api/google/calendar';
 import * as googleAuth from '@/api/google/auth';
 
 type AuthFuncName = keyof typeof auth;
 type GoogleCalendarFuncName = keyof typeof googleCalendar;
 type GoogleAuthFuncName = keyof typeof googleAuth;
-type UserFuncName = keyof typeof user;
+type UserDataFuncName = keyof typeof userData;
 
 type ApiAuth = {
   [K in AuthFuncName]: (typeof auth)[K];
@@ -18,13 +18,15 @@ type ApiGoogleCalendar = {
 type ApiGoogleAuth = {
   [K in GoogleAuthFuncName]: (typeof googleAuth)[K];
 };
-type ApiUser = {
-  [K in UserFuncName]: (typeof user)[K];
+type ApiUserData = {
+  [K in UserDataFuncName]: (typeof userData)[K];
 };
 
 export interface AppApi {
   auth: ApiAuth;
-  user: ApiUser;
+  user: {
+    data: ApiUserData;
+  };
   google: {
     calendar: ApiGoogleCalendar;
     auth: ApiGoogleAuth;

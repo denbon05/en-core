@@ -25,6 +25,7 @@
           v-for="(component, idx) in components"
           :id="settings[idx]"
           :key="`setting-tab-${idx}`"
+          class="pa-7"
         >
           <component :is="component" />
         </v-tab-item>
@@ -47,16 +48,15 @@
 import Vue from 'vue';
 import CalendarSettings from './calendar/CalendarSettings.vue';
 import DataSettings from './DataSettings.vue';
-import { ApiResponse } from '@/types/api';
 
 export default Vue.extend({
   name: 'UserSettings',
 
   data() {
     return {
-      settings: ['calendar', 'data'],
+      settings: ['data', 'calendar'],
       tab: null,
-      components: [CalendarSettings, DataSettings],
+      components: [DataSettings, CalendarSettings],
     };
   },
 
@@ -68,18 +68,7 @@ export default Vue.extend({
     },
   },
 
-  beforeMount() {
-    this.fetchUserConfig();
-  },
-
   methods: {
-    async fetchUserConfig() {
-      const res: Awaited<ApiResponse<'user/config'>> = await this.$api(
-        'user/config'
-      );
-      console.log('u config', res);
-    },
-
     logOut() {
       this.$store.dispatch('auth/logOut');
       this.$router.push('/auth');

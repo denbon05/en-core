@@ -1,5 +1,5 @@
 import { sign, verify } from 'jsonwebtoken';
-import { JWT_SECRET } from '../../config';
+import { JWT_SECRET } from '../config';
 
 export const getJWT = (payload: string | object | Buffer) =>
   sign(payload, JWT_SECRET, {

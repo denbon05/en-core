@@ -1,6 +1,10 @@
-import { GetterTree, MutationTree } from 'vuex';
+import { GetterTree, MutationTree, ActionTree } from 'vuex';
+import debug from 'debug';
 import { UserData } from '@/types/auth/person';
 import { UserState } from '@/types/store';
+import { ApiParams } from '@/types/api';
+
+const log = debug('api:store:user');
 
 const defaultData: UserData = {
   email: '',
@@ -16,6 +20,21 @@ export const state = (): UserState => ({
 });
 
 export const getters: GetterTree<UserState, UserState> = {
+  data({
+    data: {
+      email,
+      firstName,
+      lastName,
+      role: { name },
+    },
+  }) {
+    const userData = { email, firstName, lastName, roleName: null };
+    if (name === 'admin' || name === 'superadmin') {
+      userData.roleName = name;
+    }
+    return userData;
+  },
+
   isAuthenticated({ data: { email } }): boolean {
     return Boolean(email);
   },
@@ -51,6 +70,42 @@ export const getters: GetterTree<UserState, UserState> = {
 
 export const mutations: MutationTree<UserState> = {
   setUser(state, userData: UserData) {
-    state.data = userData || defaultData;
+    if (!userData) {
+      return;
+    }
+
+    state.data = { ...state.data, ...userData };
+  },
+};
+
+export const actions: ActionTree<UserState, UserState> = {
+  async updateData(
+    { commit },
+    { lastName, firstName }: ApiParams<'user/data/update'>
+  ) {
+    try {
+      const res = await this.$api('user/data/update', { lastName, firstName });
+
+      if (typeof res === 'string') {
+        return {
+          isSuccess: false,
+          message: res,
+        };
+      }
+
+      const { isSuccess, message } = res;
+
+      if (isSuccess) {
+        commit('setUser', { lastName, firstName });
+      }
+
+      return { isSuccess, message };
+    } catch (err) {
+      log('updateData err', err);
+      return {
+        isSuccess: false,
+        message: err.message,
+      };
+    }
   },
 };

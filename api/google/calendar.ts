@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import debug from 'debug';
 import { google } from 'googleapis';
-import { GOOGLE_API_KEY } from '../../config';
+import { GOOGLE_API_KEY } from '../../server/config';
 import type { GoogleTokenData } from '../../types/api/auth';
 import { oauth } from '../helpers/google';
 

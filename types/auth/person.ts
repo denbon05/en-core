@@ -6,3 +6,5 @@ export type UserPermission = {
 };
 
 export type UserData = Omit<ApiUserData, 'oauthDigest'>;
+
+export type UpdateUserData = Pick<UserData, 'firstName' | 'lastName'>;

@@ -1,6 +1,6 @@
 import type { BinaryLike } from 'crypto';
 import { createCipheriv, createDecipheriv, createHash } from 'crypto';
-import { CIPHER_KEY, INITIALIZATION_VECTOR } from '../../config';
+import { CIPHER_KEY, INITIALIZATION_VECTOR } from '../config';
 
 // ? use salt
 export const hashValue = (text: string): string =>
