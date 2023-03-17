@@ -1,10 +1,10 @@
 import path from 'path';
-import { Plugin } from '@nuxt/types';
 import debug from 'debug';
+import { Plugin } from '@nuxt/types';
 import camelCase from 'lodash/camelCase';
 import { ApiControllerPath, ApiParams, ApiResponse } from '@/types/api';
 
-const log = debug('api:context');
+const log = debug('app:api:context');
 
 const apiContextServer: Plugin = (_ctx, inject) => {
   inject(

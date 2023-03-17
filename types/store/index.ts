@@ -1,4 +1,4 @@
-import type { UserData } from '../auth/person';
+import type { UserData } from '../api/user';
 
 export type UserState = {
   data: UserData;

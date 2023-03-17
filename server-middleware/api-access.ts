@@ -1,9 +1,8 @@
 import type { ServerResponse } from 'http';
 import debug from 'debug';
-import { verifyJWT } from '../server/modules/auth';
 import type { ApiControllerPath, ApiIncomingMsg } from '@/types/api';
 
-const log = debug('api:access');
+const log = debug('app:api:access');
 
 // const forbiddenForUnLoggedURLs: Set<ApiControllerPath> = new Set([
 //   'user/config',

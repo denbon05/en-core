@@ -1,10 +1,10 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex';
 import debug from 'debug';
-import { UserData } from '@/types/auth/person';
 import { UserState } from '@/types/store';
 import { ApiParams } from '@/types/api';
+import { UserData } from '@/types/api/user';
 
-const log = debug('api:store:user');
+const log = debug('app:store:user');
 
 const defaultData: UserData = {
   email: '',
@@ -12,7 +12,6 @@ const defaultData: UserData = {
   lastName: '',
   id: null,
   role: null,
-  calendarId: null,
 };
 
 export const state = (): UserState => ({
@@ -37,10 +36,6 @@ export const getters: GetterTree<UserState, UserState> = {
 
   isAuthenticated({ data: { email } }): boolean {
     return Boolean(email);
-  },
-
-  isGoogleCalendarSynced({ data: { calendarId } }) {
-    return Boolean(calendarId);
   },
 
   isGuest({ data: { role } }) {
@@ -71,6 +66,7 @@ export const getters: GetterTree<UserState, UserState> = {
 export const mutations: MutationTree<UserState> = {
   setUser(state, userData: UserData) {
     if (!userData) {
+      state.data = defaultData;
       return;
     }
 
@@ -87,10 +83,7 @@ export const actions: ActionTree<UserState, UserState> = {
       const res = await this.$api('user/data/update', { lastName, firstName });
 
       if (typeof res === 'string') {
-        return {
-          isSuccess: false,
-          message: res,
-        };
+        throw new TypeError(res);
       }
 
       const { isSuccess, message } = res;

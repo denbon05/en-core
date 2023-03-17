@@ -1,8 +1,8 @@
-import debug from 'debug';
 import type { Context, Inject } from '@nuxt/types/app';
+import debug from 'debug';
 import type { ApiControllerPath, ApiParams, ApiResponse } from '@/types/api';
 
-const log = debug('api');
+const log = debug('app:api');
 
 export default (context: Context, inject: Inject) => {
   inject(

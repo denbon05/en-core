@@ -16,8 +16,6 @@ declare global {
       SUPER_ADMIN_FIRST_NAME: string;
       SUPER_ADMIN_LAST_NAME: string;
       JWT_SECRET: string;
-      CIPHER_KEY: string;
-      INITIALIZATION_VECTOR: string; // TODO make random
     }
   }
 }

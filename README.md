@@ -32,7 +32,7 @@ make start    # launch the app
 
 <p>
   <ul>
-    <li>email - <b>admin@g.com</b></li>
+    <li>email - <b>admin@local.com</b></li>
     <li>password - <b>admin</b></li>
   </ul>
 </p>

@@ -8,29 +8,40 @@ import {
   Pojo,
   RelationMappings,
 } from 'objection';
+import { hashValue } from '../modules/crypto';
 
 export default class User extends Model {
   static tableName = 'users';
 
   $parseJson(json: Pojo, options: ModelOptions): Pojo {
     const parsed = super.$parseJson(json, options);
+    console.log('parseJson INSERT', { parsed });
+    const { firstName, lastName, password } = parsed;
+
     return {
       ...parsed,
-      ...(parsed.name && { name: parsed.name.trim() }),
+      ...(firstName && { firstName: firstName.trim() }),
+      ...(lastName && { lastName: lastName.trim() }),
+      ...(password && { passwordDigest: hashValue(password) }),
     };
   }
 
   static modifiers: Modifiers<AnyQueryBuilder> = {
     withRole(qb) {
-      qb.select(
-        'users.id',
-        'email',
-        'firstName',
-        'lastName',
-        'oauthDigest'
-      ).withGraphJoined('[roles as role]', {
-        maxBatchSize: 1,
-      });
+      qb.select('users.id', 'email', 'firstName', 'lastName').withGraphJoined(
+        '[roles as role]',
+        {
+          maxBatchSize: 1,
+        }
+      );
+    },
+    withGoogle(qb, id) {
+      console.log('withGoogle', { id });
+      qb.select('oauth', 'calendarId')
+        .withGraphJoined('google', {
+          maxBatchSize: 1,
+        })
+        .where({ id });
     },
   };
 
@@ -46,7 +57,6 @@ export default class User extends Model {
         lastName: { type: 'string' },
         createdAt: { type: 'string' },
         updatedAt: { type: 'string' },
-        oauthDigest: { type: 'string' },
       },
     };
   }
@@ -71,6 +81,14 @@ export default class User extends Model {
             to: 'role_permission.permissionId',
           },
           to: 'acl_permissions.id',
+        },
+      },
+      google: {
+        relation: Model.HasOneRelation,
+        modelClass: join(__dirname, 'Google.ts'),
+        join: {
+          from: 'user.googleId',
+          to: 'google.id',
         },
       },
     };

@@ -1,8 +1,8 @@
-import { ApiParams } from '@/types/api';
-import { UserData } from '@/types/auth/person';
-import { AuthState } from '@/types/store';
 import jwtDecode, { InvalidTokenError } from 'jwt-decode';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
+import { ApiParams } from '@/types/api';
+import type { AuthState } from '@/types/store';
+import type { UserData } from '@/types/api/user';
 
 export const state = (): AuthState => ({
   accessToken: '',

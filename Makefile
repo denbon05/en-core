@@ -16,7 +16,7 @@ test:
 	npm run test
 
 start:
-	DEBUG=api,api:* npm run dev
+	DEBUG=app:* npm run dev
 
 build:
 	npm run build

@@ -1,6 +1,6 @@
 <template>
-  <section id="userSettings" class="d-flex justify-space-between">
-    <v-card elevation="5" shaped class="w-90 pa-4" color="fade">
+  <section id="userSettings" class="d-flex justify-center">
+    <v-card elevation="5" shaped class="w-100 pa-4" color="fade">
       <v-tabs
         v-model="tab"
         grow
@@ -31,16 +31,6 @@
         </v-tab-item>
       </v-tabs-items>
     </v-card>
-
-    <v-btn fab plain class="flex-shrink-1">
-      <img
-        id="logOutIcon"
-        src="/icons8-log-out-64.png"
-        alt="Log Out icon"
-        width="50"
-        @click="logOut"
-      />
-    </v-btn>
   </section>
 </template>
 
@@ -54,9 +44,9 @@ export default Vue.extend({
 
   data() {
     return {
-      settings: ['data', 'calendar'],
+      settings: ['calendar', 'data'],
       tab: null,
-      components: [DataSettings, CalendarSettings],
+      components: [CalendarSettings, DataSettings],
     };
   },
 
@@ -67,27 +57,11 @@ export default Vue.extend({
       return isThemeDark ? 'grey lighten-1' : 'grey lighten-5';
     },
   },
-
-  methods: {
-    logOut() {
-      this.$store.dispatch('auth/logOut');
-      this.$router.push('/auth');
-    },
-  },
 });
 </script>
 
 <style lang="scss">
 #userSettings {
   height: 500px;
-}
-
-#logOutIcon {
-  // transition: width 0.2s;
-
-  // &:hover {
-  //   cursor: pointer;
-  //   width: 51.5px;
-  // }
 }
 </style>

@@ -12,6 +12,10 @@ const en = {
     },
   },
 
+  page: {
+    profile: 'Profile',
+  },
+
   main: {
     tagline: 'Learn at the comfort from your home!',
     name: 'The core',

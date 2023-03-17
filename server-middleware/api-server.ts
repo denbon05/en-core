@@ -1,12 +1,12 @@
-import type { ApiControllerPath, ApiIncomingMsg } from '@/types/api';
-import debug from 'debug';
 import type { ServerResponse } from 'http';
-import camelCase from 'lodash/camelCase';
 import path from 'path';
+import debug from 'debug';
+import camelCase from 'lodash/camelCase';
 import appMode from '../server/config/mode';
 import { verifyJWT } from '../server/modules/auth';
+import type { ApiControllerPath, ApiIncomingMsg } from '@/types/api';
 
-const log = debug('api');
+const log = debug('app:api');
 
 const apiDirpath = path.join(__dirname, '..', 'api');
 

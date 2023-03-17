@@ -1,41 +1,53 @@
-import type { BinaryLike } from 'crypto';
-import { createCipheriv, createDecipheriv, createHash } from 'crypto';
-import { CIPHER_KEY, INITIALIZATION_VECTOR } from '../config';
+import {
+  createCipheriv,
+  createDecipheriv,
+  createHash,
+  randomBytes,
+} from 'crypto';
+import type { DecryptedData, EncryptedData } from '@/types/utils/crypto';
+
+const CIPHER_ALGORITHM = 'aes-256-cbc';
 
 // ? use salt
 export const hashValue = (text: string): string =>
   createHash('sha256').update(text).digest('hex');
 
 /**
- * Encrypt data using AES-256 cipher
- * @param {BinaryLike} data for encryption
+ * Encrypt data using aes-256-cbc cipher
+ * @param {object} data for encryption
  * @returns
  */
-export const encryptData = (data: BinaryLike): string => {
-  const cipher = createCipheriv(
-    'aes-256-cbc',
-    CIPHER_KEY,
-    INITIALIZATION_VECTOR
-  );
-  let encrypted = cipher.update(data);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
+export const encryptData = (data: object): EncryptedData => {
+  const key = randomBytes(32);
+  const iv = randomBytes(16); // Generate a random IV
+  const cipher = createCipheriv(CIPHER_ALGORITHM, key, iv);
+  let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
+  encrypted += cipher.final('hex');
 
-  return encrypted.toString('hex');
+  return {
+    encrypted,
+    key: key.toString('hex'),
+    iv: iv.toString('hex'),
+  };
 };
 
 /**
  * Decrypt data using AES-256 cipher
- * @param {string} encryptedData
- * @returns
+ * @param {EncryptedData}
+ * @returns {DecryptedData}
  */
-export const decryptData = (encryptedData: string): string => {
+export const decryptData = ({
+  encrypted,
+  key,
+  iv,
+}: EncryptedData): DecryptedData => {
   const decipher = createDecipheriv(
-    'aes-256-cbc',
-    CIPHER_KEY,
-    Buffer.from(INITIALIZATION_VECTOR, 'hex')
+    CIPHER_ALGORITHM,
+    Buffer.from(key, 'hex'),
+    Buffer.from(iv, 'hex')
   );
-  let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
 
-  return decrypted.toString();
+  return JSON.parse(decrypted);
 };

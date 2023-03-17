@@ -1,9 +1,9 @@
 import debug from 'debug';
 import { User } from '../../server/models';
-import { UpdateUserData } from '@/types/auth/person';
 import { UserData } from '@/types/api/user';
+import { UpdateUserData } from '@/types/auth/person';
 
-const log = debug('api:user:data');
+const log = debug('app:api:user:data');
 
 export async function update(
   { firstName, lastName }: UpdateUserData,

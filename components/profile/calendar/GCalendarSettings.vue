@@ -1,6 +1,6 @@
 <template>
   <section id="gCalendarSettings" class="d-flex justify-space-between">
-    <template v-if="isGoogleCalendarSynced">
+    <template v-if="isCalendarSynced">
       <v-list-item-group v-model="calendarList" multiple>
         <v-list-item>
           <template #default="{ active }">
@@ -73,16 +73,34 @@ import { ApiResponse } from '@/types/api';
 export default Vue.extend({
   name: 'GCalendarSettings',
 
+  inject: ['showSnackbar'],
+
   data() {
     return {
+      isCalendarSynced: false,
       calendarList: [],
+      query: {
+        isLoading: false,
+        isSuccess: true,
+        message: null,
+      },
     };
   },
 
-  computed: {
-    isGoogleCalendarSynced() {
-      return this.$store.getters['user/isGoogleCalendarSynced'];
+  watch: {
+    query: {
+      deep: true,
+      handler({ isLoading, isSuccess, message }) {
+        if (!isSuccess && !isLoading) {
+          this.showSnackbar({ isSuccess, message });
+        }
+      },
     },
+  },
+
+  async beforeMount() {
+    const isSynced = await this.fetchGCalendarStatus();
+    this.isCalendarSynced = isSynced;
   },
 
   methods: {
@@ -90,12 +108,39 @@ export default Vue.extend({
       await this.$api('google/auth/login');
     },
 
-    async syncGoogleCalendar() {
-      await this.authToGoogle();
+    async fetchCalendarList() {
       const res: Awaited<ApiResponse<'google/calendar/list'>> = await this.$api(
         'google/calendar/list'
       );
-      console.log('syncGoogleCalendar', { res });
+      console.log('fetchCalendarList', { res });
+    },
+
+    async fetchGCalendarStatus(): Promise<boolean> {
+      this.query.isLoading = true;
+      try {
+        const {
+          isSuccess,
+          isSynced,
+          message,
+        }: Awaited<ApiResponse<'google/calendar/data'>> = await this.$api(
+          'google/calendar/data'
+        );
+        this.query = {
+          isSuccess,
+          isLoading: false,
+          message,
+        };
+        return isSynced;
+      } catch (err) {
+        console.error(err);
+        this.query.isLoading = false;
+        return false;
+      }
+    },
+
+    async syncGoogleCalendar() {
+      await this.authToGoogle();
+      await this.fetchCalendarList();
     },
   },
 });

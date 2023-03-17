@@ -1,4 +1,4 @@
-import type { UserData } from '../auth/person';
+import { UserData } from './user';
 
 export type IStorage = {
   user: {

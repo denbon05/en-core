@@ -1,34 +1,22 @@
-import { promises as fsPromises } from 'fs';
-import { OAuth2Client } from 'google-auth-library';
 import http from 'http';
-import openBrowser from 'open';
-import path from 'path';
 import url from 'url';
+import { OAuth2Client } from 'google-auth-library';
+import openBrowser from 'open';
 import {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,
 } from '../../server/config';
-
-class OAuth {
-  private readonly authFilePath = path.join(__dirname, 'GOOGLE_AUTH_FILENAME');
-
-  public async setTokenData(data: string) {
-    await fsPromises.writeFile(this.authFilePath, data, 'utf-8');
-  }
-
-  public async getTokenData(): Promise<string> {
-    return await fsPromises.readFile(this.authFilePath, 'utf-8');
-  }
-}
-
-export const oauth = new OAuth();
+import { User } from '../../server/models';
+import { UserData } from '@/types/api/user';
 
 /**
  * Create a new OAuth2Client, and go through the OAuth2 content
  * workflow.  Return the full client to the callback.
  */
-export const getAuthenticatedClient = (): Promise<OAuth2Client> => {
+export const getAuthenticatedClient = (
+  userId: UserData['id']
+): Promise<OAuth2Client> => {
   return new Promise((resolve, reject) => {
     // create an oAuth client to authorize the API call.
     // Secrets are kept in a`keys.json` file,
@@ -38,6 +26,7 @@ export const getAuthenticatedClient = (): Promise<OAuth2Client> => {
       GOOGLE_CLIENT_SECRET,
       GOOGLE_REDIRECT_URI
     );
+    console.log({ GOOGLE_REDIRECT_URI });
 
     // Generate the url that will be used for the consent dialog.
     const authorizeUrl = oAuth2Client.generateAuthUrl({
@@ -50,6 +39,7 @@ export const getAuthenticatedClient = (): Promise<OAuth2Client> => {
     const server = http
       .createServer(async (req, res) => {
         try {
+          console.log({ reqUrl: req.url });
           if (req.url.includes('/oauth2callback')) {
             // acquire the code from the querystring, and close the web server.
             const qs = new url.URL(req.url, 'http://localhost:3000')
@@ -61,9 +51,15 @@ export const getAuthenticatedClient = (): Promise<OAuth2Client> => {
 
             // Now that we have the code, use that to acquire tokens.
             const authData = await oAuth2Client.getToken(code);
+            console.log({ authData });
             // Make sure to set the credentials on the OAuth2 client.
             oAuth2Client.setCredentials(authData.tokens);
-            await oauth.setTokenData(JSON.stringify(authData.tokens));
+            console.log({ TOKEN: authData.tokens });
+            await User.query()
+              .update({
+                oauth: authData.tokens,
+              })
+              .where({ id: userId });
             resolve(oAuth2Client);
           }
         } catch (e) {

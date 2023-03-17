@@ -1,21 +1,19 @@
 import debug from 'debug';
 import { User } from '../server/models';
-import { hashValue } from '../server/modules/crypto';
 import { getJWT } from '../server/modules/auth';
-import { handleUserData } from '../server/helpers';
+import { hashValue } from '../server/modules/crypto';
 import type { LoginParam, SignupParam } from '@/types/api/auth';
-import type { UserData, UserFetched } from '@/types/api/user';
 
-const log = debug('api:auth');
+const log = debug('app:api:auth');
 
 export async function login({ email, password }: LoginParam) {
   const isSuccess = false;
-  const user: UserFetched = (await User.query()
+  const user = await User.query()
     .findOne({
       email,
       passwordDigest: hashValue(password),
     })
-    .modify('withRole')) as unknown as UserFetched;
+    .modify('withRole');
 
   if (!user) {
     return {
@@ -23,12 +21,12 @@ export async function login({ email, password }: LoginParam) {
       message: 'There is no such user.',
     };
   }
-  const userData = handleUserData(user);
+  console.log({ user });
 
   return {
     isSuccess: true,
-    userData,
-    accessToken: getJWT(userData),
+    userData: user,
+    accessToken: getJWT(user),
   };
 }
 
@@ -39,21 +37,20 @@ export async function signup({
   lastName,
 }: SignupParam) {
   try {
-    const user = (await User.query()
+    const user = await User.query()
       .insertAndFetch({
         email,
         firstName,
         lastName,
-        passwordDigest: hashValue(password),
+        password,
       })
-      .modify('withRole')) as unknown as UserFetched;
-
-    const userData = handleUserData(user);
+      .modify('withRole');
+    console.log('signup user', { user });
 
     return {
       isSuccess: true,
-      userData,
-      accessToken: getJWT(userData),
+      userData: user,
+      accessToken: getJWT(user),
     };
   } catch (err) {
     log('signup err %O', err);

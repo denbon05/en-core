@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { EncryptedData } from '../utils/crypto';
 
 declare module 'knex/types/tables' {
   interface User {
@@ -10,7 +11,7 @@ declare module 'knex/types/tables' {
     created_at: Date;
     updated_at: Date;
     role_id: number;
-    oauth_digest: string | null;
+    google_id: number;
   }
 
   interface ACLRole {
@@ -28,6 +29,12 @@ declare module 'knex/types/tables' {
     permission_id: number;
   }
 
+  interface Google {
+    id: number;
+    oauth: EncryptedData;
+    calendar_id: string;
+  }
+
   interface Tables {
     users: User;
     users_composite: Knex.CompositeTableType<
@@ -37,6 +44,8 @@ declare module 'knex/types/tables' {
       // update
       Partial<Omit<User, 'id' | 'created_at'>>
     >;
+
+    google: Google;
 
     acl_roles: ACLRole;
     acl_roles_composite: Knex.CompositeTableType<

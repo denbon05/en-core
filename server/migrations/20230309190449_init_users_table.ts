@@ -10,7 +10,13 @@ export async function up(knex: Knex): Promise<void> {
     table.timestamp('created_at', { useTz: false }).defaultTo(knex.fn.now());
     table.timestamp('updated_at', { useTz: false }).defaultTo(knex.fn.now());
     table.integer('role_id').defaultTo(5); // guest
-    table.string('oauth_digest');
+    table.integer('google_id');
+    table
+      .foreign('google_id')
+      .references('id')
+      .inTable('google')
+      .onDelete('CASCADE')
+      .onUpdate('CASCADE');
     table
       .foreign('role_id')
       .references('id')
