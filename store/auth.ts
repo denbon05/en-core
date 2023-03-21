@@ -10,7 +10,7 @@ export const state = (): AuthState => ({
 
 export const getters: GetterTree<AuthState, AuthState> = {
   isAuthenticated(): boolean {
-    const jwt: string = this.$cookies.get('auth');
+    const jwt: string = (this.$cookies as any).get('auth');
 
     try {
       const jwtDecoded = jwtDecode(jwt);
@@ -27,12 +27,12 @@ export const getters: GetterTree<AuthState, AuthState> = {
 export const mutations: MutationTree<AuthState> = {
   setToken(state, accessToken: string) {
     state.accessToken = accessToken;
-    this.$cookies.set('auth', accessToken);
+    (this.$cookies as any).set('auth', accessToken);
   },
 
   removeToken(state) {
     state.accessToken = '';
-    this.$cookies.remove('auth');
+    (this.$cookies as any).remove('auth');
   },
 };
 

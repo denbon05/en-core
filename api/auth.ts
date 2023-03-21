@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { User } from '../server/models';
+import prisma from '../server/modules/prisma';
 import { getJWT } from '../server/modules/auth';
 import { hashValue } from '../server/modules/crypto';
 import type { LoginParam, SignupParam } from '@/types/api/auth';
@@ -8,12 +8,12 @@ const log = debug('app:api:auth');
 
 export async function login({ email, password }: LoginParam) {
   const isSuccess = false;
-  const user = await User.query()
-    .findOne({
+  const user = await prisma.user.findFirst({
+    where: {
       email,
       passwordDigest: hashValue(password),
-    })
-    .modify('withRole');
+    },
+  });
 
   if (!user) {
     return {
@@ -21,7 +21,6 @@ export async function login({ email, password }: LoginParam) {
       message: 'There is no such user.',
     };
   }
-  console.log({ user });
 
   return {
     isSuccess: true,
@@ -37,15 +36,14 @@ export async function signup({
   lastName,
 }: SignupParam) {
   try {
-    const user = await User.query()
-      .insertAndFetch({
+    const user = await prisma.user.create({
+      data: {
         email,
         firstName,
         lastName,
-        password,
-      })
-      .modify('withRole');
-    console.log('signup user', { user });
+        passwordDigest: hashValue(password),
+      },
+    });
 
     return {
       isSuccess: true,

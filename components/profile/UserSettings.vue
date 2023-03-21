@@ -52,7 +52,7 @@ export default Vue.extend({
 
   computed: {
     tabItemsClasses(): string {
-      const isThemeDark: boolean = this.$vuetify.theme.isDark;
+      const isThemeDark: boolean = this.$vuetify.theme.dark;
       // the same as in nuxt.config.js
       return isThemeDark ? 'grey lighten-1' : 'grey lighten-5';
     },

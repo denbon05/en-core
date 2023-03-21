@@ -10,7 +10,7 @@ const defaultData: UserData = {
   email: '',
   firstName: '',
   lastName: '',
-  id: null,
+  id: 0,
   role: null,
 };
 
@@ -19,15 +19,12 @@ export const state = (): UserState => ({
 });
 
 export const getters: GetterTree<UserState, UserState> = {
-  data({
-    data: {
-      email,
-      firstName,
-      lastName,
-      role: { name },
-    },
-  }) {
-    const userData = { email, firstName, lastName, roleName: null };
+  data({ data: { email, firstName, lastName, role } }) {
+    const userData = { email, firstName, lastName, roleName: '' };
+    if (!role) {
+      return userData;
+    }
+    const { name } = role;
     if (name === 'admin' || name === 'superadmin') {
       userData.roleName = name;
     }
@@ -58,8 +55,8 @@ export const getters: GetterTree<UserState, UserState> = {
     return role?.name === 'superadmin';
   },
 
-  isAdminAndUp({ data: { role = {} } }) {
-    return role.name === 'admin' || role.name === 'superadmin';
+  isAdminAndUp({ data: { role } }) {
+    return role && (role.name === 'admin' || role.name === 'superadmin');
   },
 };
 

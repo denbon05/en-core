@@ -12,6 +12,7 @@ export default (context: Context, inject: Inject) => {
       params: ApiParams<ApiControllerPath>
     ): Promise<ApiResponse<ApiControllerPath>> => {
       try {
+        // @ts-ignore
         return await context.$axios['$' + (params ? 'post' : 'get')](
           '/api/' + controller,
           params

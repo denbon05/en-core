@@ -34,7 +34,7 @@
       <v-divider class="mt-3"></v-divider>
 
       <MeetingSelector
-        v-model="lessons"
+        v-model="lesson"
         :date="date"
         :meetings-days="lessonDays"
         :calendar-options="calendarOptions"
@@ -57,6 +57,7 @@ import type Time from 'vue-meeting-selector/src/interfaces/Time.interface';
 import { ILessonCalendar } from '@/types/lesson-calendar';
 // TODO use actual data instead of slotsGenerator
 import slotsGenerator from '@/utils/slotsGenerator';
+import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
 
 const slotsGeneratorAsync = (
   d: Date, // date
@@ -83,18 +84,18 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
 
   data() {
     return {
-      lessonDays: [],
+      lessonDays: [] as MeetingsDay[],
       date: new Date(), // now by default
-      lessons: [],
-      lessonFromTime: {
-        hours: 8,
-        minutes: 0,
-      },
-      lessonToTime: {
-        hours: 16,
-        minutes: 0,
-      },
-      loading: false,
+      lesson: null as MeetingSlot | null,
+      // lessonFromTime: {
+      //   hours: 8,
+      //   minutes: 0,
+      // },
+      // lessonToTime: {
+      //   hours: 16,
+      //   minutes: 0,
+      // },
+      isLoading: false,
       nbDaysToDisplay: 7, // computed?
       calendarOptions: {
         limit: 8,
@@ -122,21 +123,20 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
   },
 
   watch: {
-    lessons(values) {
-      console.log({ lessons: values });
+    lesson(values) {
+      console.log({ lesson: values });
     },
   },
 
   async mounted() {
-    this.lessonDays = await slotsGeneratorAsync(
-      this.date,
-      this.nbDaysToDisplay,
-      this.lessonFromTime,
-      this.lessonToTime,
-      30
-    );
-    console.log('AAA: ', this.lessonDays);
-    this.loading = false;
+    // this.lessonDays = (await slotsGeneratorAsync(
+    //   this.date,
+    //   this.nbDaysToDisplay,
+    //   this.lessonFromTime,
+    //   this.lessonToTime,
+    //   30
+    // )) as any;
+    await this.fetchEvents();
   },
 
   methods: {
@@ -144,8 +144,23 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       this.$emit('closeCalendar');
     },
 
+    async fetchEvents() {
+      this.isLoading = true;
+      try {
+        const res = await this.$api('google/calendar/events', {
+          timeMin: new Date().toISOString(),
+          // timeMax:
+        });
+        console.log('fetched events', res);
+      } catch (err) {
+        console.error(err);
+      }
+      // console.log('AAA: ', this.lessonDays);
+      this.isLoading = false;
+    },
+
     async nextDate() {
-      this.loading = true;
+      this.isLoading = true;
       const start: Time = {
         hours: 8,
         minutes: 0,
@@ -157,18 +172,18 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       const dateCopy = new Date(this.date);
       const newDate = new Date(dateCopy.setDate(dateCopy.getDate() + 7));
       this.date = newDate;
-      this.lessonDays = await slotsGeneratorAsync(
+      this.lessonDays = (await slotsGeneratorAsync(
         newDate,
         this.nbDaysToDisplay,
         start,
         end,
         30
-      );
-      this.loading = false;
+      )) as any;
+      this.isLoading = false;
     },
 
     async prevDate() {
-      this.loading = true;
+      this.isLoading = true;
       const start: Time = {
         hours: 8,
         minutes: 0,
@@ -192,14 +207,14 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
           ? new Date()
           : new Date(dateCopy);
       this.date = newDate;
-      this.lessonDays = await slotsGeneratorAsync(
+      this.lessonDays = (await slotsGeneratorAsync(
         newDate,
         this.nbDaysToDisplay,
         start,
         end,
         30
-      );
-      this.loading = false;
+      )) as any;
+      this.isLoading = false;
     },
 
     async updateCalendarByMonth(_monthIdx: number) {

@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { ComponentQuery } from '@/types/vue-specified';
+import { ComponentQuery, VFormRef } from '@/types/vue-specified';
 
 export default Vue.extend({
   name: 'DataSettings',
@@ -81,7 +81,7 @@ export default Vue.extend({
 
   methods: {
     async save() {
-      await this.$refs.userDataForm.validate();
+      (this.$refs!.userDataForm as VFormRef).validate();
 
       if (!this.isFormValid) {
         return;

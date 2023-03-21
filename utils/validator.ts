@@ -1,4 +1,9 @@
-import IValidator, { IRuleByKey, ValidatorKeys } from '@/types/validator';
+import IValidator, {
+  IRuleByKey,
+  RuleParam,
+  ValidationFunc,
+  ValidatorKey,
+} from '@/types/validator';
 
 class Validator implements IValidator {
   private minNameLength = 3;
@@ -18,9 +23,14 @@ class Validator implements IValidator {
    * The method returns rule key with specified error message.
    * @param messages
    */
-  getRules(msgByKey = {}) {
-    return Object.entries(msgByKey).map(([key, msg]: [ValidatorKeys, string]) =>
-      this.ruleByKey[key](msg)
+  getRules(msgByKey: RuleParam): ValidationFunc[] {
+    if (!msgByKey) {
+      return [];
+    }
+
+    return Object.entries(msgByKey).map(
+      <VKey extends string = ValidatorKey>([key, msg]: [VKey, string]) =>
+        this.ruleByKey[key as ValidatorKey](msg)
     );
   }
 }

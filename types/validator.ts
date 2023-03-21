@@ -1,15 +1,21 @@
-export type ValidatorKeys = 'required' | 'len' | 'emailValid';
+export type ValidatorKey = 'required' | 'len' | 'emailValid';
 
 type ErrKeyWithMsg = {
-  [key in ValidatorKeys]?: string;
+  [key in ValidatorKey]?: string;
 };
 
 export type IRuleByKey = {
-  [key in ValidatorKeys]: (
+  [key in ValidatorKey]: (
     message: string
   ) => (value: string) => boolean | string;
 };
 
+export type RuleParam = {
+  [key in ValidatorKey]?: string;
+};
+
+export type ValidationFunc = (value: string) => boolean | string;
+
 export default interface IValidator {
-  getRules(msgByKey: ErrKeyWithMsg): ((value: string) => boolean | string)[];
+  getRules(msgByKey: ErrKeyWithMsg): ValidationFunc[];
 }

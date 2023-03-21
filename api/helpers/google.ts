@@ -7,15 +7,16 @@ import {
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,
 } from '../../server/config';
-import { User } from '../../server/models';
-import { UserData } from '@/types/api/user';
+import prisma from '../../server/modules/prisma';
+import { User, Prisma } from '@prisma/client';
+import { encryptData } from '../../server/modules/crypto';
 
 /**
  * Create a new OAuth2Client, and go through the OAuth2 content
  * workflow.  Return the full client to the callback.
  */
 export const getAuthenticatedClient = (
-  userId: UserData['id']
+  userId: User['id']
 ): Promise<OAuth2Client> => {
   return new Promise((resolve, reject) => {
     // create an oAuth client to authorize the API call.
@@ -26,7 +27,6 @@ export const getAuthenticatedClient = (
       GOOGLE_CLIENT_SECRET,
       GOOGLE_REDIRECT_URI
     );
-    console.log({ GOOGLE_REDIRECT_URI });
 
     // Generate the url that will be used for the consent dialog.
     const authorizeUrl = oAuth2Client.generateAuthUrl({
@@ -40,11 +40,11 @@ export const getAuthenticatedClient = (
       .createServer(async (req, res) => {
         try {
           console.log({ reqUrl: req.url });
-          if (req.url.includes('/oauth2callback')) {
+          if (req.url!.includes('/oauth2callback')) {
             // acquire the code from the querystring, and close the web server.
-            const qs = new url.URL(req.url, 'http://localhost:3000')
+            const qs = new url.URL(req.url!, 'http://localhost:3000')
               .searchParams;
-            const code = qs.get('code');
+            const code = qs.get('code') as string;
             // TODO close tab and return to home page
             res.end('Authentication successful! Please return to the console.');
             server.close();
@@ -54,12 +54,23 @@ export const getAuthenticatedClient = (
             console.log({ authData });
             // Make sure to set the credentials on the OAuth2 client.
             oAuth2Client.setCredentials(authData.tokens);
-            console.log({ TOKEN: authData.tokens });
-            await User.query()
-              .update({
-                oauth: authData.tokens,
-              })
-              .where({ id: userId });
+            const oauthEncrypted = encryptData(authData.tokens);
+            console.log({ TOKEN: authData.tokens, oauthEncrypted });
+            await prisma.user.update({
+              where: { id: userId },
+              data: {
+                google: {
+                  upsert: {
+                    create: {
+                      oauth: oauthEncrypted as Prisma.JsonObject,
+                    },
+                    update: {
+                      oauth: oauthEncrypted as Prisma.JsonObject,
+                    },
+                  },
+                },
+              },
+            });
             resolve(oAuth2Client);
           }
         } catch (e) {

@@ -1,4 +1,3 @@
-// @ts-check
 import url from 'url';
 import colors from 'vuetify/es5/util/colors';
 

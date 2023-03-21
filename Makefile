@@ -25,12 +25,12 @@ build:
 
 init-db:
 	make -C $(ANSIBLE_PATH) init-db-dev
-	npx knex migrate:latest
-	npx knex seed:run
+	npx prisma migrate dev --name init
+	npx ts-node prisma/seed.ts
 
-init-db-test:
-	make -C $(ANSIBLE_PATH) init-db-test
-	npx knex migrate:latest
-	npx knex seed:run
+# init-db-test:
+# 	make -C $(ANSIBLE_PATH) init-db-test
+# 	npx knex migrate:latest
+# 	npx knex seed:run
 
 .PHONY: test

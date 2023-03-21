@@ -5,12 +5,12 @@ class AppStorage implements IAppStorage {
   getItem<SPath extends StoragePath>(key: SPath): StorageData<SPath> {
     if (!key.includes('.')) {
       // root key
-      const parsed = JSON.parse(localStorage.getItem(key));
+      const parsed = JSON.parse(localStorage.getItem(key) ?? '');
       return get(parsed, key);
     }
 
     const [rootKey, ...rest] = key.split('.');
-    const parsed = JSON.parse(localStorage.getItem(rootKey));
+    const parsed = JSON.parse(localStorage.getItem(rootKey) ?? '');
     return get(parsed[rootKey], rest);
   }
 
@@ -31,7 +31,7 @@ class AppStorage implements IAppStorage {
     }
 
     const [rootKey, ...rest] = key.split('.');
-    const parsed = JSON.parse(localStorage.getItem(rootKey));
+    const parsed = JSON.parse(localStorage.getItem(rootKey) ?? '');
     set(parsed[rootKey], rest, value);
     localStorage.setItem(rootKey, JSON.stringify(parsed));
   }
@@ -43,7 +43,7 @@ class AppStorage implements IAppStorage {
     }
 
     const [rootKey, ...rest] = key.split('.');
-    const parsed = JSON.parse(localStorage.getItem(rootKey));
+    const parsed = JSON.parse(localStorage.getItem(rootKey) ?? '');
     const altered = omit(parsed[rootKey], rest);
     localStorage.setItem(rootKey, JSON.stringify(altered));
   }

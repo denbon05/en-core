@@ -23,6 +23,13 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'ConfirmDialog',
 
+  props: {
+    value: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
   computed: {
     isDialogVisible: {
       get() {

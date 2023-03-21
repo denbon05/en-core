@@ -8,8 +8,8 @@ export type UserData = {
   email: string;
   firstName: string;
   lastName: string;
-  role: {
+  role?: {
     id: number;
     name: 'superadmin' | 'admin' | 'tutor' | 'student';
-  };
+  } | null;
 };

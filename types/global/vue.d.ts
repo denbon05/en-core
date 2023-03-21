@@ -1,4 +1,5 @@
 import 'vue';
+
 import type { ApiControllerPath, ApiParams, ApiResponse } from '../api';
 
 declare module 'vue/types/vue' {

@@ -114,7 +114,8 @@ const en = {
     send: 'Send',
     agree: 'Agree',
     disagree: 'Disagree',
-    syncGCalendar: 'Sync Google calendar',
+    syncGoogle: 'Sync Google',
+    sync: 'Sync',
     save: 'Save',
   },
 
@@ -122,6 +123,13 @@ const en = {
     lenMin: '{title} must be less than {len} characters',
     valid: '{title} must be valid',
     required: '{title} is required!',
+    google: {
+      auth: "Can't auth to google account",
+      calendar: {
+        list: "Can't get calendar list",
+        sync: "Select calendar | Can't sync google calendar | Can't sync google calendars",
+      },
+    },
   },
 
   notification: {

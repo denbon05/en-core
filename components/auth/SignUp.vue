@@ -59,7 +59,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { ComponentQuery } from '@/types/vue-specified';
+import { ComponentQuery, VFormRef } from '@/types/vue-specified';
 // import validator from '@/utils/validator';
 // TODO implement validator
 // TODO submit on enter key
@@ -122,14 +122,14 @@ export default Vue.extend({
 
   mounted() {
     this.$nextTick(() => {
-      this.$refs.email.focus();
+      (this.$refs.email as HTMLInputElement).focus();
     });
   },
 
   methods: {
     async signUp() {
       this.signupQuery.isLoading = true;
-      await this.$refs.form.validate();
+      (this.$refs.form as VFormRef).validate();
 
       if (!this.form.isValid) {
         return;

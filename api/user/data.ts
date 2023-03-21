@@ -1,22 +1,26 @@
 import debug from 'debug';
-import { User } from '../../server/models';
+import prisma from '../../server/modules/prisma';
 import { UserData } from '@/types/api/user';
 import { UpdateUserData } from '@/types/auth/person';
 
 const log = debug('app:api:user:data');
 
 export async function update(
+  // todo add reset password
   { firstName, lastName }: UpdateUserData,
   { id }: UserData
 ) {
   try {
-    await User.query()
-      .update({
+    await prisma.user.update({
+      data: {
         firstName,
         lastName,
-        updatedAt: new Date().toISOString(),
-      })
-      .where({ id });
+        updatedAt: new Date(),
+      },
+      where: {
+        id,
+      },
+    });
     return {
       isSuccess: true,
     };

@@ -1,4 +1,4 @@
-import type { User } from 'knex/types/tables';
+import { User } from '@prisma/client';
 
 export type LoginParam = {
   email: string;
@@ -6,8 +6,8 @@ export type LoginParam = {
 };
 
 export type SignupParam = LoginParam & {
-  firstName: User['first_name'];
-  lastName: User['last_name'];
+  firstName: User['firstName'];
+  lastName: User['lastName'];
 };
 
 export interface GoogleTokenData {

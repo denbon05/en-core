@@ -93,3 +93,4 @@ sw.*
 .vercel
 *credentials*.json
 .gauth.json
+.vscode

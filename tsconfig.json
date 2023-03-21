@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
+    "target": "ES2022",
     "module": "CommonJS",
     "moduleResolution": "Node",
     "lib": [
@@ -11,9 +11,10 @@
     "esModuleInterop": true,
     "allowJs": true,
     "sourceMap": true,
-    "strict": false,
+    "strict": true,
     "noEmit": true,
     "experimentalDecorators": true,
+    "useUnknownInCatchVariables": false,
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {

@@ -48,7 +48,7 @@ export default Vue.extend({
       const names = this.menuItems.map((item: string) =>
         this.$t(`menu.${item}.title`)
       );
-      return names;
+      return names as string[];
     },
   },
 

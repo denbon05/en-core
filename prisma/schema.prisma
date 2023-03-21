@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgres://en_core:supersecret@localhost:5431/en_core"
+  // url       = env("DATABASE_URL")
+  // directUrl = env("DATABASE_URL")
+}
+
+model AclPermission {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  RolePermissions RolePermissions[]
+}
+
+model AclRole {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  RolePermissions RolePermissions[]
+  User            User[]
+}
+
+model RolePermissions {
+  roleId       Int
+  permissionId Int
+  permission   AclPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role         AclRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+model Google {
+  oauth       Json
+  calendarIds String[] @db.VarChar()
+  userId      Int      @unique
+  User        User     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  firstName      String
+  lastName       String
+  passwordDigest String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+  role           AclRole? @relation(fields: [roleId], references: [id])
+  google         Google?
+  roleId         Int?
+}

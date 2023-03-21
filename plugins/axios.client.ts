@@ -23,7 +23,7 @@ export default function ({
     if (statusCode === 401 || statusCode === 422) {
       const refreshToken = store.state.auth.refreshToken;
       if (
-        error.response.data.errorCode === 'JWT_TOKEN_EXPIRED' &&
+        error.response!.data.errorCode === 'JWT_TOKEN_EXPIRED' &&
         refreshToken
       ) {
         if (
