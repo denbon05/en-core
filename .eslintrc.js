@@ -11,7 +11,7 @@ module.exports = {
     'plugin:@intlify/vue-i18n/recommended',
     'prettier',
   ],
-  plugins: ['jest', 'prettier-plugin-prisma'],
+  plugins: ['jest'],
   rules: {
     'no-console': 'warn',
     'no-unused-vars': 'off',

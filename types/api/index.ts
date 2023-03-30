@@ -1,6 +1,7 @@
 import type { IncomingMessage } from 'http';
 import * as auth from '@/api/auth';
 import * as userData from '@/api/user/data';
+import * as userSchedule from '@/api/user/schedule';
 import * as googleCalendar from '@/api/google/calendar';
 import * as googleAuth from '@/api/google/auth';
 
@@ -8,6 +9,7 @@ type AuthFuncName = keyof typeof auth;
 type GoogleCalendarFuncName = keyof typeof googleCalendar;
 type GoogleAuthFuncName = keyof typeof googleAuth;
 type UserDataFuncName = keyof typeof userData;
+type UserScheduleFuncName = keyof typeof userSchedule;
 
 type ApiAuth = {
   [K in AuthFuncName]: (typeof auth)[K];
@@ -21,11 +23,15 @@ type ApiGoogleAuth = {
 type ApiUserData = {
   [K in UserDataFuncName]: (typeof userData)[K];
 };
+type ApiUserSchedule = {
+  [K in UserScheduleFuncName]: (typeof userSchedule)[K];
+};
 
 export interface AppApi {
   auth: ApiAuth;
   user: {
     data: ApiUserData;
+    schedule: ApiUserSchedule;
   };
   google: {
     calendar: ApiGoogleCalendar;
@@ -47,7 +53,7 @@ export type ApiControllerPath<
     : never
   : never;
 
-type ControllerPathPart<CPath extends string = ApiControllerPath> =
+export type ControllerPathPart<CPath extends string = ApiControllerPath> =
   CPath extends `${infer Head}/${infer Tail}`
     ? Tail extends `${infer _Head}${infer _Rest}`
       ? Head | ControllerPathPart<Tail>

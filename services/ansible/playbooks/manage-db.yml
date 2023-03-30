@@ -2,21 +2,33 @@
 - name: Init database
   hosts: local
   gather_facts: true
-  vars:
-    db_public_port: "{{ db_port_dev if app_mode == 'dev' else db_port_test }}"
+  become: true
 
-  tasks:
-    - name: Run pg
-      community.docker.docker_container:
-        name: '{{ db_container_name }}-{{ app_mode }}'
-        image: 'postgres:{{ pg_version }}'
-        restart_policy: always
-        state: '{{ db_container_state }}'
-        ports:
-          - '{{ db_public_port }}:5432'
-        # preserve db in dev mode
-        volumes: "{{ '/var/lib/postgresql/data' if app_mode == 'dev' else [] }}"
-        env:
-          POSTGRES_PASSWORD: '{{ db_pass }}'
-          POSTGRES_USER: '{{ db_user }}'
-          POSTGRES_DB: '{{ db_name }}'
+  roles:
+    - role: geerlingguy.postgresql
+      postgresql_user: postgres
+      postgresql_group: postgres
+      postgresql_databases:
+        - name: '{{ db_name }}'
+          owner: '{{ db_user }}'
+          state: '{{ db_state }}'
+      postgresql_users:
+        - name: '{{ db_user }}'
+          password: '{{ db_user_pass }}'
+          role_attr_flags: CREATEDB,NOSUPERUSER
+      postgresql_hba_entries:
+        - { type: local, database: all, user: all, auth_method: trust }
+        - {
+            type: host,
+            database: all,
+            user: all,
+            address: '127.0.0.1/32',
+            auth_method: md5,
+          }
+        - {
+            type: host,
+            database: all,
+            user: all,
+            address: '::1/128',
+            auth_method: md5,
+          }

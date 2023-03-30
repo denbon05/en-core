@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
+import appMode from '../server/config/mode';
 import { hashValue } from '../server/modules/crypto';
 
 const {
@@ -12,6 +12,15 @@ const {
 const prisma = new PrismaClient();
 
 async function main() {
+  if (appMode.isDev()) {
+    await prisma.google.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.aclPermission.deleteMany();
+    await prisma.aclRole.deleteMany();
+    await prisma.rolesPermissions.deleteMany();
+    await prisma.userSchedule.deleteMany();
+  }
+
   const defaultPermissions = [
     { id: 1, name: 'delete_own_account' },
     { id: 2, name: 'delete_user_account' },
@@ -34,15 +43,15 @@ async function main() {
   const aclRoles = [
     {
       id: 1,
-      name: 'superadmin',
+      name: Role.SUPERADMIN,
     },
     {
       id: 2,
-      name: 'admin',
+      name: Role.ADMIN,
     },
-    { id: 3, name: 'tutor' },
-    { id: 4, name: 'student' },
-    { id: 5, name: 'guest' },
+    { id: 3, name: Role.TUTOR },
+    { id: 4, name: Role.STUDENT },
+    { id: 5, name: Role.GUEST },
   ];
 
   // total access for superadmin
@@ -73,7 +82,8 @@ async function main() {
     ...rolePermissionAdmin,
     ...rolePermissionTutor,
     ...rolePermissionStudent,
-    // no permissions for guest
+    // permissions for guest create_user_account
+    { permissionId: 5, roleId: 5 },
   ];
 
   // Insert data
@@ -87,7 +97,7 @@ async function main() {
     skipDuplicates: true,
   });
 
-  await prisma.rolePermissions.createMany({
+  await prisma.rolesPermissions.createMany({
     data: rolePermission,
     skipDuplicates: true,
   });
@@ -99,6 +109,9 @@ async function main() {
       firstName: SUPER_ADMIN_FIRST_NAME as string,
       lastName: SUPER_ADMIN_LAST_NAME as string,
       roleId: 1, // superadmin
+      schedule: {
+        create: {}, // default values
+      },
     },
   });
 }
@@ -108,6 +121,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
+    // eslint-disable-next-line no-console
     console.error(e);
     await prisma.$disconnect();
     process.exit(1);

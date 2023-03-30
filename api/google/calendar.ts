@@ -2,14 +2,17 @@
 import debug from 'debug';
 import { google } from 'googleapis';
 import { GOOGLE_API_KEY } from '../../server/config';
-import type { GoogleTokenData } from '../../types/api/auth';
-import prisma from '../../server/modules/prisma';
-import { UserData } from '@/types/api/user';
 import { decryptData } from '../../server/modules/crypto';
+import prisma from '../../server/modules/prisma';
 import { EncryptedData } from '@/types/utils/crypto';
-import { CalendarEventsParam, SyncParam } from '@/types/api/google';
+import { UserData } from '@/types/api/user';
+import {
+  CalendarEvent,
+  CalendarEventsParam,
+  SyncParam,
+} from '@/types/api/google';
 
-const log = debug('app:api:calendar');
+const log = debug('app:api:google:calendar');
 
 const getOAuthDecrypted = async (userId: number) => {
   const user = await prisma.user.findUnique({
@@ -24,7 +27,7 @@ const getOAuthDecrypted = async (userId: number) => {
   });
 
   if (!user || !user.google?.oauth) {
-    throw Error('Authorize to google account first.');
+    throw new Error('Authorize to google account first.');
   }
 
   const { google: googleTableData } = user;
@@ -75,13 +78,16 @@ export async function events(
     );
 
     const responses = await Promise.all(calendarEventsPromises);
-    const events = responses.flatMap(({ data: { items } }) =>
-      items?.map(({ start, end, summary }) => ({
-        start: start?.dateTime ?? start?.date,
-        end: end?.dateTime ?? end?.date,
-        summary,
-      }))
-    );
+    const events: CalendarEvent[] = responses.flatMap(
+      ({ data: { items = [] } }) =>
+        items
+          .filter(({ start, end }) => start && end)
+          .map(({ start, end, summary }) => ({
+            start: start!.dateTime ?? start!.date,
+            end: end!.dateTime ?? end!.date,
+            summary,
+          }))
+    ) as Cast<CalendarEvent[]>;
 
     return {
       isSuccess: true,
@@ -108,6 +114,7 @@ export async function list(_params: never, { id }: UserData) {
         },
       },
     });
+    // todo
 
     const calendar = google.calendar('v3');
 

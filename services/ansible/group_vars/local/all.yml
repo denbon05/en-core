@@ -5,12 +5,11 @@ app_path: "../../../" # relative for 'playbook' dir
 # database
 db_container_name: en_core_db
 db_container_state: started
-db_port_dev: 5431
-db_port_test: 5430
-db_pass: supersecret
+db_port: 5432
 db_user: en_core
+db_user_pass: supersecret
 db_name: en_core
-pg_version: "14.7-alpine"
+db_state: present # absent
 
 # vars
 jwt_secret: "good_day"

@@ -17,10 +17,7 @@ export default async <CPath extends ApiControllerPath>(
 ) => {
   // make from url module path
   const moduleParsedPath = path.parse(url);
-  const { name: funcSnakeName, dir: controllerPath } = moduleParsedPath;
-
-  // TODO paths in a snake case, funcNames in camel case
-  const funcCamelName = camelCase(funcSnakeName);
+  const { name: funcName, dir: controllerPath } = moduleParsedPath;
 
   const apiPath = path.join(apiDirpath, controllerPath);
 
@@ -28,20 +25,23 @@ export default async <CPath extends ApiControllerPath>(
     log('api path %O', {
       reqUrl: url,
       apiPath,
-      funcCamelName,
+      funcName,
       params,
     });
   }
 
   try {
     const api = require(`${apiPath}.ts`);
-    const func = api[funcCamelName];
+    const func = api[funcName];
     const userData = auth ? verifyJWT(auth) : null;
 
     const result = await func(params, userData);
     res.end(JSON.stringify(result));
   } catch (err) {
-    log('Api error %O', err);
-    res.end(err.message);
+    log(`Api "${url}${funcName}" error %O`, err);
+    res.end({
+      isSuccess: false,
+      message: err.message,
+    });
   }
 };

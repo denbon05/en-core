@@ -6,50 +6,137 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = "postgres://en_core:supersecret@localhost:5431/en_core"
-  // url       = env("DATABASE_URL")
-  // directUrl = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
 }
 
+// List of roles.
+enum Role {
+  SUPERADMIN @map("superadmin")
+  ADMIN      @map("admin")
+  TUTOR      @map("tutor")
+  STUDENT    @map("student")
+  GUEST      @map("guest")
+
+  @@map("_Role")
+}
+
+// Permissions should be use for particular role only.
 model AclPermission {
-  id              Int               @id @default(autoincrement())
-  name            String            @unique
-  RolePermissions RolePermissions[]
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  rolesPermissions RolesPermissions[]
+
+  @@map("aclPermission")
 }
 
+// Available roles.
 model AclRole {
-  id              Int               @id @default(autoincrement())
-  name            String            @unique
-  RolePermissions RolePermissions[]
-  User            User[]
+  id               Int                @id @default(autoincrement())
+  name             Role               @unique @default(STUDENT)
+  rolesPermissions RolesPermissions[]
+  user             User[]
+
+  @@map("aclRole")
 }
 
-model RolePermissions {
-  roleId       Int
-  permissionId Int
-  permission   AclPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
-  role         AclRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+// Table for connection role with permissions.
+model RolesPermissions {
+  roleId        Int
+  permissionId  Int
+  aclPermission AclPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  aclRole       AclRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@id([roleId, permissionId])
+  @@map("rolesPermissions")
 }
 
+// Table for manage google data.
 model Google {
   oauth       Json
   calendarIds String[] @db.VarChar()
   userId      Int      @unique
-  User        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@map("google")
 }
 
+// User data table.
 model User {
-  id             Int      @id @default(autoincrement())
-  email          String   @unique
+  id             Int           @id @default(autoincrement())
+  email          String        @unique
   firstName      String
   lastName       String
   passwordDigest String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @default(now())
-  role           AclRole? @relation(fields: [roleId], references: [id])
-  google         Google?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @default(now())
   roleId         Int?
+  aclRole        AclRole?      @relation(fields: [roleId], references: [id])
+  google         Google?
+  schedule       UserSchedule?
+  message        UserMessage[]
+
+  @@map("user")
+}
+
+enum LessonType {
+  TRIAL   @map("trial")
+  SINGLE  @map("single")
+  REGULAR @map("regular")
+}
+
+// Contains scheduled lessons in ISO range format
+model UserLessons {
+  id           Int          @id @default(autoincrement())
+  type         LessonType
+  // ISO datetime format
+  beginAt      DateTime     @db.Timestamp()
+  // ISO datetime format
+  endAt        DateTime     @db.Timestamp()
+  scheduleId   Int
+  userSchedule UserSchedule @relation(fields: [scheduleId], references: [id])
+
+  @@map("userLessons")
+}
+
+enum UserUnavailableType {
+  SINGLE  @map("single")
+  REGULAR @map("regular")
+}
+
+// Contains unavailable datetime in ISO range format
+model UserUnavailable {
+  id           Int                 @id @default(autoincrement())
+  since        DateTime            @db.Timestamp()
+  until        DateTime            @db.Timestamp()
+  type         UserUnavailableType @default(SINGLE)
+  scheduleId   Int
+  userSchedule UserSchedule        @relation(fields: [scheduleId], references: [id])
+
+  @@map("userUnavailable")
+}
+
+// Users' schedule.
+// Contains unavailable time ranges.
+model UserSchedule {
+  id              Int               @id @default(autoincrement())
+  userId          Int               @unique
+  user            User              @relation(fields: [userId], references: [id])
+  userLesson      UserLessons[]
+  userUnavailable UserUnavailable[]
+
+  @@map("userSchedule")
+}
+
+// Questions sended by user.
+model UserMessage {
+  id      Int    @id @default(autoincrement())
+  email   String @db.VarChar(128)
+  name    String @db.VarChar(64)
+  message String @db.Text
+  userId  Int?
+  user    User?  @relation(fields: [userId], references: [id])
+
+  @@map("userMessage")
 }
