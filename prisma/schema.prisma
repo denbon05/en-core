@@ -49,7 +49,6 @@ model RolesPermissions {
   aclRole       AclRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@id([roleId, permissionId])
-  @@map("rolesPermissions")
 }
 
 // Table for manage google data.
@@ -58,8 +57,6 @@ model Google {
   calendarIds String[] @db.VarChar()
   userId      Int      @unique
   user        User     @relation(fields: [userId], references: [id])
-
-  @@map("google")
 }
 
 // User data table.
@@ -76,8 +73,6 @@ model User {
   google         Google?
   schedule       UserSchedule?
   message        UserMessage[]
-
-  @@map("user")
 }
 
 enum LessonType {
@@ -96,13 +91,12 @@ model UserLessons {
   endAt        DateTime     @db.Timestamp()
   scheduleId   Int
   userSchedule UserSchedule @relation(fields: [scheduleId], references: [id])
-
-  @@map("userLessons")
 }
 
 enum UserUnavailableType {
-  SINGLE  @map("single")
-  REGULAR @map("regular")
+  ONCE   @map("once")
+  DAILY  @map("daily")
+  WEEKLY @map("weekly")
 }
 
 // Contains unavailable datetime in ISO range format
@@ -110,11 +104,9 @@ model UserUnavailable {
   id           Int                 @id @default(autoincrement())
   since        DateTime            @db.Timestamp()
   until        DateTime            @db.Timestamp()
-  type         UserUnavailableType @default(SINGLE)
+  type         UserUnavailableType @default(ONCE)
   scheduleId   Int
   userSchedule UserSchedule        @relation(fields: [scheduleId], references: [id])
-
-  @@map("userUnavailable")
 }
 
 // Users' schedule.
@@ -125,8 +117,6 @@ model UserSchedule {
   user            User              @relation(fields: [userId], references: [id])
   userLesson      UserLessons[]
   userUnavailable UserUnavailable[]
-
-  @@map("userSchedule")
 }
 
 // Questions sended by user.
@@ -137,6 +127,4 @@ model UserMessage {
   message String @db.Text
   userId  Int?
   user    User?  @relation(fields: [userId], references: [id])
-
-  @@map("userMessage")
 }

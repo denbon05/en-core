@@ -54,15 +54,14 @@
 </template>
 
 <script lang="ts">
+import {
+  ILessonCalendar,
+  ScheduledTime,
+} from '@/types/components/lesson-calendar';
+import generateCalendarSlots from '@/utils/slotsGenerator';
 import moment from 'moment';
 import Vue, { VueConstructor } from 'vue';
 import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
-import { CalendarEvent } from '@/types/api/google';
-import {
-  ILessonCalendar,
-  ScheduledTimes,
-} from '@/types/components/lesson-calendar';
-import generateCalendarSlots from '@/utils/slotsGenerator';
 import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
 
 // const slotsGeneratorAsync = (
@@ -93,10 +92,10 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
   data() {
     return {
       fromDate: moment(), // now by default
-      nbDaysToDisplay: 7, // computed?
+      nbDaysToDisplay: 7,
       showUntilDate: moment(this.fromDate).add(this.nbDaysToDisplay, 'days'),
       lessons: [] as MeetingSlot[],
-      scheduledTimes: [] as ScheduledTimes,
+      scheduledTime: [] as ScheduledTime,
       isLoading: false,
       calendarOptions: {
         limit: 8,
@@ -158,16 +157,18 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
 
       this.isLoading = true;
       try {
-        const { scheduledTimes, isSuccess, message } = await this.$api(
-          'user/schedule/fetch'
-        );
+        const {
+          scheduledTime: scheduledTimes,
+          isSuccess,
+          message,
+        } = await this.$api('user/schedule/fetch');
 
         if (!isSuccess && message) {
           this.$emit('showSnackbar', { isSuccess, message });
           return;
         }
 
-        this.scheduledTimes = scheduledTimes;
+        this.scheduledTime = scheduledTimes;
       } catch (err) {
         console.error('fetchUserCalendarConfig err', err);
       }

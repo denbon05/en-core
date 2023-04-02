@@ -44,62 +44,54 @@ export async function events(
 ) {
   const calendar = google.calendar('v3');
 
-  try {
-    const authData = await getOAuthDecrypted(id);
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        google: {
-          select: {
-            calendarIds: true,
-          },
+  const authData = await getOAuthDecrypted(id);
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      google: {
+        select: {
+          calendarIds: true,
         },
       },
-    });
+    },
+  });
 
-    if (!user?.google?.calendarIds) {
-      return {
-        isSuccess: false,
-        message: 'Sync google first',
-      };
-    }
-
-    const calendarEventsPromises = user.google.calendarIds.map((calendarId) =>
-      calendar.events.list({
-        calendarId,
-        timeMin,
-        timeMax,
-        // maxResults: 10,
-        // singleEvents: true,
-        // orderBy: 'startTime',
-        key: GOOGLE_API_KEY,
-        oauth_token: authData.access_token,
-      })
-    );
-
-    const responses = await Promise.all(calendarEventsPromises);
-    const events: CalendarEvent[] = responses.flatMap(
-      ({ data: { items = [] } }) =>
-        items
-          .filter(({ start, end }) => start && end)
-          .map(({ start, end, summary }) => ({
-            start: start!.dateTime ?? start!.date,
-            end: end!.dateTime ?? end!.date,
-            summary,
-          }))
-    ) as Cast<CalendarEvent[]>;
-
-    return {
-      isSuccess: true,
-      events,
-    };
-  } catch (err) {
-    log('fetch google calendar events err %O', err);
+  if (!user?.google?.calendarIds) {
     return {
       isSuccess: false,
-      message: "Can't fetch google calendar events",
+      message: 'Sync google first',
     };
   }
+
+  const calendarEventsPromises = user.google.calendarIds.map((calendarId) =>
+    calendar.events.list({
+      calendarId,
+      timeMin,
+      timeMax,
+      // maxResults: 10,
+      // singleEvents: true,
+      // orderBy: 'startTime',
+      key: GOOGLE_API_KEY,
+      oauth_token: authData.access_token,
+    })
+  );
+
+  const responses = await Promise.all(calendarEventsPromises);
+  const events: CalendarEvent[] = responses.flatMap(
+    ({ data: { items = [] } }) =>
+      items
+        .filter(({ start, end }) => start && end)
+        .map(({ start, end, summary }) => ({
+          start: start!.dateTime ?? start!.date,
+          end: end!.dateTime ?? end!.date,
+          summary,
+        }))
+  ) as Cast<CalendarEvent[]>;
+
+  return {
+    isSuccess: true,
+    events,
+  };
 }
 
 export async function list(_params: never, { id }: UserData) {

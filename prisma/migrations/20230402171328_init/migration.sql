@@ -24,22 +24,22 @@ CREATE TABLE "aclRole" (
 );
 
 -- CreateTable
-CREATE TABLE "rolesPermissions" (
+CREATE TABLE "RolesPermissions" (
     "roleId" INTEGER NOT NULL,
     "permissionId" INTEGER NOT NULL,
 
-    CONSTRAINT "rolesPermissions_pkey" PRIMARY KEY ("roleId","permissionId")
+    CONSTRAINT "RolesPermissions_pkey" PRIMARY KEY ("roleId","permissionId")
 );
 
 -- CreateTable
-CREATE TABLE "google" (
+CREATE TABLE "Google" (
     "oauth" JSONB NOT NULL,
     "calendarIds" VARCHAR[],
     "userId" INTEGER NOT NULL
 );
 
 -- CreateTable
-CREATE TABLE "user" (
+CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
@@ -49,48 +49,48 @@ CREATE TABLE "user" (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "roleId" INTEGER,
 
-    CONSTRAINT "user_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "userLessons" (
+CREATE TABLE "UserLessons" (
     "id" SERIAL NOT NULL,
     "type" "LessonType" NOT NULL,
     "beginAt" TIMESTAMP NOT NULL,
     "endAt" TIMESTAMP NOT NULL,
     "scheduleId" INTEGER NOT NULL,
 
-    CONSTRAINT "userLessons_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "UserLessons_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "userUnavailable" (
+CREATE TABLE "UserUnavailable" (
     "id" SERIAL NOT NULL,
     "since" TIMESTAMP NOT NULL,
     "until" TIMESTAMP NOT NULL,
     "type" "UserUnavailableType" NOT NULL DEFAULT 'single',
     "scheduleId" INTEGER NOT NULL,
 
-    CONSTRAINT "userUnavailable_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "UserUnavailable_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "userSchedule" (
+CREATE TABLE "UserSchedule" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
 
-    CONSTRAINT "userSchedule_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "UserSchedule_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "userMessage" (
+CREATE TABLE "UserMessage" (
     "id" SERIAL NOT NULL,
     "email" VARCHAR(128) NOT NULL,
     "name" VARCHAR(64) NOT NULL,
     "message" TEXT NOT NULL,
     "userId" INTEGER,
 
-    CONSTRAINT "userMessage_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "UserMessage_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -100,34 +100,34 @@ CREATE UNIQUE INDEX "aclPermission_name_key" ON "aclPermission"("name");
 CREATE UNIQUE INDEX "aclRole_name_key" ON "aclRole"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "google_userId_key" ON "google"("userId");
+CREATE UNIQUE INDEX "Google_userId_key" ON "Google"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "userSchedule_userId_key" ON "userSchedule"("userId");
+CREATE UNIQUE INDEX "UserSchedule_userId_key" ON "UserSchedule"("userId");
 
 -- AddForeignKey
-ALTER TABLE "rolesPermissions" ADD CONSTRAINT "rolesPermissions_permissionId_fkey" FOREIGN KEY ("permissionId") REFERENCES "aclPermission"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "RolesPermissions" ADD CONSTRAINT "RolesPermissions_permissionId_fkey" FOREIGN KEY ("permissionId") REFERENCES "aclPermission"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "rolesPermissions" ADD CONSTRAINT "rolesPermissions_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "aclRole"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "RolesPermissions" ADD CONSTRAINT "RolesPermissions_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "aclRole"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "google" ADD CONSTRAINT "google_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Google" ADD CONSTRAINT "Google_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user" ADD CONSTRAINT "user_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "aclRole"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "aclRole"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "userLessons" ADD CONSTRAINT "userLessons_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "userSchedule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserLessons" ADD CONSTRAINT "UserLessons_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "UserSchedule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "userUnavailable" ADD CONSTRAINT "userUnavailable_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "userSchedule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserUnavailable" ADD CONSTRAINT "UserUnavailable_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "UserSchedule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "userSchedule" ADD CONSTRAINT "userSchedule_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserSchedule" ADD CONSTRAINT "UserSchedule_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "userMessage" ADD CONSTRAINT "userMessage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "UserMessage" ADD CONSTRAINT "UserMessage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

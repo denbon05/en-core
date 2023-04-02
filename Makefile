@@ -8,6 +8,7 @@ setup:
 
 fix:
 	npm run lintfix
+	npx prisma format
 
 lint:
 	npm run lint

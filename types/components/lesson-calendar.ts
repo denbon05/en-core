@@ -1,19 +1,19 @@
 import { Moment } from 'moment';
 import type CalendarOptions from 'vue-meeting-selector/src/interfaces/CalendarOptions.interface';
-import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
 import type MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
+import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
 import { ApiResponse } from '../api';
 
-export type ScheduledTimes = Awaited<
+export type ScheduledTime = Awaited<
   ApiResponse<'user/schedule/fetch'>
->['scheduledTimes'];
+>['scheduledTime'];
 
 export interface ILessonCalendar {
   fromDate: Moment;
   nbDaysToDisplay: number;
   showUntilDate: Moment;
   lessons: MeetingSlot[];
-  scheduledTimes: ScheduledTimes;
+  scheduledTime: ScheduledTime;
   isLoading: boolean;
   calendarOptions: CalendarOptions;
 

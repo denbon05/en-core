@@ -1,10 +1,12 @@
-/* eslint-disable no-console */
-// import debug from 'debug';
+import debug from 'debug';
+import { sortBy } from 'lodash';
 import prisma from '../../server/modules/prisma';
+import { events as fetchUserGoogleCalendarEvents } from '../google/calendar';
+import { FetchParam, FetchReturn, ScheduledTime } from '@/types/api/schedule';
 import { UserData } from '@/types/api/user';
-import { FetchParam, FetchReturn } from '@/types/api/schedule';
+import { UserUnavailableType } from '@prisma/client';
 
-// const log = debug('app:api:calendar');
+const log = debug('app:api:user:schedule');
 
 // TODO CHANGE to schedule and Implement
 // export async function update<
@@ -41,20 +43,71 @@ export async function fetch(
   userData: UserData
 ): FetchReturn {
   const { id } = userData;
-
   const user = await prisma.user.findUnique({
     where: { id },
     select: {
       schedule: {
         select: {
-          userUnavailable: true,
+          userUnavailable: {
+            select: {
+              since: true,
+              until: true,
+              type: true,
+            },
+          },
+        },
+      },
+      google: {
+        select: {
+          calendarIds: true,
+          oauth: true,
         },
       },
     },
   });
 
+  if (
+    !user ||
+    (!user?.schedule?.userUnavailable && !user.google?.calendarIds.length)
+  ) {
+    // there is no scheduled time for the user
+    return {
+      isSuccess: true,
+      scheduledTime: [],
+    };
+  }
+
+  const { google, schedule } = user;
+  let scheduledTime: ScheduledTime[] =
+    sortBy(schedule?.userUnavailable, 'since') ?? [];
+
+  if (google?.calendarIds.length) {
+    // user has synced google calendars
+    try {
+      const { isSuccess, events, message } =
+        await fetchUserGoogleCalendarEvents({ timeMax, timeMin }, userData);
+
+      if (!isSuccess) {
+        // avoid google calendar events
+        log('Fail to fetch google calendar events %O', { message, userId: id });
+      } else {
+        const googleScheduled: ScheduledTime[] = events!.map(
+          ({ start, end }) => ({
+            since: new Date(start),
+            until: new Date(end),
+            type: UserUnavailableType.ONCE,
+          })
+        );
+        scheduledTime = sortBy([...scheduledTime, ...googleScheduled], 'since');
+      }
+    } catch (err) {
+      // avoid google calendar events
+      log('Error during fetching google events %O', err);
+    }
+  }
+
   return {
-    // schedule: user!.schedule, // todo
+    scheduledTime,
     isSuccess: true,
   };
 }

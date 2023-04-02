@@ -2,8 +2,10 @@ import { UserUnavailable } from '@prisma/client';
 import type { ApiReturn } from './common';
 import { CalendarEventsParam } from './google';
 
+export type ScheduledTime = Pick<UserUnavailable, 'since' | 'until' | 'type'>;
+
 type FetchedUnavailable = ApiReturn & {
-  scheduledTimes: Pick<UserUnavailable, 'since' | 'until'>[];
+  scheduledTime: ScheduledTime[];
 };
 
 export type FetchReturn = Promise<FetchedUnavailable>;
