@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient, Role, UserUnavailableType } from '@prisma/client';
 import appMode from '../server/config/mode';
 import { hashValue } from '../server/modules/crypto';
 
@@ -14,11 +14,12 @@ const prisma = new PrismaClient();
 async function main() {
   if (appMode.isDev()) {
     await prisma.google.deleteMany();
-    await prisma.user.deleteMany();
     await prisma.aclPermission.deleteMany();
     await prisma.aclRole.deleteMany();
     await prisma.rolesPermissions.deleteMany();
+    await prisma.userUnavailable.deleteMany();
     await prisma.userSchedule.deleteMany();
+    await prisma.user.deleteMany();
   }
 
   const defaultPermissions = [
@@ -110,7 +111,24 @@ async function main() {
       lastName: SUPER_ADMIN_LAST_NAME as string,
       roleId: 1, // superadmin
       schedule: {
-        create: {}, // default values
+        create: {
+          userUnavailable: {
+            createMany: {
+              data: [
+                {
+                  since: new Date('2023-04-06T00:00:00'),
+                  until: new Date('2023-04-06T08:00:00'),
+                  type: UserUnavailableType.DAILY,
+                },
+                {
+                  since: new Date('2023-04-06T19:00:00'),
+                  until: new Date('2023-04-06T23:59:00'),
+                  type: UserUnavailableType.DAILY,
+                },
+              ],
+            },
+          },
+        },
       },
     },
   });

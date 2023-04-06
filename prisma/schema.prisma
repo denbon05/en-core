@@ -86,9 +86,9 @@ model UserLessons {
   id           Int          @id @default(autoincrement())
   type         LessonType
   // ISO datetime format
-  beginAt      DateTime     @db.Timestamp()
+  beginAt      DateTime     @db.Timestamptz()
   // ISO datetime format
-  endAt        DateTime     @db.Timestamp()
+  endAt        DateTime     @db.Timestamptz()
   scheduleId   Int
   userSchedule UserSchedule @relation(fields: [scheduleId], references: [id])
 }
@@ -102,8 +102,8 @@ enum UserUnavailableType {
 // Contains unavailable datetime in ISO range format
 model UserUnavailable {
   id           Int                 @id @default(autoincrement())
-  since        DateTime            @db.Timestamp()
-  until        DateTime            @db.Timestamp()
+  since        DateTime            @db.Timestamptz()
+  until        DateTime            @db.Timestamptz()
   type         UserUnavailableType @default(ONCE)
   scheduleId   Int
   userSchedule UserSchedule        @relation(fields: [scheduleId], references: [id])

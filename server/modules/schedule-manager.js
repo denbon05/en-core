@@ -104,9 +104,12 @@ const enableAutoManager = (cronExpression = '0 0 */5 * *') =>
     }
   );
 
-parentPort?.on('message', (key) => {
-  let task;
+/**
+ * @type {import("node-cron").ScheduledTask}
+ */
+let task;
 
+parentPort?.on('message', (key) => {
   switch (key) {
     case 'enable':
       q.start();
@@ -114,7 +117,6 @@ parentPort?.on('message', (key) => {
       break;
     case 'disable':
       q.stop();
-      // @ts-ignore
       task?.stop();
       break;
     default:

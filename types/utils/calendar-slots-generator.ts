@@ -1,8 +1,18 @@
 import { Moment } from 'moment';
-import { CalendarEvent } from '../api/google';
+import { DateRange } from 'moment-range';
+import { ScheduledTime } from '../api/schedule';
+
+export type GenerateAvailableTimesParam = {
+  avoidedRanges: DateRange[];
+  date: Moment;
+};
+
+export type AggregatedRangesByDate = {
+  [key: string]: DateRange[];
+};
 
 export type GenerateCalendarSlotsParam = {
   fromDate: Moment;
   toDate: Moment;
-  unavailableTimeRanges: CalendarEvent[];
+  unavailableTimeRanges: ScheduledTime[];
 };

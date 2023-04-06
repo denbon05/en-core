@@ -5,7 +5,7 @@ CREATE TYPE "_Role" AS ENUM ('superadmin', 'admin', 'tutor', 'student', 'guest')
 CREATE TYPE "LessonType" AS ENUM ('trial', 'single', 'regular');
 
 -- CreateEnum
-CREATE TYPE "UserUnavailableType" AS ENUM ('single', 'regular');
+CREATE TYPE "UserUnavailableType" AS ENUM ('once', 'daily', 'weekly');
 
 -- CreateTable
 CREATE TABLE "aclPermission" (
@@ -56,8 +56,8 @@ CREATE TABLE "User" (
 CREATE TABLE "UserLessons" (
     "id" SERIAL NOT NULL,
     "type" "LessonType" NOT NULL,
-    "beginAt" TIMESTAMP NOT NULL,
-    "endAt" TIMESTAMP NOT NULL,
+    "beginAt" TIMESTAMPTZ NOT NULL,
+    "endAt" TIMESTAMPTZ NOT NULL,
     "scheduleId" INTEGER NOT NULL,
 
     CONSTRAINT "UserLessons_pkey" PRIMARY KEY ("id")
@@ -66,9 +66,9 @@ CREATE TABLE "UserLessons" (
 -- CreateTable
 CREATE TABLE "UserUnavailable" (
     "id" SERIAL NOT NULL,
-    "since" TIMESTAMP NOT NULL,
-    "until" TIMESTAMP NOT NULL,
-    "type" "UserUnavailableType" NOT NULL DEFAULT 'single',
+    "since" TIMESTAMPTZ NOT NULL,
+    "until" TIMESTAMPTZ NOT NULL,
+    "type" "UserUnavailableType" NOT NULL DEFAULT 'once',
     "scheduleId" INTEGER NOT NULL,
 
     CONSTRAINT "UserUnavailable_pkey" PRIMARY KEY ("id")

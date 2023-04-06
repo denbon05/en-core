@@ -68,7 +68,7 @@ export async function fetch(
 
   if (
     !user ||
-    (!user?.schedule?.userUnavailable && !user.google?.calendarIds.length)
+    (!user.schedule?.userUnavailable && !user.google?.calendarIds.length)
   ) {
     // there is no scheduled time for the user
     return {

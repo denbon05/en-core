@@ -54,15 +54,15 @@
 </template>
 
 <script lang="ts">
-import {
-  ILessonCalendar,
-  ScheduledTime,
-} from '@/types/components/lesson-calendar';
-import generateCalendarSlots from '@/utils/slotsGenerator';
 import moment from 'moment';
 import Vue, { VueConstructor } from 'vue';
 import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
 import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
+import generateCalendarSlots from '@/utils/slots-generator';
+import {
+  ILessonCalendar,
+  ScheduledTimes,
+} from '@/types/components/lesson-calendar';
 
 // const slotsGeneratorAsync = (
 //   d: Date, // date
@@ -95,7 +95,7 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       nbDaysToDisplay: 7,
       showUntilDate: moment(this.fromDate).add(this.nbDaysToDisplay, 'days'),
       lessons: [] as MeetingSlot[],
-      scheduledTime: [] as ScheduledTime,
+      scheduledTimes: [] as ScheduledTimes,
       isLoading: false,
       calendarOptions: {
         limit: 8,
@@ -121,6 +121,7 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       return generateCalendarSlots({
         fromDate: this.fromDate,
         toDate: this.showUntilDate,
+        unavailableTimeRanges: this.scheduledTimes,
       });
     },
   },
@@ -157,18 +158,16 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
 
       this.isLoading = true;
       try {
-        const {
-          scheduledTime: scheduledTimes,
-          isSuccess,
-          message,
-        } = await this.$api('user/schedule/fetch');
+        const { scheduledTime, isSuccess, message } = await this.$api(
+          'user/schedule/fetch'
+        );
 
         if (!isSuccess && message) {
           this.$emit('showSnackbar', { isSuccess, message });
           return;
         }
 
-        this.scheduledTime = scheduledTimes;
+        this.scheduledTimes = scheduledTime;
       } catch (err) {
         console.error('fetchUserCalendarConfig err', err);
       }

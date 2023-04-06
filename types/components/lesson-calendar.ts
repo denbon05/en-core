@@ -4,7 +4,7 @@ import type MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.in
 import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
 import { ApiResponse } from '../api';
 
-export type ScheduledTime = Awaited<
+export type ScheduledTimes = Awaited<
   ApiResponse<'user/schedule/fetch'>
 >['scheduledTime'];
 
@@ -13,7 +13,7 @@ export interface ILessonCalendar {
   nbDaysToDisplay: number;
   showUntilDate: Moment;
   lessons: MeetingSlot[];
-  scheduledTime: ScheduledTime;
+  scheduledTimes: ScheduledTimes;
   isLoading: boolean;
   calendarOptions: CalendarOptions;
 
