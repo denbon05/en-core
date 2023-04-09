@@ -18,7 +18,7 @@ export const stepInMinutes = 30;
  * @returns {MeetingSlot[]}
  */
 export const generateAvailableTimes = ({
-  avoidedRanges,
+  avoidedRanges = [],
   date,
 }: GenerateAvailableTimesParam): MeetingSlot[] => {
   const wholeDayRange = moment.range(date, date).snapTo('day');
@@ -28,14 +28,14 @@ export const generateAvailableTimes = ({
     step: stepInMinutes,
     excludeEnd: true,
   })) {
-    const toTime = fromTime.add(stepInMinutes, 'minutes');
+    const toTime = fromTime.clone().add(stepInMinutes, 'minutes');
     const timeRange = moment.range(fromTime, toTime);
     const isTimeOverlaps = avoidedRanges.some((range) =>
       range.overlaps(timeRange)
     );
 
     // TODO remove `isSame`, don't iterate further than one date
-    if (!isTimeOverlaps && fromTime.isSame(date, 'date')) {
+    if (!isTimeOverlaps) {
       availableTimes.push({
         date: fromTime.toLocaleString(),
       });

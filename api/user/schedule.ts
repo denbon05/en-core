@@ -1,10 +1,21 @@
 import debug from 'debug';
-import { sortBy } from 'lodash';
+import { UserUnavailableType } from '@prisma/client';
 import prisma from '../../server/modules/prisma';
 import { events as fetchUserGoogleCalendarEvents } from '../google/calendar';
-import { FetchParam, FetchReturn, ScheduledTime } from '@/types/api/schedule';
+import { spreadTime } from '../../server/utils/schedule';
+import {
+  FetchParam,
+  FetchReturn,
+  ScheduledTime,
+  ScheduledTimeWithType,
+} from '@/types/api/schedule';
 import { UserData } from '@/types/api/user';
-import { UserUnavailableType } from '@prisma/client';
+
+// TODO change to import after https://github.com/rotaready/moment-range/issues/295
+const m = require('moment');
+const MomentRange = require('moment-range');
+
+const moment = MomentRange.extendMoment(m);
 
 const log = debug('app:api:user:schedule');
 
@@ -38,13 +49,15 @@ const log = debug('app:api:user:schedule');
 //   };
 // }
 
+// const fetchTutorsUnavailable = async ()
+
 export async function fetch(
-  { timeMin, timeMax }: FetchParam,
+  { timeMin, timeMax, userId }: FetchParam,
+  // user can be unauthorized
   userData: UserData
 ): FetchReturn {
-  const { id } = userData;
   const user = await prisma.user.findUnique({
-    where: { id },
+    where: { id: userId },
     select: {
       schedule: {
         select: {
@@ -53,6 +66,19 @@ export async function fetch(
               since: true,
               until: true,
               type: true,
+            },
+            where: {
+              since: timeMin,
+              until: timeMax,
+              OR: {
+                type: UserUnavailableType.DAILY,
+                OR: {
+                  type: UserUnavailableType.WEEKLY,
+                },
+              },
+            },
+            orderBy: {
+              since: 'asc',
             },
           },
         },
@@ -78,10 +104,12 @@ export async function fetch(
   }
 
   const { google, schedule } = user;
-  let scheduledTime: ScheduledTime[] =
-    sortBy(schedule?.userUnavailable, 'since') ?? [];
+  // the variable going to collect app's schedule and google data
+  let scheduledTimeMixed: ScheduledTimeWithType[] =
+    schedule?.userUnavailable ?? [];
 
-  if (google?.calendarIds.length) {
+  if (userData && google?.calendarIds.length) {
+    // the user should be authorized
     // user has synced google calendars
     try {
       const { isSuccess, events, message } =
@@ -89,22 +117,64 @@ export async function fetch(
 
       if (!isSuccess) {
         // avoid google calendar events
-        log('Fail to fetch google calendar events %O', { message, userId: id });
+        log('Fail to fetch google calendar events %O', { message, userId });
       } else {
         const googleScheduled: ScheduledTime[] = events!.map(
           ({ start, end }) => ({
             since: new Date(start),
             until: new Date(end),
-            type: UserUnavailableType.ONCE,
           })
         );
-        scheduledTime = sortBy([...scheduledTime, ...googleScheduled], 'since');
+        scheduledTimeMixed = [...scheduledTimeMixed, ...googleScheduled];
       }
     } catch (err) {
       // avoid google calendar events
       log('Error during fetching google events %O', err);
     }
   }
+
+  const totalSince = moment(timeMin);
+  const totalUntil = moment(timeMax);
+  const isTotalRangeBiggerThanWeek =
+    moment.duration(totalUntil.diff(totalSince)).asDays() > 7;
+  const totalRange = moment.range(totalSince, totalUntil).snapTo('days');
+  const scheduledTime: ScheduledTime[] = scheduledTimeMixed.flatMap(
+    ({ since, until, type }): ScheduledTime | ScheduledTime[] => {
+      if (!type || type === UserUnavailableType.ONCE) {
+        // google or single event
+        return { since, until };
+      }
+      // in case there are regular scheduled times - spread it
+      // ? spread time on the client in order to reduce network load
+
+      const sinceTime = {
+        hours: moment(since).get('hours'),
+        minutes: moment(since).get('minutes'),
+      };
+      const untilTime = {
+        hours: moment(until).get('hours'),
+        minutes: moment(until).get('minutes'),
+      };
+
+      if (type === UserUnavailableType.WEEKLY && isTotalRangeBiggerThanWeek) {
+        // each week the same unavailable time
+        return spreadTime({
+          range: totalRange,
+          since: sinceTime,
+          until: untilTime,
+          interval: 'week',
+        });
+      }
+
+      // daily regular unavailable time
+      return spreadTime({
+        range: totalRange,
+        since: sinceTime,
+        until: untilTime,
+        interval: 'day',
+      });
+    }
+  );
 
   return {
     scheduledTime,

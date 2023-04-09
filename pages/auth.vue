@@ -12,8 +12,8 @@
 
           <v-tabs-items v-model="tab">
             <v-tab-item
-              v-for="(component, idx) in components"
-              :key="`tab-${idx}`"
+              v-for="component in components"
+              :key="`tab-${component.name}`"
             >
               <v-card flat>
                 <component :is="component" />

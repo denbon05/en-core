@@ -20,6 +20,7 @@
 import Vue from 'vue';
 import AppBar from '@/components/default/AppBar.vue';
 import AppFooter from '@/components/default/AppFooter.vue';
+import { ShowSnackbarParam } from '@/types/global/vue';
 
 export default Vue.extend({
   name: 'DefaultLayout',
@@ -53,17 +54,17 @@ export default Vue.extend({
   },
 
   methods: {
-    showSnackbar({
-      message,
-      isSuccess,
-    }: {
-      message: string;
-      isSuccess: boolean;
-    }) {
+    showSnackbar({ message, isSuccess, isWarn = false }: ShowSnackbarParam) {
+      const color = isWarn
+        ? 'lime darken-2'
+        : isSuccess
+        ? 'lime darken-2'
+        : 'red darken-2';
+
       this.$set(this, 'snackbar', {
         isVisible: true,
-        message,
-        color: isSuccess ? 'green darken-2' : 'red darken-2',
+        message: message ?? this.$t('error.common'),
+        color,
       });
     },
   },

@@ -1,56 +1,35 @@
 <template>
-  <v-dialog
-    id="lessonsCalendar"
-    v-model="isVisible"
-    max-width="900"
-    rounded="xl"
-  >
-    <v-card id="calendarContainer" class="pa-10" color="#FFF">
-      <v-card-title
-        id="calendarMonth"
-        class="black--text d-flex justify-center"
-      >
-        <section>
-          <v-btn icon large @click="prevMonth">
-            <v-icon color="#39adee">mdi-chevron-left</v-icon>
-          </v-btn>
-          <span class="text-center">{{ `${monthAndYear}` }}</span>
-          <v-btn icon large @click="nextMonth">
-            <v-icon color="#39adee">mdi-chevron-right</v-icon>
-          </v-btn>
-        </section>
-        <v-btn
-          class="black--text text-capitalize"
-          large
-          icon
-          absolute
-          top
-          right
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
+  <section id="calendarMonth">
+    <section class="d-flex justify-center align-center">
+      <v-btn icon large @click="prevMonth">
+        <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
+        <v-icon color="#39adee">mdi-chevron-left</v-icon>
+      </v-btn>
+      <span class="text-center">{{ `${monthAndYear}` }}</span>
+      <v-btn icon large @click="nextMonth">
+        <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
+        <v-icon color="#39adee">mdi-chevron-right</v-icon>
+      </v-btn>
+    </section>
+    <!-- <v-btn class="black--text text-capitalize" large icon absolute top right>
+      <v-icon>mdi-close</v-icon>
+    </v-btn> -->
 
-      <v-divider class="mt-3"></v-divider>
+    <v-divider class="mt-3"></v-divider>
 
-      <meeting-selector
-        v-model="lessons"
-        :date="fromDate"
-        :meetings-days="availableDays"
-        :calendar-options="calendarOptions"
-        :multi="true"
-        :loading="isLoading"
-        @next-date="nextDate"
-        @previous-date="prevDate"
-      >
-        <template #loading> Loading ... </template>
-      </meeting-selector>
-
-      <v-card-actions class="d-flex justify-end">
-        <v-btn class="btn-sm" @click="bookLesson">BOOK</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    <meeting-selector
+      v-model="lessons"
+      :date="meetingSelectorDate"
+      :meetings-days="availableDays"
+      :calendar-options="calendarOptions"
+      :multi="true"
+      :loading="isLoading"
+      @next-date="nextDate"
+      @previous-date="prevDate"
+    >
+      <template #loading> Loading ... </template>
+    </meeting-selector>
+  </section>
 </template>
 
 <script lang="ts">
@@ -64,18 +43,6 @@ import {
   ScheduledTimes,
 } from '@/types/components/lesson-calendar';
 
-// const slotsGeneratorAsync = (
-//   d: Date, // date
-//   n: number, // nbDaysToDisplay
-//   start: Time,
-//   end: Time,
-//   timesBetween: number
-// ): Promise<MeetingsDay[]> =>
-//   new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve(slotsGenerator(d, n, start, end, timesBetween));
-//     }, 100);
-//   });
 // TODO move all schedule logic to the class TutorSchedule
 export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
   name: 'LessonsCalendar',
@@ -85,7 +52,7 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
   props: {
     value: {
       required: true,
-      type: Boolean,
+      type: Number,
     },
   },
 
@@ -104,13 +71,8 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
   },
 
   computed: {
-    isVisible: {
-      get(): boolean {
-        return this.value;
-      },
-      set(value) {
-        this.$emit('input', value);
-      },
+    meetingSelectorDate() {
+      return new Date(this.fromDate.toISOString());
     },
 
     monthAndYear() {
@@ -127,19 +89,12 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
   },
 
   watch: {
-    meeting(values) {
-      console.log({ meeting: values });
+    lessons(values) {
+      console.log({ lessons: values });
     },
   },
 
   async mounted() {
-    // this.lessonDays = (await slotsGeneratorAsync(
-    //   this.date,
-    //   this.nbDaysToDisplay,
-    //   this.lessonFromTime,
-    //   this.lessonToTime,
-    //   30
-    // )) as any;
     await this.fetchUserSchedule();
   },
 
@@ -159,16 +114,24 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       this.isLoading = true;
       try {
         const { scheduledTime, isSuccess, message } = await this.$api(
-          'user/schedule/fetch'
+          'user/schedule/fetch',
+          {
+            timeMin: this.fromDate.toISOString(),
+            timeMax: this.fromDate
+              .add(this.nbDaysToDisplay, 'days')
+              .toISOString(),
+            userId: this.value,
+          }
         );
-
         if (!isSuccess && message) {
           this.$emit('showSnackbar', { isSuccess, message });
+          this.isLoading = false;
           return;
         }
-
+        console.log({ scheduledTime });
         this.scheduledTimes = scheduledTime;
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error('fetchUserCalendarConfig err', err);
       }
       this.isLoading = false;
@@ -292,5 +255,14 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
 
 #calendarContainer {
   border-radius: $btn-border-radius;
+}
+
+// inside meeting-selector class
+.tab__loading {
+  top: 49px;
+}
+
+.day {
+  margin-bottom: 12px;
 }
 </style>

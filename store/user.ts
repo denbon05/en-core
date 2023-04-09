@@ -1,5 +1,6 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex';
 import debug from 'debug';
+import { Role } from '@prisma/client';
 import { UserState } from '@/types/store';
 import { ApiParams } from '@/types/api';
 import { UserData } from '@/types/api/user';
@@ -25,7 +26,7 @@ export const getters: GetterTree<UserState, UserState> = {
       return userData;
     }
     const { name } = role;
-    if (name === 'admin' || name === 'superadmin') {
+    if (name === Role.ADMIN || name === Role.SUPERADMIN) {
       userData.roleName = name;
     }
     return userData;
@@ -40,23 +41,19 @@ export const getters: GetterTree<UserState, UserState> = {
   },
 
   isStudent({ data: { role } }) {
-    return role?.name === 'student';
+    return role?.name === Role.STUDENT;
   },
 
   isTutor({ data: { role } }) {
-    return role?.name === 'tutor';
+    return role?.name === Role.TUTOR;
   },
 
   isAdmin({ data: { role } }) {
-    return role?.name === 'admin';
+    return role?.name === Role.ADMIN;
   },
 
   isSuperAdmin({ data: { role } }) {
-    return role?.name === 'superadmin';
-  },
-
-  isAdminAndUp({ data: { role } }) {
-    return role && (role.name === 'admin' || role.name === 'superadmin');
+    return role?.name === Role.SUPERADMIN;
   },
 };
 

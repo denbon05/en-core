@@ -4,11 +4,12 @@ import { UserData } from '@/types/api/user';
 import { UpdateUserData } from '@/types/auth/person';
 
 const log = debug('app:api:user:data');
+// * Api forbidden by server middleware for unauthorized users
 
 export async function update(
   // todo add reset password
   { firstName, lastName }: UpdateUserData,
-  { id }: UserData
+  { id }: Exclude<UserData, null>
 ) {
   try {
     await prisma.user.update({

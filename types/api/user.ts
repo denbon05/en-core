@@ -1,3 +1,5 @@
+import { AclRole } from '@prisma/client';
+
 export type GetUserParam = {
   email: string;
   passwordDigest: string;
@@ -10,6 +12,6 @@ export type UserData = {
   lastName: string;
   role?: {
     id: number;
-    name: 'superadmin' | 'admin' | 'tutor' | 'student';
+    name: AclRole['name'];
   } | null;
-};
+} | null;

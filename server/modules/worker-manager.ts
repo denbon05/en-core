@@ -1,6 +1,8 @@
 import { Worker } from 'worker_threads';
 import debug from 'debug';
 
+// ? TODO remove ?
+
 const log = debug('app:init');
 let worker: Worker;
 

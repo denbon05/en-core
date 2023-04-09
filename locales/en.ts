@@ -56,6 +56,7 @@ const en = {
   },
 
   tutor: {
+    title: 'Tutor',
     nice: 'Nice to meet you!',
     hello: 'Hello everybody!',
     about: `Hello! I'm teacher Desmond from Cameroon and I am here to walk with you
@@ -78,6 +79,15 @@ const en = {
       name: '@:(user.name)',
       message: 'Message',
     },
+    list: {
+      noAvailable: 'Sorry, there are no available tutors 😐',
+    },
+  },
+
+  calendar: {
+    title: 'Calendar',
+    date: 'Date',
+    time: 'Time',
   },
 
   program: {
@@ -117,6 +127,7 @@ const en = {
     syncGoogle: 'Sync Google',
     sync: 'Sync',
     save: 'Save',
+    select: 'Select {name}',
   },
 
   error: {
@@ -130,6 +141,7 @@ const en = {
         sync: "Select calendar | Can't sync google calendar | Can't sync google calendars",
       },
     },
+    common: 'Something went wrong 👽',
   },
 
   notification: {

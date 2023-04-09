@@ -1,8 +1,8 @@
-import type { UserData } from '../api/user';
+import { User } from '@prisma/client';
 
 export type UserPermission = {
   id: number;
   name: string;
 };
 
-export type UpdateUserData = Pick<UserData, 'firstName' | 'lastName'>;
+export type UpdateUserData = Pick<User, 'firstName' | 'lastName'>;

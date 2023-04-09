@@ -8,19 +8,19 @@ CREATE TYPE "LessonType" AS ENUM ('trial', 'single', 'regular');
 CREATE TYPE "UserUnavailableType" AS ENUM ('once', 'daily', 'weekly');
 
 -- CreateTable
-CREATE TABLE "aclPermission" (
+CREATE TABLE "AclPermission" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
 
-    CONSTRAINT "aclPermission_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "AclPermission_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "aclRole" (
+CREATE TABLE "AclRole" (
     "id" SERIAL NOT NULL,
     "name" "_Role" NOT NULL DEFAULT 'student',
 
-    CONSTRAINT "aclRole_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "AclRole_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -39,6 +39,15 @@ CREATE TABLE "Google" (
 );
 
 -- CreateTable
+CREATE TABLE "UserRoles" (
+    "userId" INTEGER NOT NULL,
+    "roleId" INTEGER NOT NULL,
+    "name" "_Role" NOT NULL,
+
+    CONSTRAINT "UserRoles_pkey" PRIMARY KEY ("userId","roleId")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
@@ -47,7 +56,6 @@ CREATE TABLE "User" (
     "passwordDigest" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "roleId" INTEGER,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -94,10 +102,10 @@ CREATE TABLE "UserMessage" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "aclPermission_name_key" ON "aclPermission"("name");
+CREATE UNIQUE INDEX "AclPermission_name_key" ON "AclPermission"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "aclRole_name_key" ON "aclRole"("name");
+CREATE UNIQUE INDEX "AclRole_name_key" ON "AclRole"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Google_userId_key" ON "Google"("userId");
@@ -109,16 +117,19 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "UserSchedule_userId_key" ON "UserSchedule"("userId");
 
 -- AddForeignKey
-ALTER TABLE "RolesPermissions" ADD CONSTRAINT "RolesPermissions_permissionId_fkey" FOREIGN KEY ("permissionId") REFERENCES "aclPermission"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "RolesPermissions" ADD CONSTRAINT "RolesPermissions_permissionId_fkey" FOREIGN KEY ("permissionId") REFERENCES "AclPermission"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "RolesPermissions" ADD CONSTRAINT "RolesPermissions_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "aclRole"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "RolesPermissions" ADD CONSTRAINT "RolesPermissions_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "AclRole"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Google" ADD CONSTRAINT "Google_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "aclRole"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "UserRoles" ADD CONSTRAINT "UserRoles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserRoles" ADD CONSTRAINT "UserRoles_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "AclRole"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserLessons" ADD CONSTRAINT "UserLessons_scheduleId_fkey" FOREIGN KEY ("scheduleId") REFERENCES "UserSchedule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

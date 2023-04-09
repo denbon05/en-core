@@ -18,8 +18,8 @@ const simulateGenerator = (
   Array.from(
     moment
       .range(availableSince, availableUntil)
-      .by('minutes', { step: stepInMinutes })
-    // TODO remove any after done https://github.com/rotaready/moment-range/issues/295
+      .by('minutes', { step: stepInMinutes, excludeEnd: true })
+    // TODO remove `any` after https://github.com/rotaready/moment-range/issues/295
   ).map((time: any) => ({ date: time.toLocaleString() }));
 
 describe('Check generators', () => {

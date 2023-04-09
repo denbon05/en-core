@@ -14,6 +14,8 @@ import {
 
 const log = debug('app:api:google:calendar');
 
+// * The google API forbidden for non-auth users by middleware
+
 const getOAuthDecrypted = async (userId: number) => {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -40,7 +42,7 @@ const getOAuthDecrypted = async (userId: number) => {
 
 export async function events(
   { timeMin, timeMax }: CalendarEventsParam,
-  { id }: UserData
+  { id }: Exclude<UserData, null>
 ) {
   const calendar = google.calendar('v3');
 
@@ -94,7 +96,7 @@ export async function events(
   };
 }
 
-export async function list(_params: never, { id }: UserData) {
+export async function list(_params: never, { id }: Exclude<UserData, null>) {
   try {
     const user = await prisma.user.findUnique({
       where: { id },
@@ -141,7 +143,10 @@ export async function list(_params: never, { id }: UserData) {
   }
 }
 
-export async function sync({ calendarIds }: SyncParam, { id }: UserData) {
+export async function sync(
+  { calendarIds }: SyncParam,
+  { id }: Exclude<UserData, null>
+) {
   try {
     await prisma.user.update({
       where: { id },

@@ -1,7 +1,7 @@
 import type { UserData } from '../api/user';
 
 export type UserState = {
-  data: UserData;
+  data: Exclude<UserData, null>;
 };
 
 export interface AuthState {

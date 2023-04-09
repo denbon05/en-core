@@ -19,6 +19,7 @@ async function main() {
     await prisma.rolesPermissions.deleteMany();
     await prisma.userUnavailable.deleteMany();
     await prisma.userSchedule.deleteMany();
+    await prisma.userRoles.deleteMany();
     await prisma.user.deleteMany();
   }
 
@@ -105,11 +106,16 @@ async function main() {
   await prisma.user.create({
     data: {
       id: 1,
-      email: SUPER_ADMIN_EMAIL as string,
-      passwordDigest: hashValue(SUPER_ADMIN_PASS as string),
-      firstName: SUPER_ADMIN_FIRST_NAME as string,
-      lastName: SUPER_ADMIN_LAST_NAME as string,
-      roleId: 1, // superadmin
+      email: SUPER_ADMIN_EMAIL!,
+      passwordDigest: hashValue(SUPER_ADMIN_PASS!),
+      firstName: SUPER_ADMIN_FIRST_NAME!,
+      lastName: SUPER_ADMIN_LAST_NAME!,
+      roles: {
+        create: {
+          roleId: 1,
+          name: Role.SUPERADMIN,
+        },
+      },
       schedule: {
         create: {
           userUnavailable: {
@@ -132,6 +138,17 @@ async function main() {
       },
     },
   });
+
+  if (appMode.isDev()) {
+    // make superadmin tutor in dev mode
+    await prisma.userRoles.create({
+      data: {
+        userId: 1,
+        roleId: 3,
+        name: Role.TUTOR,
+      },
+    });
+  }
 }
 
 main()

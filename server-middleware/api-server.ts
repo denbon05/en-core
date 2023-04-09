@@ -1,7 +1,7 @@
 import type { ServerResponse } from 'http';
 import path from 'path';
 import debug from 'debug';
-import camelCase from 'lodash/camelCase';
+import { TokenExpiredError, JwtPayload } from 'jsonwebtoken';
 import appMode from '../server/config/mode';
 import { verifyJWT } from '../server/modules/auth';
 import type { ApiControllerPath, ApiIncomingMsg } from '@/types/api';
@@ -33,15 +33,38 @@ export default async <CPath extends ApiControllerPath>(
   try {
     const api = require(`${apiPath}.ts`);
     const func = api[funcName];
-    const userData = auth ? verifyJWT(auth) : null;
+    let message: string = '';
+    let userData: string | JwtPayload | null = null;
+
+    try {
+      // some pages doesn't required user be signed in
+      userData = auth ? verifyJWT(auth) : null;
+    } catch (err) {
+      if (err instanceof TokenExpiredError) {
+        log(`token expired %p`, err.message);
+        // if user was logged in but jwt expired
+        // send message that account data is not synced
+        message =
+          'The session expired. To sync your account you should be Logged In.';
+      } else {
+        throw err;
+      }
+    }
 
     const result = await func(params, userData);
-    res.end(JSON.stringify(result));
+    res.end(
+      JSON.stringify({
+        ...result,
+        message,
+      })
+    );
   } catch (err) {
-    log(`Api "${url}${funcName}" error %O`, err);
-    res.end({
-      isSuccess: false,
-      message: err.message,
-    });
+    log(`api "${url}${funcName}" error %O`, err);
+    res.end(
+      JSON.stringify({
+        isSuccess: false,
+        message: err.message,
+      })
+    );
   }
 };

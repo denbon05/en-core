@@ -1,7 +1,7 @@
 <template>
   <section id="introScreen">
-    <template v-if="isCalendarOpen">
-      <LessonsCalendar v-model="isCalendarOpen"
+    <template v-if="isBookLessonOpen">
+      <BookLesson v-model="isBookLessonOpen"
     /></template>
     <img
       :src="bgImg"
@@ -30,7 +30,7 @@
       </section>
 
       <section id="introAction" class="d-flex flex-column align-center">
-        <v-btn class="btn-lg my-3" elevation="2" @click.stop="openCalendar">
+        <v-btn class="btn-lg my-3" elevation="2" @click.stop="openBookLesson">
           <span class="mx-5 my-5">{{ $t('main.action') }}</span>
         </v-btn>
 
@@ -44,12 +44,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import LessonsCalendar from './LessonsCalendar.vue';
+import BookLesson from './lesson/BookLesson.vue';
 
 export default Vue.extend({
   name: 'IntroScreen',
 
-  components: { LessonsCalendar },
+  components: { BookLesson },
 
   props: {
     smAndDown: {
@@ -62,7 +62,7 @@ export default Vue.extend({
     return {
       amount: 2, // todo: make dynamic data from settled by admin
       introHeight: 0,
-      isCalendarOpen: false,
+      isBookLessonOpen: false,
     };
   },
 
@@ -81,11 +81,11 @@ export default Vue.extend({
   },
 
   methods: {
-    openCalendar() {
-      this.isCalendarOpen = true;
+    openBookLesson() {
+      this.isBookLessonOpen = true;
     },
-    closeCalendar() {
-      this.isCalendarOpen = false;
+    closeBookLesson() {
+      this.isBookLessonOpen = false;
     },
   },
 });

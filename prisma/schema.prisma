@@ -27,8 +27,6 @@ model AclPermission {
   id               Int                @id @default(autoincrement())
   name             String             @unique
   rolesPermissions RolesPermissions[]
-
-  @@map("aclPermission")
 }
 
 // Available roles.
@@ -36,9 +34,7 @@ model AclRole {
   id               Int                @id @default(autoincrement())
   name             Role               @unique @default(STUDENT)
   rolesPermissions RolesPermissions[]
-  user             User[]
-
-  @@map("aclRole")
+  userRoles        UserRoles[]
 }
 
 // Table for connection role with permissions.
@@ -59,6 +55,17 @@ model Google {
   user        User     @relation(fields: [userId], references: [id])
 }
 
+model UserRoles {
+  userId Int
+  roleId Int
+  name   Role
+
+  user User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role AclRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
 // User data table.
 model User {
   id             Int           @id @default(autoincrement())
@@ -68,11 +75,10 @@ model User {
   passwordDigest String
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @default(now())
-  roleId         Int?
-  aclRole        AclRole?      @relation(fields: [roleId], references: [id])
   google         Google?
   schedule       UserSchedule?
   message        UserMessage[]
+  roles          UserRoles[]
 }
 
 enum LessonType {

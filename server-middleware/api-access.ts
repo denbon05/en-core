@@ -7,7 +7,7 @@ import type {
 } from '@/types/api';
 
 // forbidden URLs by group type
-const unauthorizedForbidden: ControllerPathPart[] = ['google'];
+const unauthorizedForbidden: ControllerPathPart[] = ['google', 'data'];
 
 export default <CPath extends ApiControllerPath>(
   { url, cookies: { auth } }: ApiIncomingMsg<CPath>,

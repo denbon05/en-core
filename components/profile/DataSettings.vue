@@ -73,7 +73,7 @@ export default Vue.extend({
       deep: true,
       handler({ isLoading, isSuccess, message }: ComponentQuery) {
         if (!isLoading) {
-          this.showSnackbar({ isLoading, isSuccess, message });
+          this.showSnackbar({ isSuccess, message });
         }
       },
     },

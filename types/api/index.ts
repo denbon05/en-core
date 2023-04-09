@@ -1,15 +1,18 @@
 import type { IncomingMessage } from 'http';
+import type { ApiReturn as CommonApiReturn } from './common';
 import * as auth from '@/api/auth';
 import * as userData from '@/api/user/data';
 import * as userSchedule from '@/api/user/schedule';
 import * as googleCalendar from '@/api/google/calendar';
 import * as googleAuth from '@/api/google/auth';
+import * as manageUsers from '@/api/manage/users';
 
 type AuthFuncName = keyof typeof auth;
 type GoogleCalendarFuncName = keyof typeof googleCalendar;
 type GoogleAuthFuncName = keyof typeof googleAuth;
 type UserDataFuncName = keyof typeof userData;
 type UserScheduleFuncName = keyof typeof userSchedule;
+type ManageUsersFuncName = keyof typeof manageUsers;
 
 type ApiAuth = {
   [K in AuthFuncName]: (typeof auth)[K];
@@ -26,12 +29,18 @@ type ApiUserData = {
 type ApiUserSchedule = {
   [K in UserScheduleFuncName]: (typeof userSchedule)[K];
 };
+type ApiManageUsers = {
+  [K in ManageUsersFuncName]: (typeof manageUsers)[K];
+};
 
 export interface AppApi {
   auth: ApiAuth;
   user: {
     data: ApiUserData;
     schedule: ApiUserSchedule;
+  };
+  manage: {
+    users: ApiManageUsers;
   };
   google: {
     calendar: ApiGoogleCalendar;
@@ -63,7 +72,7 @@ export type ControllerPathPart<CPath extends string = ApiControllerPath> =
 export type ApiResponse<
   CPath extends string,
   Obj extends Record<string, any> = AppApi
-> = CPath extends `${infer Head}/${infer Tail}` // ? trailing slash
+> = (CPath extends `${infer Head}/${infer Tail}` // ? trailing slash
   ? Head extends ControllerPathPart // ? narrow
     ? Tail extends `${infer _Head}${infer _Rest}` // ? not empty
       ? ApiResponse<Tail, Obj[Head]>
@@ -71,7 +80,8 @@ export type ApiResponse<
     : never
   : ReturnType<Obj[CPath]> extends Promise<any>
   ? ReturnType<Obj[CPath]>
-  : Promise<ReturnType<Obj[CPath]>>;
+  : Promise<ReturnType<Obj[CPath]>>) &
+  Promise<CommonApiReturn>;
 
 export type ApiParams<
   CPath extends string,

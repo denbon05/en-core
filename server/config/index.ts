@@ -1,4 +1,4 @@
-import '../modules/init';
+// import '../modules/init';
 import appMode from './mode';
 
 const {
