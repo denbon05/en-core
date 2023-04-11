@@ -54,6 +54,10 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       required: true,
       type: Number,
     },
+    isLoading: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   data() {
@@ -63,7 +67,6 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       showUntilDate: moment(this.fromDate).add(this.nbDaysToDisplay, 'days'),
       lessons: [] as MeetingSlot[],
       scheduledTimes: [] as ScheduledTimes,
-      isLoading: false,
       calendarOptions: {
         limit: 8,
       },
@@ -80,6 +83,14 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
     },
 
     availableDays(): MeetingsDay[] {
+      console.log({
+        fromDate: this.fromDate,
+        toDate: this.showUntilDate,
+      });
+      if (!this.scheduledTimes.length) {
+        return [];
+      }
+
       return generateCalendarSlots({
         fromDate: this.fromDate,
         toDate: this.showUntilDate,
@@ -104,16 +115,9 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
     },
 
     async fetchUserSchedule() {
-      const isUserAuthenticated: boolean =
-        this.$store.getters['user/isAuthenticated'];
-
-      if (!isUserAuthenticated) {
-        return;
-      }
-
-      this.isLoading = true;
+      this.$emit('set-loading', true);
       try {
-        const { scheduledTime, isSuccess, message } = await this.$api(
+        const { scheduledTimes, isSuccess, message } = await this.$api(
           'user/schedule/fetch',
           {
             timeMin: this.fromDate.toISOString(),
@@ -125,99 +129,27 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
         );
         if (!isSuccess && message) {
           this.$emit('showSnackbar', { isSuccess, message });
-          this.isLoading = false;
-          return;
         }
-        console.log({ scheduledTime });
-        this.scheduledTimes = scheduledTime;
+        console.log({ scheduledTimes });
+        this.scheduledTimes = scheduledTimes ?? [];
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error('fetchUserCalendarConfig err', err);
+      } finally {
+        this.$emit('set-loading', false);
       }
-      this.isLoading = false;
     },
 
-    // async fetchEvents() {
-    //   this.isLoading = true;
-    //   try {
-    //     const { events, isSuccess, message } = await this.$api(
-    //       'google/calendar/events',
-    //       {
-    //         timeMin: this.fromDate.toISOString(),
-    //         timeMax: this.showUntilDate.toISOString(),
-    //       }
-    //     );
-
-    //     if (!isSuccess && message) {
-    //       this.$emit('showSnackbar', { isSuccess, message });
-    //       return;
-    //     }
-
-    //     if (events?.length) {
-    //       this.events = events;
-    //     }
-    //   } catch (err) {
-    //     console.error('fetchEvents err', err);
-    //   }
-    //   this.isLoading = false;
-    // },
-
     async nextDate() {
-      this.isLoading = true;
-      // const start: Time = {
-      //   hours: 8,
-      //   minutes: 0,
-      // };
-      // const end: Time = {
-      //   hours: 16,
-      //   minutes: 0,
-      // };
-      // const dateCopy = new Date(this.date);
-      // const newDate = new Date(dateCopy.setDate(dateCopy.getDate() + 7));
-      // this.date = newDate;
-      // this.lessonDays = (await slotsGeneratorAsync(
-      //   newDate,
-      //   this.nbDaysToDisplay,
-      //   start,
-      //   end,
-      //   30
-      // )) as any;
-      this.isLoading = false;
+      this.$emit('set-loading', true);
+      // todo
+      this.$emit('set-loading', false);
     },
 
     async prevDate() {
-      this.isLoading = true;
-      // const start: Time = {
-      //   hours: 8,
-      //   minutes: 0,
-      // };
-      // const end: Time = {
-      //   hours: 16,
-      //   minutes: 0,
-      // };
-      // const dateCopy = new Date(this.date);
-      // dateCopy.setDate(dateCopy.getDate() - 7);
-      // const formattingDate = (dateToFormat: Date): String => {
-      //   const d = new Date(dateToFormat);
-      //   const day = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate();
-      //   const month =
-      //     d.getMonth() + 1 < 10 ? `0${d.getMonth() + 1}` : d.getMonth() + 1;
-      //   const year = d.getFullYear();
-      //   return `${year}-${month}-${day}`;
-      // };
-      // const newDate =
-      //   formattingDate(new Date()) >= formattingDate(dateCopy)
-      //     ? new Date()
-      //     : new Date(dateCopy);
-      // this.date = newDate;
-      // this.lessonDays = (await slotsGeneratorAsync(
-      //   newDate,
-      //   this.nbDaysToDisplay,
-      //   start,
-      //   end,
-      //   30
-      // )) as any;
-      this.isLoading = false;
+      this.$emit('set-loading', true);
+      // todo
+      this.$emit('set-loading', false);
     },
 
     async prevMonth() {

@@ -28,7 +28,7 @@ make start    # launch the app
   NOTE: The app should be registered in Google.
 </i>
 
-#### Auth
+### Auth
 
 <p>
   <ul>
@@ -37,11 +37,28 @@ make start    # launch the app
   </ul>
 </p>
 
-#### API - server
+### API - server
 
 <p>
   <b>Underscored ('_')</b> function names will be ignored for usage by the client.
 </p>
+
+### Tests
+
+<p>
+  <b>Vars</b>
+  <ul>
+    <li>DB_TEST_URL</li>
+  </ul>
+</p>
+
+<p>
+  Test command will be trying to create test db.
+</p>
+
+```sh
+make test
+```
 
 ### Build Setup
 

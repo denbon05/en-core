@@ -22,5 +22,12 @@ module.exports = {
     '<rootDir>/pages/**/*.vue',
   ],
   setupFiles: ['<rootDir>/__tests__/setup.ts'],
+  globalSetup: '<rootDir>/__tests__/global-setup.ts',
+  globalTeardown: '<rootDir>/__tests__/global-teardown.ts',
+  globals: {
+    DB_TEST_URL:
+      process.env.DB_TEST_URL ??
+      'postgres://en_core:supersecret@localhost:5432/en_core_test',
+  },
   testEnvironment: 'jsdom',
 };

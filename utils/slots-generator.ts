@@ -1,5 +1,4 @@
-import * as m from 'moment';
-import { DateRange, extendMoment } from 'moment-range';
+import { DateRange } from 'moment-range';
 import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
 import MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
 import {
@@ -8,7 +7,11 @@ import {
   GenerateCalendarSlotsParam,
 } from '@/types/utils/calendar-slots-generator';
 
-const moment = extendMoment(m);
+// TODO change to import after https://github.com/rotaready/moment-range/issues/295
+const m = require('moment');
+const MomentRange = require('moment-range');
+
+const moment = MomentRange.extendMoment(m);
 
 export const stepInMinutes = 30;
 
@@ -34,7 +37,6 @@ export const generateAvailableTimes = ({
       range.overlaps(timeRange)
     );
 
-    // TODO remove `isSame`, don't iterate further than one date
     if (!isTimeOverlaps) {
       availableTimes.push({
         date: fromTime.toLocaleString(),
@@ -70,13 +72,14 @@ const generateCalendarSlots = ({
   const totalRange = moment.range(fromDate, toDate);
   // convert to moment ranges
   const ranges = unavailableTimeRanges.map(({ since, until }) =>
-    moment.range(since, until)
+    moment.range(moment(since), moment(until))
   );
   // aggregate ranges by date
   const unavailableRangesByDate = aggregateRangesByDate(ranges);
   const availableDateTimes: MeetingsDay[] = [];
+  console.log({ unavailableRangesByDate });
 
-  for (const date of totalRange.by('days')) {
+  for (const date of totalRange.by('days', { excludeEnd: true })) {
     const formattedDate = date.get('date');
     const unavailableRangesCurrentDay = unavailableRangesByDate[formattedDate];
     const availableTimes = generateAvailableTimes({
@@ -88,7 +91,7 @@ const generateCalendarSlots = ({
       slots: availableTimes,
     });
   }
-
+  console.log({ availableDateTimes });
   return availableDateTimes;
 };
 

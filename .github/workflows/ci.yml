@@ -1,12 +1,13 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - "*"
-  pull_request:
+  workflow_run:
+    workflows:
+      - database
     branches:
       - main
+    types:
+      - completed
 
 jobs:
   ci:

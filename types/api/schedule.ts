@@ -1,6 +1,6 @@
 import { User, UserUnavailable } from '@prisma/client';
-import { DateRange } from 'moment-range';
 import { unitOfTime } from 'moment';
+import { DateRange } from 'moment-range';
 import type { ApiReturn } from './common';
 import { CalendarEventsParam } from './google';
 
@@ -12,11 +12,16 @@ export type SpreadTimeParam = {
 };
 
 export type ScheduledTime = Pick<UserUnavailable, 'since' | 'until'>;
+
+export type ISOScheduledTime = {
+  [key in keyof ScheduledTime]: string;
+};
+
 export type ScheduledTimeWithType = ScheduledTime &
   Partial<Pick<UserUnavailable, 'type'>>;
 
 type FetchedUnavailable = ApiReturn & {
-  scheduledTime: ScheduledTime[];
+  scheduledTimes: ISOScheduledTime[];
 };
 
 export type FetchReturn = Promise<FetchedUnavailable>;

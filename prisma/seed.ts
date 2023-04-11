@@ -11,8 +11,10 @@ const {
 
 const prisma = new PrismaClient();
 
+export const predefinedUserId = 1;
+
 async function main() {
-  if (appMode.isDev()) {
+  if (!appMode.isProd()) {
     await prisma.google.deleteMany();
     await prisma.aclPermission.deleteMany();
     await prisma.aclRole.deleteMany();
@@ -103,43 +105,50 @@ async function main() {
     data: rolePermission,
     skipDuplicates: true,
   });
-  await prisma.user.create({
-    data: {
-      id: 1,
-      email: SUPER_ADMIN_EMAIL!,
-      passwordDigest: hashValue(SUPER_ADMIN_PASS!),
-      firstName: SUPER_ADMIN_FIRST_NAME!,
-      lastName: SUPER_ADMIN_LAST_NAME!,
-      roles: {
-        create: {
-          roleId: 1,
-          name: Role.SUPERADMIN,
+
+  try {
+    // don't recreate
+    await prisma.user.create({
+      data: {
+        id: predefinedUserId,
+        email: SUPER_ADMIN_EMAIL!,
+        passwordDigest: hashValue(SUPER_ADMIN_PASS!),
+        firstName: SUPER_ADMIN_FIRST_NAME!,
+        lastName: SUPER_ADMIN_LAST_NAME!,
+        roles: {
+          create: {
+            roleId: 1,
+            name: Role.SUPERADMIN,
+          },
         },
-      },
-      schedule: {
-        create: {
-          userUnavailable: {
-            createMany: {
-              data: [
-                {
-                  since: new Date('2023-04-06T00:00:00'),
-                  until: new Date('2023-04-06T08:00:00'),
-                  type: UserUnavailableType.DAILY,
-                },
-                {
-                  since: new Date('2023-04-06T19:00:00'),
-                  until: new Date('2023-04-06T23:59:00'),
-                  type: UserUnavailableType.DAILY,
-                },
-              ],
+        schedule: {
+          create: {
+            userUnavailable: {
+              createMany: {
+                data: [
+                  {
+                    since: new Date('2023-04-06T00:00:00'),
+                    until: new Date('2023-04-06T08:00:00'),
+                    type: UserUnavailableType.DAILY,
+                  },
+                  {
+                    since: new Date('2023-04-06T19:00:00'),
+                    until: new Date('2023-04-06T23:59:00'),
+                    type: UserUnavailableType.DAILY,
+                  },
+                ],
+              },
             },
           },
         },
       },
-    },
-  });
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  }
 
-  if (appMode.isDev()) {
+  if (!appMode.isProd()) {
     // make superadmin tutor in dev mode
     await prisma.userRoles.create({
       data: {

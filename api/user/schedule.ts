@@ -1,15 +1,16 @@
-import debug from 'debug';
 import { UserUnavailableType } from '@prisma/client';
+import debug from 'debug';
 import prisma from '../../server/modules/prisma';
-import { events as fetchUserGoogleCalendarEvents } from '../google/calendar';
 import { spreadTime } from '../../server/utils/schedule';
+import { events as fetchUserGoogleCalendarEvents } from '../google/calendar';
+import { UserData } from '@/types/api/user';
 import {
   FetchParam,
   FetchReturn,
+  ISOScheduledTime,
   ScheduledTime,
   ScheduledTimeWithType,
 } from '@/types/api/schedule';
-import { UserData } from '@/types/api/user';
 
 // TODO change to import after https://github.com/rotaready/moment-range/issues/295
 const m = require('moment');
@@ -49,8 +50,6 @@ const log = debug('app:api:user:schedule');
 //   };
 // }
 
-// const fetchTutorsUnavailable = async ()
-
 export async function fetch(
   { timeMin, timeMax, userId }: FetchParam,
   // user can be unauthorized
@@ -68,14 +67,18 @@ export async function fetch(
               type: true,
             },
             where: {
-              since: timeMin,
-              until: timeMax,
-              OR: {
-                type: UserUnavailableType.DAILY,
-                OR: {
-                  type: UserUnavailableType.WEEKLY,
+              OR: [
+                {
+                  since: {
+                    gte: timeMin,
+                  },
+                  until: {
+                    lte: timeMax,
+                  },
                 },
-              },
+                { type: UserUnavailableType.DAILY },
+                { type: UserUnavailableType.WEEKLY },
+              ],
             },
             orderBy: {
               since: 'asc',
@@ -96,10 +99,11 @@ export async function fetch(
     !user ||
     (!user.schedule?.userUnavailable && !user.google?.calendarIds.length)
   ) {
+    log('there is no scheduled time for the user %O', user);
     // there is no scheduled time for the user
     return {
       isSuccess: true,
-      scheduledTime: [],
+      scheduledTimes: [],
     };
   }
 
@@ -138,11 +142,11 @@ export async function fetch(
   const isTotalRangeBiggerThanWeek =
     moment.duration(totalUntil.diff(totalSince)).asDays() > 7;
   const totalRange = moment.range(totalSince, totalUntil).snapTo('days');
-  const scheduledTime: ScheduledTime[] = scheduledTimeMixed.flatMap(
-    ({ since, until, type }): ScheduledTime | ScheduledTime[] => {
+  const scheduledTimes: ISOScheduledTime[] = scheduledTimeMixed.flatMap(
+    ({ since, until, type }): ISOScheduledTime | ISOScheduledTime[] => {
       if (!type || type === UserUnavailableType.ONCE) {
         // google or single event
-        return { since, until };
+        return { since: since.toISOString(), until: until.toISOString() };
       }
       // in case there are regular scheduled times - spread it
       // ? spread time on the client in order to reduce network load
@@ -175,9 +179,10 @@ export async function fetch(
       });
     }
   );
+  console.log({ scheduledTimes });
 
   return {
-    scheduledTime,
+    scheduledTimes,
     isSuccess: true,
   };
 }

@@ -21,15 +21,6 @@ export default async <CPath extends ApiControllerPath>(
 
   const apiPath = path.join(apiDirpath, controllerPath);
 
-  if (!appMode.isProd()) {
-    log('api path %O', {
-      reqUrl: url,
-      apiPath,
-      funcName,
-      params,
-    });
-  }
-
   try {
     const api = require(`${apiPath}.ts`);
     const func = api[funcName];
@@ -49,6 +40,16 @@ export default async <CPath extends ApiControllerPath>(
       } else {
         throw err;
       }
+    }
+
+    if (!appMode.isProd()) {
+      log('api path %O', {
+        reqUrl: url,
+        apiPath,
+        funcName,
+        params,
+        userData,
+      });
     }
 
     const result = await func(params, userData);

@@ -1,6 +1,6 @@
 <template>
   <section id="availableTutors" class="d-flex flex-column align-center">
-    <h2 v-if="!tutors.length">{{ $t('tutor.list.noAvailable') }}</h2>
+    <h2 v-if="!thereAreTutors">{{ $t('tutor.list.noAvailable') }}</h2>
     <v-list v-else flat>
       <v-list-item-group v-model="selectedTutorId" color="indigo">
         <v-list-item
@@ -66,6 +66,14 @@ export default Vue.extend({
         fullName: `${capitalize(firstName)} ${capitalize(lastName)}`,
       }));
     },
+
+    thereAreTutors(): boolean {
+      if (this.isLoading) {
+        // during the loading don't show any notification
+        return true;
+      }
+      return Boolean(this.tutorList.length);
+    },
   },
 
   async mounted() {
@@ -78,7 +86,7 @@ export default Vue.extend({
     },
 
     async fetchTutors() {
-      this.$emit('setLoading', true);
+      this.$emit('set-loading', true);
       try {
         const { isSuccess, list, message } = await this.$api(
           'manage/users/fetch',
@@ -100,7 +108,7 @@ export default Vue.extend({
         // eslint-disable-next-line no-console
         console.error(err);
       } finally {
-        this.$emit('setLoading', false);
+        this.$emit('set-loading', false);
       }
     },
   },

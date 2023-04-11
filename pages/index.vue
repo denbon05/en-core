@@ -1,7 +1,7 @@
 <template>
   <v-container class="pa-0" fluid>
     <v-row id="intro" justify="center" align="center">
-      <v-col cols="12" class="px-0">
+      <v-col cols="12" class="px-0 pt-0">
         <IntroScreen :sm-and-down="smAndDown" />
       </v-col>
     </v-row>
@@ -163,7 +163,7 @@ export default Vue.extend({
 
   computed: {
     smAndDown(): boolean {
-      return this.$vuetify.breakpoint.smAndDown;
+      return Boolean(this.$vuetify.breakpoint?.smAndDown);
     },
   },
 });

@@ -27,16 +27,12 @@ build:
 init-db:
 	make -C $(ANSIBLE_PATH) init-db
 	make migrate-db
-	npx ts-node prisma/seed.ts
+	make seed-db
 
 migrate-db:
-	npx prisma migrate dev
-
-reset-db:
-	make -C $(ANSIBLE_PATH) remove-db
-	make init-db
+	npm run migrate-db
 
 seed-db:
-	npx ts-node prisma/seed.ts
+	npm run seed-db
 
 .PHONY: test

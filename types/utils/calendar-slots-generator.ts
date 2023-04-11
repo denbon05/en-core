@@ -1,6 +1,6 @@
 import { Moment } from 'moment';
 import { DateRange } from 'moment-range';
-import { ScheduledTime } from '../api/schedule';
+import { ISOScheduledTime } from '../api/schedule';
 
 export type GenerateAvailableTimesParam = {
   avoidedRanges: DateRange[];
@@ -14,5 +14,5 @@ export type AggregatedRangesByDate = {
 export type GenerateCalendarSlotsParam = {
   fromDate: Moment;
   toDate: Moment;
-  unavailableTimeRanges: ScheduledTime[];
+  unavailableTimeRanges: ISOScheduledTime[];
 };

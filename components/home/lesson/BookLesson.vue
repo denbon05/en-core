@@ -27,14 +27,15 @@
               v-model="selectedTutorId"
               :is-loading="isLoading"
               @select-tutor="selectTutor"
-              @setLoading="setLoading"
+              @set-loading="setLoading"
             />
           </v-stepper-content>
           <v-stepper-content step="2">
             <LessonsCalendar
               v-if="selectedTutorId"
               v-model="selectedTutorId"
-              @setLoading="setLoading"
+              :is-loading="isLoading"
+              @set-loading="setLoading"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -64,7 +65,7 @@ export default Vue.extend({
 
   data() {
     return {
-      isLoading: false,
+      isLoading: true,
       isUserAuthenticated: this.$store.getters['user/isAuthenticated'],
       step: 1,
       // 1st step - select tutor
@@ -106,7 +107,9 @@ export default Vue.extend({
 
     selectTutor(tutorId: number) {
       this.selectedTutorId = tutorId;
-      this.step = 2;
+      if (tutorId) {
+        this.step = 2;
+      }
     },
 
     setLoading(isLoading = false) {

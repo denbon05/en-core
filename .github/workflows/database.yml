@@ -1,0 +1,24 @@
+name: Prepare DB
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  init-pg-container:
+    runs-on: ubuntu-latest
+    container:
+      image: postgres:15.2-alpine
+      ports:
+        - 5432:5432
+      # envs for test purposes
+      env:
+        # BEGIN ANSIBLE MANAGED BLOCK
+        POSTGRES_PASSWORD: "supersecret"
+        POSTGRES_USER: "en_core"
+        POSTGRES_DB: "en_core"
+# END ANSIBLE MANAGED BLOCK
