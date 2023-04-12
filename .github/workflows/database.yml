@@ -9,16 +9,17 @@ on:
       - main
 
 jobs:
-  init-pg-container:
+  launch-db:
     runs-on: ubuntu-latest
-    container:
-      image: postgres:15.2-alpine
-      ports:
-        - 5432:5432
-      # envs for test purposes
-      env:
-        # BEGIN ANSIBLE MANAGED BLOCK
-        POSTGRES_PASSWORD: "supersecret"
-        POSTGRES_USER: "en_core"
-        POSTGRES_DB: "en_core"
+    steps:
+      - name: Launch PostgreSQL container
+        uses: addnab/docker-run-action@v3
+        with:
+          image: postgres:15.2-alpine
+# BEGIN ANSIBLE MANAGED BLOCK
+          options: |
+            -p 5432:5432
+            -e POSTGRES_USER=en_core
+            -e POSTGRES_PASSWORD=supersecret
+            -e POSTGRES_DB=en_core
 # END ANSIBLE MANAGED BLOCK

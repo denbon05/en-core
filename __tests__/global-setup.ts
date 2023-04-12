@@ -16,13 +16,13 @@ export default async function (
       DATABASE_URL: projectConfig.globals.DB_TEST_URL as string,
     },
   };
-  const migrationResult = await exec(`npm run migrate-db`, cmdOpts);
-  if (migrationResult.stderr) {
-    console.debug('migration output', migrationResult);
+  const { stderr: stderrMigration } = await exec(`npm run migrate-db`, cmdOpts);
+  if (stderrMigration) {
+    console.debug('migration output', stderrMigration);
   }
   // insert predefined data of the app
-  const seedResult = await exec('npm run seed-db', cmdOpts);
-  if (seedResult.stderr) {
-    console.debug('seed output', seedResult);
+  const { stderr: stderrSeed } = await exec('npm run seed-db', cmdOpts);
+  if (stderrSeed && !/ExperimentalWarning/.test(stderrSeed)) {
+    console.debug('seed output', stderrSeed);
   }
 }

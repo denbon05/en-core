@@ -1,7 +1,8 @@
 import { UserUnavailableType } from '@prisma/client';
 import debug from 'debug';
+import { DateRange, MomentRange } from 'moment-range';
 import prisma from '../../server/modules/prisma';
-import { spreadTime } from '../../server/utils/schedule';
+import { generateUnavailableTimes } from '../../server/utils/schedule';
 import { events as fetchUserGoogleCalendarEvents } from '../google/calendar';
 import { UserData } from '@/types/api/user';
 import {
@@ -14,9 +15,9 @@ import {
 
 // TODO change to import after https://github.com/rotaready/moment-range/issues/295
 const m = require('moment');
-const MomentRange = require('moment-range');
+const momentRange = require('moment-range');
 
-const moment = MomentRange.extendMoment(m);
+const moment: MomentRange = momentRange.extendMoment(m);
 
 const log = debug('app:api:user:schedule');
 
@@ -139,47 +140,15 @@ export async function fetch(
 
   const totalSince = moment(timeMin);
   const totalUntil = moment(timeMax);
-  const isTotalRangeBiggerThanWeek =
-    moment.duration(totalUntil.diff(totalSince)).asDays() > 7;
-  const totalRange = moment.range(totalSince, totalUntil).snapTo('days');
-  const scheduledTimes: ISOScheduledTime[] = scheduledTimeMixed.flatMap(
-    ({ since, until, type }): ISOScheduledTime | ISOScheduledTime[] => {
-      if (!type || type === UserUnavailableType.ONCE) {
-        // google or single event
-        return { since: since.toISOString(), until: until.toISOString() };
-      }
-      // in case there are regular scheduled times - spread it
-      // ? spread time on the client in order to reduce network load
+  const totalRange: DateRange = moment
+    .range(totalSince, totalUntil)
+    .snapTo('days');
 
-      const sinceTime = {
-        hours: moment(since).get('hours'),
-        minutes: moment(since).get('minutes'),
-      };
-      const untilTime = {
-        hours: moment(until).get('hours'),
-        minutes: moment(until).get('minutes'),
-      };
-
-      if (type === UserUnavailableType.WEEKLY && isTotalRangeBiggerThanWeek) {
-        // each week the same unavailable time
-        return spreadTime({
-          range: totalRange,
-          since: sinceTime,
-          until: untilTime,
-          interval: 'week',
-        });
-      }
-
-      // daily regular unavailable time
-      return spreadTime({
-        range: totalRange,
-        since: sinceTime,
-        until: untilTime,
-        interval: 'day',
-      });
-    }
+  const scheduledTimes: ISOScheduledTime[] = generateUnavailableTimes(
+    scheduledTimeMixed,
+    totalRange
   );
-  console.log({ scheduledTimes });
+  // console.log({ scheduledTimes });
 
   return {
     scheduledTimes,

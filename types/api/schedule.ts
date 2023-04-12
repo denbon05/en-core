@@ -6,8 +6,8 @@ import { CalendarEventsParam } from './google';
 
 export type SpreadTimeParam = {
   range: DateRange;
-  since: { hours: number; minutes: number };
-  until: { hours: number; minutes: number };
+  since: { hours: number; minutes: number } | Date;
+  until: { hours: number; minutes: number } | Date;
   interval: unitOfTime.Diff;
 };
 
