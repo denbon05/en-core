@@ -11,6 +11,10 @@ db_user_pass: supersecret
 db_name: en_core
 db_state: present # absent
 
+db_name_test: "{{ db_name }}_test"
+db_user_test: "{{ db_user }}"
+db_pass_test: "{{ db_user_pass }}"
+
 # vars
 jwt_secret: "good_day"
 super_admin_email: admin@local.com

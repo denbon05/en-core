@@ -21,5 +21,5 @@ jobs:
             -p 5432:5432
             -e POSTGRES_USER=en_core
             -e POSTGRES_PASSWORD=supersecret
-            -e POSTGRES_DB=en_core
+            -e POSTGRES_DB=en_core_test
 # END ANSIBLE MANAGED BLOCK
