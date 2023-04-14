@@ -9,7 +9,7 @@ const userUnavailable: UserUnavailable[] = [
     type: 'DAILY',
   },
   {
-    id: 10,
+    id: 11,
     scheduleId: 10, // tutor Sam
     since: new Date('2023-04-06 20:00:00.000 +0200'),
     until: new Date('2023-04-06 23:59:00.000 +0200'),

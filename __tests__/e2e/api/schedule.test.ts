@@ -78,7 +78,7 @@ describe('Schedule utils', () => {
     });
   });
 
-  describe('Generate unavailable intervals', () => {
+  describe('Generate unavailable times', () => {
     test('Daily for 3 days', () => {
       const since = new Date('2023-04-10T00:00:00.000Z');
       const until = new Date('2023-04-10T08:00:00.000Z');
@@ -156,7 +156,6 @@ describe('Manipulate schedule', () => {
       tutorSamUnavailable,
       range
     );
-    console.log({ scheduledTimes });
-    expect(scheduledTimes).toBe(scheduledTimesExpected);
+    expect(scheduledTimes).toStrictEqual(scheduledTimesExpected);
   });
 });

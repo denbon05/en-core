@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import Vue, { VueConstructor } from 'vue';
 import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
 import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
@@ -63,8 +63,7 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
   data() {
     return {
       fromDate: moment(), // now by default
-      nbDaysToDisplay: 7,
-      showUntilDate: moment(this.fromDate).add(this.nbDaysToDisplay, 'days'),
+      nbDaysToAdd: 6,
       lessons: [] as MeetingSlot[],
       scheduledTimes: [] as ScheduledTimes,
       calendarOptions: {
@@ -82,14 +81,15 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       return this.fromDate.format('MMMM YYYY');
     },
 
+    showUntilDate(): Moment {
+      return moment(this.fromDate).add(this.nbDaysToAdd, 'days');
+    },
+
     availableDays(): MeetingsDay[] {
       console.log({
         fromDate: this.fromDate,
         toDate: this.showUntilDate,
       });
-      if (!this.scheduledTimes.length) {
-        return [];
-      }
 
       return generateCalendarSlots({
         fromDate: this.fromDate,
@@ -121,8 +121,8 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
           'user/schedule/fetch',
           {
             timeMin: this.fromDate.toISOString(),
-            timeMax: this.fromDate
-              .add(this.nbDaysToDisplay, 'days')
+            timeMax: moment(this.fromDate)
+              .add(this.nbDaysToAdd, 'days')
               .toISOString(),
             userId: this.value,
           }

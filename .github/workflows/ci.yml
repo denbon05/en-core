@@ -12,7 +12,6 @@ on:
 jobs:
   ci:
     runs-on: ${{ matrix.os }}
-    needs: launch-db
 
     strategy:
       matrix:

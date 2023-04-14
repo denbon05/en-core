@@ -74,7 +74,7 @@ export async function fetch(
                     gte: timeMin,
                   },
                   until: {
-                    lte: timeMax,
+                    lt: timeMax,
                   },
                 },
                 { type: UserUnavailableType.DAILY },

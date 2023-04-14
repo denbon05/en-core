@@ -8,7 +8,7 @@ export type ScheduledTimes = ISOScheduledTime[];
 
 export interface ILessonCalendar {
   fromDate: Moment;
-  nbDaysToDisplay: number;
+  nbDaysToAdd: number;
   showUntilDate: Moment;
   lessons: MeetingSlot[];
   scheduledTimes: ScheduledTimes;
