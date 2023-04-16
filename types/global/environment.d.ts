@@ -17,6 +17,8 @@ declare global {
       SUPER_ADMIN_LAST_NAME: string;
       JWT_SECRET: string;
       DATABASE_URL: string;
+
+      ROLLBAR_CLIENT_ACCESS_TOKEN: string;
     }
   }
 }

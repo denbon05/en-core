@@ -5,7 +5,8 @@
   "buildCommand": "nuxt build",
   "outputDirectory": "dist",
   "regions": [
-    "fra1"
+    "fra1",
+    "arn1"
   ],
   "builds": [
     {
@@ -17,7 +18,8 @@
           "api/**",
           "server-middleware/**",
           "plugins/**/*server*",
-          "server/**"
+          "server/**",
+          "prisma/**"
         ]
       }
     }

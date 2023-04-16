@@ -19,6 +19,15 @@
           >
             {{ step2 }}
           </v-stepper-step>
+
+          <v-stepper-step
+            step="3"
+            complete-icon="mdi-close"
+            complete
+            @click="closeDialog"
+          >
+            <v-btn large icon absolute top left text plain> </v-btn>
+          </v-stepper-step>
         </v-stepper-header>
 
         <v-stepper-items>
@@ -36,16 +45,28 @@
               v-model="selectedTutorId"
               :is-loading="isLoading"
               @set-loading="setLoading"
+              @selectLessonTime="selectLessonTime"
             />
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
+
+      <v-card-actions class="justify-end mr-10">
+        <v-btn
+          v-if="isBookBtnVisible"
+          :disabled="!isLessonTimeSelected"
+          color="primary"
+          @click="bookLesson"
+          >{{ $t('action.book.lesson') }}</v-btn
+        >
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
 import AvailableTutors from './AvailableTutors.vue';
 import LessonsCalendar from './LessonsCalendar.vue';
 
@@ -77,7 +98,7 @@ export default Vue.extend({
         name: this.$t('calendar.time').toLowerCase(),
       }),
       selectedTutorId: null as number | null,
-      lessonTime: null,
+      lessonTimes: [] as MeetingSlot[],
     };
   },
 
@@ -95,14 +116,18 @@ export default Vue.extend({
       return Boolean(this.selectedTutorId);
     },
 
+    isBookBtnVisible(): boolean {
+      return this.isTutorSelected;
+    },
+
     isLessonTimeSelected(): boolean {
-      return Boolean(this.lessonTime);
+      return Boolean(this.lessonTimes.length);
     },
   },
 
   methods: {
     closeDialog() {
-      this.$emit('closeBookLesson');
+      this.isVisible = false;
     },
 
     selectTutor(tutorId: number) {
@@ -112,8 +137,16 @@ export default Vue.extend({
       }
     },
 
+    selectLessonTime(lessonTimes: MeetingSlot[]) {
+      this.lessonTimes = lessonTimes;
+    },
+
     setLoading(isLoading = false) {
       this.isLoading = isLoading;
+    },
+
+    async bookLesson() {
+      //
     },
   },
 });

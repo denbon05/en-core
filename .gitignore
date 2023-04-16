@@ -90,6 +90,7 @@ sw.*
 *.swp
 
 # Custom
+.vercel_cache
 .vercel
 *credentials*.json
 .gauth.json

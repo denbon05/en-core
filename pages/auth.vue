@@ -12,8 +12,8 @@
 
           <v-tabs-items v-model="tab">
             <v-tab-item
-              v-for="component in components"
-              :key="`tab-${component.name}`"
+              v-for="(component, idx) in components"
+              :key="`tab-auth-${idx}`"
             >
               <v-card flat>
                 <component :is="component" />

@@ -1,7 +1,12 @@
 <template>
   <section id="calendarMonth">
     <section class="d-flex justify-center align-center">
-      <v-btn icon large @click="prevMonth">
+      <v-btn
+        :disabled="isPreviousMonthBtnDisabled"
+        icon
+        large
+        @click="prevMonth"
+      >
         <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
         <v-icon color="#39adee">mdi-chevron-left</v-icon>
       </v-btn>
@@ -11,12 +16,8 @@
         <v-icon color="#39adee">mdi-chevron-right</v-icon>
       </v-btn>
     </section>
-    <!-- <v-btn class="black--text text-capitalize" large icon absolute top right>
-      <v-icon>mdi-close</v-icon>
-    </v-btn> -->
 
     <v-divider class="mt-3"></v-divider>
-
     <meeting-selector
       v-model="lessons"
       :date="meetingSelectorDate"
@@ -37,12 +38,14 @@ import moment, { Moment } from 'moment';
 import Vue, { VueConstructor } from 'vue';
 import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
 import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
-import generateCalendarSlots from '@/utils/slots-generator';
+import { differenceBy, findIndex } from 'lodash';
+import generateCalendarSlots, { stepInMinutes } from '@/utils/slots-generator';
 import {
   ILessonCalendar,
   ScheduledTimes,
 } from '@/types/components/lesson-calendar';
 
+// todo make calendar scrollable
 // TODO move all schedule logic to the class TutorSchedule
 export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
   name: 'LessonsCalendar',
@@ -66,8 +69,10 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       nbDaysToAdd: 6,
       lessons: [] as MeetingSlot[],
       scheduledTimes: [] as ScheduledTimes,
+      autoRefreshId: null as NodeJS.Timeout | null,
       calendarOptions: {
-        limit: 8,
+        // todo depends on screen height
+        limit: 7,
       },
     };
   },
@@ -85,12 +90,17 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       return moment(this.fromDate).add(this.nbDaysToAdd, 'days');
     },
 
-    availableDays(): MeetingsDay[] {
-      console.log({
-        fromDate: this.fromDate,
-        toDate: this.showUntilDate,
-      });
+    stepInDays(): number {
+      return this.nbDaysToAdd + 1;
+    },
 
+    isPreviousMonthBtnDisabled(): boolean {
+      const currentDate = moment();
+      const displayedDate = moment(this.fromDate);
+      return displayedDate.isSameOrBefore(currentDate);
+    },
+
+    availableDays(): MeetingsDay[] {
       return generateCalendarSlots({
         fromDate: this.fromDate,
         toDate: this.showUntilDate,
@@ -100,18 +110,59 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
   },
 
   watch: {
-    lessons(values) {
-      console.log({ lessons: values });
+    async fromDate() {
+      await this.fetchUserSchedule();
+    },
+
+    lessons(newLessons: MeetingSlot[], oldLessons: MeetingSlot[]) {
+      this.$emit('selectLessonTime', newLessons);
+      const isLessonTimeAdded = newLessons.length > oldLessons.length;
+      const [changedValue] = isLessonTimeAdded
+        ? differenceBy(newLessons, oldLessons, 'date')
+        : differenceBy(oldLessons, newLessons, 'date');
+      const changedMoment = moment(changedValue.date);
+      const nextSlotMoment = changedMoment.add(stepInMinutes, 'minutes');
+
+      if (isLessonTimeAdded) {
+        this.scheduledTimes.push({
+          since: nextSlotMoment.toISOString(),
+          until: moment(nextSlotMoment)
+            .add(stepInMinutes, 'minutes')
+            .toISOString(),
+        });
+      } else {
+        // time unselected
+        this.scheduledTimes = this.scheduledTimes.filter(
+          ({ since }) => !moment(since).isSame(nextSlotMoment)
+        );
+      }
     },
   },
 
   async mounted() {
     await this.fetchUserSchedule();
+    this.refreshSchedule();
+  },
+
+  beforeDestroy() {
+    if (this.autoRefreshId) {
+      clearTimeout(this.autoRefreshId);
+    }
   },
 
   methods: {
     closeDialog() {
       this.$emit('closeCalendar');
+    },
+
+    refreshSchedule() {
+      const minutesUntilThreshold =
+        Math.abs(this.fromDate.get('minutes') - stepInMinutes) || 30; // 30 min if 0 minutes
+      const msUntilThreshold = minutesUntilThreshold * 60000;
+      this.autoRefreshId = setTimeout(async () => {
+        await this.fetchUserSchedule();
+        this.refreshSchedule();
+      }, msUntilThreshold);
     },
 
     async fetchUserSchedule() {
@@ -130,51 +181,34 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
         if (!isSuccess && message) {
           this.$emit('showSnackbar', { isSuccess, message });
         }
-        console.log({ scheduledTimes });
         this.scheduledTimes = scheduledTimes ?? [];
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error('fetchUserCalendarConfig err', err);
+        this.$rollbar.error('fetchUserCalendarConfig err', err);
       } finally {
         this.$emit('set-loading', false);
       }
     },
 
-    async nextDate() {
-      this.$emit('set-loading', true);
-      // todo
-      this.$emit('set-loading', false);
+    nextDate() {
+      this.fromDate = moment(this.fromDate).add(this.stepInDays, 'days');
     },
 
-    async prevDate() {
-      this.$emit('set-loading', true);
-      // todo
-      this.$emit('set-loading', false);
-    },
-
-    async prevMonth() {
-      const currentDate = moment();
-      const displayedDate = this.fromDate;
-      console.log({
-        currentDate,
-        displayedDate,
-        p: currentDate.isBefore(displayedDate),
-      });
-      if (currentDate.isBefore(displayedDate)) {
-        // don't show old events
+    prevDate() {
+      const today = moment().format('YYYY-MM-DD');
+      const fromDate = moment(this.fromDate).subtract(this.stepInDays, 'days');
+      if (moment(fromDate, 'YYYY-MM-DD').isBefore(today)) {
+        // don't show dates before today
         return;
       }
-
-      this.fromDate = this.fromDate.subtract(1, 'month');
+      this.fromDate = fromDate;
     },
 
-    async nextMonth() {
-      this.fromDate = this.fromDate.add(1, 'month');
+    prevMonth() {
+      this.fromDate = this.fromDate.clone().subtract(1, 'month');
     },
 
-    async bookLesson(...args: any) {
-      console.log('bookLesson', { args });
-      // await this.$api('auth', 'login', { email: '' });
+    nextMonth() {
+      this.fromDate = this.fromDate.clone().add(1, 'month');
     },
   },
 });
@@ -187,6 +221,10 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
 
 #calendarContainer {
   border-radius: $btn-border-radius;
+}
+
+#meetingContainer {
+  scroll-behavior: smooth;
 }
 
 // inside meeting-selector class

@@ -118,7 +118,9 @@ const en = {
   },
 
   action: {
-    book: 'Book a lesson',
+    book: {
+      lesson: 'Book a lesson',
+    },
     signUp: 'Sing Up',
     logIn: 'Log In',
     send: 'Send',

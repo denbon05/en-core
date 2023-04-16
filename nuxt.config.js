@@ -1,9 +1,12 @@
 import url from 'url';
 import colors from 'vuetify/es5/util/colors';
 
+const { ROLLBAR_CLIENT_ACCESS_TOKEN } = process.env;
+
 const apiPath = '/api';
 
 export default {
+  mode: 'universal',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s-core',
@@ -22,6 +25,10 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
+  publicRuntimeConfig: {
+    rollbarClientAccessToken: ROLLBAR_CLIENT_ACCESS_TOKEN,
+  },
+
   server: {
     port: 8000,
     host: '0.0.0.0',
@@ -37,6 +44,7 @@ export default {
     '@/plugins/api-context.server.ts',
     '@/plugins/axios.client.ts',
     '@/plugins/components.client.ts',
+    '@/plugins/rollbar.client.ts',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

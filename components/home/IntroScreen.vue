@@ -3,14 +3,8 @@
     <template v-if="isBookLessonOpen">
       <BookLesson v-model="isBookLessonOpen"
     /></template>
-    <img
-      :src="bgImg"
-      alt="Desk with books, cubes and apple."
-      class="intro-bg"
-      :height="introHeight"
-    />
 
-    <section class="intro" width="100%">
+    <section class="intro h-100 d-flex flex-column justify-space-around">
       <p class="intro-tagline">{{ $t('main.tagline') }}</p>
 
       <section
@@ -66,13 +60,6 @@ export default Vue.extend({
     };
   },
 
-  computed: {
-    bgImg(): string {
-      // return this.smAndDown ? '/intro_screen_mobile.svg' : '/intro_screen.svg';
-      return '/intro_screen.svg';
-    },
-  },
-
   mounted() {
     // to count window size
     const appBar = document.getElementById('appBar');
@@ -93,13 +80,15 @@ export default Vue.extend({
 
 <style scoped lang="scss">
 #introScreen {
-  position: relative;
+  background-image: url('/intro_screen.svg');
+  background-size: cover;
+  width: 100vw;
+  height: calc(100vh - 70px);
+  min-height: 700px;
 }
 
 .intro {
-  width: 100%;
-  height: 100%;
-  position: absolute;
+  z-index: 1;
   top: 0;
   display: flex;
   flex-direction: column;
