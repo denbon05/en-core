@@ -1,15 +1,15 @@
 import http from 'http';
 import url from 'url';
+import { Prisma, User } from '@prisma/client';
 import { OAuth2Client } from 'google-auth-library';
 import openBrowser from 'open';
 import {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,
-} from '../../server/config';
-import prisma from '../../server/modules/prisma';
-import { User, Prisma } from '@prisma/client';
-import { encryptData } from '../../server/modules/crypto';
+} from '../config';
+import { encryptData } from '../modules/crypto';
+import prisma from '../modules/prisma';
 
 /**
  * Create a new OAuth2Client, and go through the OAuth2 content

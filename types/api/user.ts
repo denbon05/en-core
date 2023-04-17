@@ -14,4 +14,6 @@ export type UserData = {
     id: number;
     name: AclRole['name'];
   } | null;
-} | null;
+};
+
+export type UserDataOrNull = UserData | null;

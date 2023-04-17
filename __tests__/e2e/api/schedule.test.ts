@@ -1,14 +1,11 @@
 import { Moment } from 'moment';
 import { DateRange, MomentRange } from 'moment-range';
-import { getTimeMin } from '@/__tests__/helpers/schedule';
-import { fetch as fetchSchedule } from '@/api/user/schedule';
-import { FetchParam } from '@/types/api/schedule';
-import { spreadTime, generateUnavailableTimes } from '@/server/utils/schedule';
-import prisma from '@/server/modules/prisma';
 import schedules from '@/__fixtures__/user-schedule';
 import userUnavailable from '@/__fixtures__/user-unavailable';
 import users from '@/__fixtures__/users';
 import { seedDB } from '@/__tests__/helpers/server';
+import { fetch as fetchSchedule } from '@/server/api/user/schedule';
+import { generateUnavailableTimes, spreadTime } from '@/server/utils/schedule';
 // TODO change to import after https://github.com/rotaready/moment-range/issues/295
 const m = require('moment');
 const momentRange = require('moment-range');

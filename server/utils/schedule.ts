@@ -52,7 +52,7 @@ export const generateUnavailableTimes = (
 
   return scheduledTime.flatMap(
     ({ since, until, type }): ISOScheduledTime | ISOScheduledTime[] => {
-      if (!type || type === UserUnavailableType.ONCE) {
+      if (!type || type === UserUnavailableType.ONCE || type === 'TRIAL') {
         // google or single event
         return { since: since.toISOString(), until: until.toISOString() };
       }

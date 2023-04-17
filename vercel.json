@@ -15,10 +15,9 @@
       "config": {
         "distDir": "build",
         "serverFiles": [
-          "api/**",
+          "server/**",
           "server-middleware/**",
           "plugins/**/*server*",
-          "server/**",
           "prisma/**"
         ]
       }

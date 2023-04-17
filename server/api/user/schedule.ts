@@ -1,10 +1,11 @@
 import { UserUnavailableType } from '@prisma/client';
 import debug from 'debug';
 import { DateRange, MomentRange } from 'moment-range';
-import prisma from '../../server/modules/prisma';
-import { generateUnavailableTimes } from '../../server/utils/schedule';
+import prisma from '../../modules/prisma';
+import { generateUnavailableTimes } from '../../utils/schedule';
 import { events as fetchUserGoogleCalendarEvents } from '../google/calendar';
-import { UserData } from '@/types/api/user';
+import { t } from '../../utils/i18n';
+import { UserDataOrNull } from '@/types/api/user';
 import {
   FetchParam,
   FetchReturn,
@@ -21,40 +22,10 @@ const moment: MomentRange = momentRange.extendMoment(m);
 
 const log = debug('app:api:user:schedule');
 
-// TODO CHANGE to schedule and Implement
-// export async function update<
-//   T1 extends CalendarTimeRange,
-//   T2 extends CalendarTimeRange
-// >(calendarData: CalendarUpdateConfigParam<T1, T2>, userData: UserData) {
-//   if (!userData) {
-//     return {
-//       isSuccess: false,
-//       message: 'Authenticate first',
-//     };
-//   }
-//   const { id } = userData;
-
-//   await prisma.user.update({
-//     where: { id },
-//     data: {
-//       userSchedule: {
-//         upsert: {
-//           create: calendarData,
-//           update: calendarData,
-//         },
-//       },
-//     },
-//   });
-
-//   return {
-//     isSuccess: true,
-//   };
-// }
-
 export async function fetch(
   { timeMin, timeMax, userId }: FetchParam,
   // user can be unauthorized
-  userData: UserData
+  userData: UserDataOrNull
 ): FetchReturn {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -85,6 +56,28 @@ export async function fetch(
               since: 'asc',
             },
           },
+          userLesson: {
+            select: {
+              since: true,
+              until: true,
+              type: true,
+            },
+            where: {
+              OR: [
+                { type: 'WEEKLY' },
+                {
+                  AND: [
+                    {
+                      since: {
+                        gte: timeMin,
+                      },
+                    },
+                    { until: { lt: timeMax } },
+                  ],
+                },
+              ],
+            },
+          },
         },
       },
       google: {
@@ -96,9 +89,19 @@ export async function fetch(
     },
   });
 
+  if (!user) {
+    return {
+      isSuccess: false,
+      scheduledTimes: [],
+    };
+  }
+
+  const { schedule, google } = user;
+
   if (
-    !user ||
-    (!user.schedule?.userUnavailable && !user.google?.calendarIds.length)
+    !schedule?.userUnavailable &&
+    !google?.calendarIds.length &&
+    !schedule?.userLesson.length
   ) {
     log('there is no scheduled time for the user %O', user);
     // there is no scheduled time for the user
@@ -108,7 +111,7 @@ export async function fetch(
     };
   }
 
-  const { google, schedule } = user;
+  const messages: string[] = [];
   // the variable going to collect app's schedule and google data
   let scheduledTimeMixed: ScheduledTimeWithType[] =
     schedule?.userUnavailable ?? [];
@@ -133,6 +136,7 @@ export async function fetch(
         scheduledTimeMixed = [...scheduledTimeMixed, ...googleScheduled];
       }
     } catch (err) {
+      messages.push(t('warn.calendar.google.unreached'));
       // avoid google calendar events
       log('Error during fetching google events %O', err);
     }
@@ -144,14 +148,15 @@ export async function fetch(
     .range(totalSince, totalUntil)
     .snapTo('days');
 
+  const userLessons = schedule?.userLesson ?? [];
   const scheduledTimes: ISOScheduledTime[] = generateUnavailableTimes(
-    scheduledTimeMixed,
+    [...scheduledTimeMixed, ...userLessons],
     totalRange
   );
-  // console.log({ scheduledTimes });
 
   return {
     scheduledTimes,
     isSuccess: true,
+    message: messages.join('\n'),
   };
 }

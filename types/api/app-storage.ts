@@ -1,14 +1,14 @@
-import { UserData } from './user';
+import { UserDataOrNull } from './user';
 
 export type IStorage = {
   user: {
-    [Key in keyof UserData]: UserData[Key];
+    [Key in keyof UserDataOrNull]: UserDataOrNull[Key];
   };
 };
 
 export type StorageKey = keyof IStorage;
 
-export type StoragePath = StorageKey | `${StorageKey}.${keyof UserData}`;
+export type StoragePath = StorageKey | `${StorageKey}.${keyof UserDataOrNull}`;
 
 type StoragePathPart<SPath extends string = StoragePath> =
   SPath extends `${infer Head}.${infer Tail}`

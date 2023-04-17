@@ -157,7 +157,7 @@ export default {
         next();
       },
     },
-    // { path: apiPath, handler: '@/server-middleware/api-access.ts' },
+    { path: apiPath, handler: '@/server-middleware/api-access.ts' },
     { path: apiPath, handler: '@/server-middleware/api-server.ts' },
   ],
 };

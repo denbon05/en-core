@@ -1,4 +1,9 @@
-import { User, UserUnavailable } from '@prisma/client';
+import {
+  LessonType,
+  User,
+  UserUnavailable,
+  UserUnavailableType,
+} from '@prisma/client';
 import { unitOfTime } from 'moment';
 import { DateRange } from 'moment-range';
 import type { ApiReturn } from './common';
@@ -17,8 +22,9 @@ export type ISOScheduledTime = {
   [key in keyof ScheduledTime]: string;
 };
 
-export type ScheduledTimeWithType = ScheduledTime &
-  Partial<Pick<UserUnavailable, 'type'>>;
+export type ScheduledTimeWithType = ScheduledTime & {
+  type?: Partial<UserUnavailableType | LessonType>;
+};
 
 type FetchedUnavailable = ApiReturn & {
   scheduledTimes: ISOScheduledTime[];

@@ -4,7 +4,7 @@ import { DateRange } from 'moment-range';
 // import MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
 import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
 // import { ScheduledTime } from '@/types/api/schedule';
-import { generateAvailableTimes, stepInMinutes } from '@/utils/slots-generator';
+import { generateAvailableTimes, stepInMinutes } from '@/utils/slots';
 
 const m = require('moment');
 const MomentRange = require('moment-range');

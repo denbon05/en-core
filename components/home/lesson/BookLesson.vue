@@ -44,6 +44,7 @@
               v-if="selectedTutorId"
               v-model="selectedTutorId"
               :is-loading="isLoading"
+              :can-user-select-few-lessons="canUserSelectFewLessons"
               @set-loading="setLoading"
               @selectLessonTime="selectLessonTime"
             />
@@ -54,7 +55,7 @@
       <v-card-actions class="justify-end mr-10">
         <v-btn
           v-if="isBookBtnVisible"
-          :disabled="!isLessonTimeSelected"
+          :disabled="isBookBtnDisabled"
           color="primary"
           @click="bookLesson"
           >{{ $t('action.book.lesson') }}</v-btn
@@ -65,10 +66,13 @@
 </template>
 
 <script lang="ts">
+import { LessonType } from '.prisma/client';
 import Vue from 'vue';
 import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
 import AvailableTutors from './AvailableTutors.vue';
 import LessonsCalendar from './LessonsCalendar.vue';
+import Lessons from '@/utils/lesson';
+import { BookParam } from '@/types/api/lesson';
 
 export default Vue.extend({
   name: 'BookLesson',
@@ -99,6 +103,7 @@ export default Vue.extend({
       }),
       selectedTutorId: null as number | null,
       lessonTimes: [] as MeetingSlot[],
+      lessonType: 'SINGLE' as LessonType,
     };
   },
 
@@ -112,12 +117,20 @@ export default Vue.extend({
       },
     },
 
+    canUserSelectFewLessons(): boolean {
+      return this.lessonType !== 'TRIAL';
+    },
+
     isTutorSelected(): boolean {
       return Boolean(this.selectedTutorId);
     },
 
     isBookBtnVisible(): boolean {
       return this.isTutorSelected;
+    },
+
+    isBookBtnDisabled(): boolean {
+      return !this.isLessonTimeSelected || this.isLoading;
     },
 
     isLessonTimeSelected(): boolean {
@@ -146,7 +159,30 @@ export default Vue.extend({
     },
 
     async bookLesson() {
-      //
+      this.isLoading = true;
+      const lessons = new Lessons(this.lessonType).toTimeScheduled(
+        this.lessonTimes
+      );
+      try {
+        const { isSuccess, message: msg } = await this.$api(
+          'user/lesson/book',
+          {
+            type: this.lessonType,
+            lessonsData: lessons,
+            tutorId: this.selectedTutorId,
+          } as BookParam
+        );
+
+        const count = lessons.length;
+        const message = !isSuccess
+          ? msg
+          : this.$tc('success.lesson.book', count, { count });
+        this.showSnackbar({ isSuccess, message });
+      } catch (err) {
+        this.$rollbar.error(err);
+      } finally {
+        this.isLoading = false;
+      }
     },
   },
 });

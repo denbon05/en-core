@@ -91,10 +91,8 @@ const generateCalendarSlots = ({
   const ranges = unavailableTimeRanges.map(({ since, until }) =>
     moment.range(moment(since), moment(until))
   );
-  console.log('changed fetched ranges', ranges);
   // aggregate ranges by date
   const unavailableRangesByDate = aggregateRangesByDate(ranges);
-  console.log('1', { unavailableRangesByDate });
   if (totalRange.contains(moment())) {
     // so there is today's day in the range
     const todayDate = moment().get('date');
@@ -104,7 +102,6 @@ const generateCalendarSlots = ({
     );
   }
   const availableDateTimes: MeetingsDay[] = [];
-  console.log('2', { unavailableRangesByDate });
 
   for (const date of totalRange.by('days')) {
     const formattedDate = date.get('date');
@@ -118,7 +115,7 @@ const generateCalendarSlots = ({
       slots: availableTimes,
     });
   }
-  console.log({ availableDateTimes });
+
   return availableDateTimes;
 };
 

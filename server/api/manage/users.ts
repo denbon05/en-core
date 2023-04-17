@@ -1,6 +1,6 @@
-import prisma from '../../server/modules/prisma';
+import prisma from '../../modules/prisma';
 import { ApiReturnPromise } from '@/types/api/common';
-import { UsersFetchParam, UserList } from '@/types/api/manage';
+import { UserList, UsersFetchParam } from '@/types/api/manage';
 
 export async function fetch({ roleName }: UsersFetchParam): ApiReturnPromise<{
   list: UserList;

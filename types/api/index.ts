@@ -1,11 +1,12 @@
 import type { IncomingMessage } from 'http';
 import type { ApiReturn as CommonApiReturn } from './common';
-import * as auth from '@/api/auth';
-import * as userData from '@/api/user/data';
-import * as userSchedule from '@/api/user/schedule';
-import * as googleCalendar from '@/api/google/calendar';
-import * as googleAuth from '@/api/google/auth';
-import * as manageUsers from '@/api/manage/users';
+import * as auth from '@/server/api/auth';
+import * as googleAuth from '@/server/api/google/auth';
+import * as googleCalendar from '@/server/api/google/calendar';
+import * as manageUsers from '@/server/api/manage/users';
+import * as userData from '@/server/api/user/data';
+import * as userSchedule from '@/server/api/user/schedule';
+import * as userLesson from '@/server/api/user/lesson';
 
 type AuthFuncName = keyof typeof auth;
 type GoogleCalendarFuncName = keyof typeof googleCalendar;
@@ -13,7 +14,11 @@ type GoogleAuthFuncName = keyof typeof googleAuth;
 type UserDataFuncName = keyof typeof userData;
 type UserScheduleFuncName = keyof typeof userSchedule;
 type ManageUsersFuncName = keyof typeof manageUsers;
+type UserLessonFuncName = keyof typeof userLesson;
 
+type ApiUserLesson = {
+  [K in UserLessonFuncName]: (typeof userLesson)[K];
+};
 type ApiAuth = {
   [K in AuthFuncName]: (typeof auth)[K];
 };
@@ -38,6 +43,7 @@ export interface AppApi {
   user: {
     data: ApiUserData;
     schedule: ApiUserSchedule;
+    lesson: ApiUserLesson;
   };
   manage: {
     users: ApiManageUsers;

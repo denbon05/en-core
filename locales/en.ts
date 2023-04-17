@@ -144,6 +144,21 @@ const en = {
       },
     },
     common: 'Something went wrong 👽',
+    unauthorized: 'Authenticate first',
+  },
+
+  success: {
+    lesson: {
+      book: 'You booked a lesson | You booked {count} lessons',
+    },
+  },
+
+  warn: {
+    calendar: {
+      google: {
+        unreached: 'Google calendar events are not reached',
+      },
+    },
   },
 
   notification: {

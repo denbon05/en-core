@@ -8,7 +8,7 @@ import type { ApiControllerPath, ApiIncomingMsg } from '@/types/api';
 
 const log = debug('app:api');
 
-const apiDirpath = path.join(__dirname, '..', 'api');
+const apiDirpath = path.join(__dirname, '..', 'server', 'api');
 
 export default async <CPath extends ApiControllerPath>(
   { url, cookies: { auth }, params }: ApiIncomingMsg<CPath>,
@@ -55,6 +55,7 @@ export default async <CPath extends ApiControllerPath>(
     const result = await func(params, userData);
     res.end(
       JSON.stringify({
+        isSuccess: true,
         ...result,
         message,
       })

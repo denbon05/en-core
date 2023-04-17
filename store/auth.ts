@@ -1,8 +1,8 @@
+import { ApiParams } from '@/types/api';
+import type { UserDataOrNull } from '@/types/api/user';
+import type { AuthState } from '@/types/store';
 import jwtDecode, { InvalidTokenError } from 'jwt-decode';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
-import { ApiParams } from '@/types/api';
-import type { AuthState } from '@/types/store';
-import type { UserData } from '@/types/api/user';
 
 export const state = (): AuthState => ({
   accessToken: '',
@@ -87,7 +87,7 @@ export const actions: ActionTree<AuthState, AuthState> = {
 
   refresh(
     { commit },
-    { userData, jwtToken }: { userData: UserData; jwtToken: string }
+    { userData, jwtToken }: { userData: UserDataOrNull; jwtToken: string }
   ) {
     commit('user/setUser', userData, { root: true });
     commit('setToken', jwtToken);

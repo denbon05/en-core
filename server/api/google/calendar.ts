@@ -1,16 +1,16 @@
 /* eslint-disable no-console */
-import debug from 'debug';
-import { google } from 'googleapis';
-import { GOOGLE_API_KEY } from '../../server/config';
-import { decryptData } from '../../server/modules/crypto';
-import prisma from '../../server/modules/prisma';
-import { EncryptedData } from '@/types/utils/crypto';
-import { UserData } from '@/types/api/user';
 import {
   CalendarEvent,
   CalendarEventsParam,
   SyncParam,
 } from '@/types/api/google';
+import { UserDataOrNull } from '@/types/api/user';
+import { EncryptedData } from '@/types/utils/crypto';
+import debug from 'debug';
+import { google } from 'googleapis';
+import { GOOGLE_API_KEY } from '../../config';
+import { decryptData } from '../../modules/crypto';
+import prisma from '../../modules/prisma';
 
 const log = debug('app:api:google:calendar');
 
@@ -42,7 +42,7 @@ const getOAuthDecrypted = async (userId: number) => {
 
 export async function events(
   { timeMin, timeMax }: CalendarEventsParam,
-  { id }: Exclude<UserData, null>
+  { id }: Exclude<UserDataOrNull, null>
 ) {
   const calendar = google.calendar('v3');
 
@@ -96,7 +96,10 @@ export async function events(
   };
 }
 
-export async function list(_params: never, { id }: Exclude<UserData, null>) {
+export async function list(
+  _params: never,
+  { id }: Exclude<UserDataOrNull, null>
+) {
   try {
     const user = await prisma.user.findUnique({
       where: { id },
@@ -145,7 +148,7 @@ export async function list(_params: never, { id }: Exclude<UserData, null>) {
 
 export async function sync(
   { calendarIds }: SyncParam,
-  { id }: Exclude<UserData, null>
+  { id }: Exclude<UserDataOrNull, null>
 ) {
   try {
     await prisma.user.update({

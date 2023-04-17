@@ -1,13 +1,13 @@
-import { GetterTree, MutationTree, ActionTree } from 'vuex';
-import debug from 'debug';
-import { Role } from '@prisma/client';
-import { UserState } from '@/types/store';
 import { ApiParams } from '@/types/api';
-import { UserData } from '@/types/api/user';
+import { UserDataOrNull } from '@/types/api/user';
+import { UserState } from '@/types/store';
+import { Role } from '@prisma/client';
+import debug from 'debug';
+import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 const log = debug('app:store:user');
 
-const defaultData: UserData = {
+const defaultData: UserDataOrNull = {
   email: '',
   firstName: '',
   lastName: '',
@@ -58,7 +58,7 @@ export const getters: GetterTree<UserState, UserState> = {
 };
 
 export const mutations: MutationTree<UserState> = {
-  setUser(state, userData: UserData) {
+  setUser(state, userData: UserDataOrNull) {
     if (!userData) {
       state.data = defaultData;
       return;

@@ -82,19 +82,17 @@ model User {
 }
 
 enum LessonType {
-  TRIAL   @map("trial")
-  SINGLE  @map("single")
-  REGULAR @map("regular")
+  TRIAL  @map("trial")
+  ONCE   @map("once")
+  WEEKLY @map("weekly")
 }
 
-// Contains scheduled lessons in ISO range format
+// Contains scheduled lessons in time with tz format
 model UserLessons {
   id           Int          @id @default(autoincrement())
   type         LessonType
-  // ISO datetime format
-  beginAt      DateTime     @db.Timestamptz()
-  // ISO datetime format
-  endAt        DateTime     @db.Timestamptz()
+  since        DateTime     @db.Timestamptz()
+  until        DateTime     @db.Timestamptz()
   scheduleId   Int
   userSchedule UserSchedule @relation(fields: [scheduleId], references: [id])
 }
@@ -123,6 +121,17 @@ model UserSchedule {
   user            User              @relation(fields: [userId], references: [id])
   userLesson      UserLessons[]
   userUnavailable UserUnavailable[]
+  lessonConfig    LessonConfig?
+}
+
+// Desired to store config of the lessons
+model LessonConfig {
+  id                        Int          @id @default(autoincrement())
+  userScheduleId            Int          @unique
+  trialDurrationInMinutes   Int          @default(30)
+  singleDurrationInMinutes  Int          @default(50)
+  regularDurrationInMinutes Int          @default(50)
+  userSchedule              UserSchedule @relation(fields: [userScheduleId], references: [id])
 }
 
 // Questions sended by user.

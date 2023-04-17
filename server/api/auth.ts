@@ -1,7 +1,7 @@
 import debug from 'debug';
-import prisma from '../server/modules/prisma';
-import { getJWT } from '../server/modules/auth';
-import { hashValue } from '../server/modules/crypto';
+import { getJWT } from '../modules/auth';
+import { hashValue } from '../modules/crypto';
+import prisma from '../modules/prisma';
 import type { LoginParam, SignupParam } from '@/types/api/auth';
 
 const log = debug('app:api:auth');

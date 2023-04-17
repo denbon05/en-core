@@ -23,12 +23,11 @@
       :date="meetingSelectorDate"
       :meetings-days="availableDays"
       :calendar-options="calendarOptions"
-      :multi="true"
+      :multi="canUserSelectFewLessons"
       :loading="isLoading"
       @next-date="nextDate"
       @previous-date="prevDate"
     >
-      <template #loading> Loading ... </template>
     </meeting-selector>
   </section>
 </template>
@@ -38,8 +37,8 @@ import moment, { Moment } from 'moment';
 import Vue, { VueConstructor } from 'vue';
 import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
 import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
-import { differenceBy, findIndex } from 'lodash';
-import generateCalendarSlots, { stepInMinutes } from '@/utils/slots-generator';
+import { differenceBy } from 'lodash';
+import generateCalendarSlots, { stepInMinutes } from '@/utils/slots';
 import {
   ILessonCalendar,
   ScheduledTimes,
@@ -60,6 +59,10 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
     isLoading: {
       type: Boolean,
       default: true,
+    },
+    canUserSelectFewLessons: {
+      type: Boolean,
+      required: true,
     },
   },
 
@@ -114,7 +117,14 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       await this.fetchUserSchedule();
     },
 
-    lessons(newLessons: MeetingSlot[], oldLessons: MeetingSlot[]) {
+    lessons(
+      nextValues: MeetingSlot[] | MeetingSlot,
+      previousValues: MeetingSlot[] | MeetingSlot
+    ) {
+      const newLessons =
+        nextValues instanceof Array ? nextValues : [nextValues];
+      const oldLessons =
+        previousValues instanceof Array ? previousValues : [previousValues];
       this.$emit('selectLessonTime', newLessons);
       const isLessonTimeAdded = newLessons.length > oldLessons.length;
       const [changedValue] = isLessonTimeAdded
@@ -141,7 +151,7 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
 
   async mounted() {
     await this.fetchUserSchedule();
-    this.refreshSchedule();
+    this.initAutoRefreshSchedule();
   },
 
   beforeDestroy() {
@@ -155,13 +165,13 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       this.$emit('closeCalendar');
     },
 
-    refreshSchedule() {
+    initAutoRefreshSchedule() {
       const minutesUntilThreshold =
         Math.abs(this.fromDate.get('minutes') - stepInMinutes) || 30; // 30 min if 0 minutes
       const msUntilThreshold = minutesUntilThreshold * 60000;
       this.autoRefreshId = setTimeout(async () => {
         await this.fetchUserSchedule();
-        this.refreshSchedule();
+        this.initAutoRefreshSchedule();
       }, msUntilThreshold);
     },
 
