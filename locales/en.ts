@@ -121,11 +121,11 @@ const en = {
     book: {
       lesson: 'Book a lesson',
     },
-    signUp: 'Sing Up',
+    signUp: 'Sign Up',
     logIn: 'Log In',
     send: 'Send',
-    agree: 'Agree',
-    disagree: 'Disagree',
+    agree: 'Yes',
+    disagree: 'No',
     syncGoogle: 'Sync Google',
     sync: 'Sync',
     save: 'Save',
@@ -162,7 +162,11 @@ const en = {
   },
 
   notification: {
-    success: 'Success',
+    success: 'Success', // todo remove
+  },
+
+  question: {
+    auth: 'Would you like to authorize?',
   },
 };
 

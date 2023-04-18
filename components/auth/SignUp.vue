@@ -65,7 +65,7 @@ import { ComponentQuery, VFormRef } from '@/types/vue-specified';
 // TODO submit on enter key
 
 export default Vue.extend({
-  name: 'LogIn',
+  name: 'SignUp',
 
   inject: ['showSnackbar'],
 

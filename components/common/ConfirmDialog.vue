@@ -1,16 +1,21 @@
 <template>
-  <v-dialog v-model="isDialogVisible" persistent max-width="290">
+  <v-dialog
+    v-model="isDialogVisible"
+    persistent
+    min-width="300"
+    max-width="400"
+  >
     <v-card>
       <v-card-title class="text-h6">
-        <v-slot></v-slot>
+        <slot></slot>
       </v-card-title>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="yellow darken-1" text @click="cancel">
-          {{ $t('action/disagree') }}
+        <v-btn color="lime darken-4" text @click="cancel">
+          <span class="font-weight-bold"> {{ $t('action.disagree') }}</span>
         </v-btn>
-        <v-btn color="green darken-1" text @click="confirm">
-          {{ $t('action/agree') }}
+        <v-btn color="green darken-4" text @click="confirm">
+          <span class="font-weight-bold"> {{ $t('action.agree') }}</span>
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -36,14 +41,14 @@ export default Vue.extend({
         return this.value;
       },
       set() {
-        this.cancel();
+        this.$emit('input', false);
       },
     },
   },
 
   methods: {
     cancel() {
-      this.$emit('close');
+      this.isDialogVisible = false;
     },
 
     confirm() {

@@ -1,5 +1,8 @@
 <template>
   <v-dialog id="bookLesson" v-model="isVisible" max-width="900" rounded="xl">
+    <ConfirmDialogVue v-model="isConfirmVisible" @confirm="redirectToAuthPage">
+      {{ $t('question.auth') }}
+    </ConfirmDialogVue>
     <v-card :loading="isLoading" color="#FFF" min-height="700">
       <v-stepper v-model="step" flat>
         <v-stepper-header>
@@ -71,13 +74,14 @@ import Vue from 'vue';
 import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
 import AvailableTutors from './AvailableTutors.vue';
 import LessonsCalendar from './LessonsCalendar.vue';
+import ConfirmDialogVue from '@/components/common/ConfirmDialog.vue';
 import Lessons from '@/utils/lesson';
 import { BookParam } from '@/types/api/lesson';
 
 export default Vue.extend({
   name: 'BookLesson',
 
-  components: { AvailableTutors, LessonsCalendar },
+  components: { AvailableTutors, LessonsCalendar, ConfirmDialogVue },
 
   inject: ['showSnackbar'],
 
@@ -103,7 +107,9 @@ export default Vue.extend({
       }),
       selectedTutorId: null as number | null,
       lessonTimes: [] as MeetingSlot[],
-      lessonType: 'SINGLE' as LessonType,
+      lessonType: 'ONCE' as LessonType,
+
+      isConfirmVisible: false,
     };
   },
 
@@ -143,6 +149,24 @@ export default Vue.extend({
       this.isVisible = false;
     },
 
+    closeConfirm() {
+      this.isConfirmVisible = false;
+    },
+
+    redirectToAuthPage() {
+      this.$router.push({
+        path: '/auth',
+      });
+      const intervalId = setInterval(async () => {
+        // wait until user auth
+        if (this.$store.getters['user/isAuthenticated']) {
+          clearInterval(intervalId);
+          this.$router.push('/');
+          await this.bookLesson();
+        }
+      }, 1000);
+    },
+
     selectTutor(tutorId: number) {
       this.selectedTutorId = tutorId;
       if (tutorId) {
@@ -164,20 +188,25 @@ export default Vue.extend({
         this.lessonTimes
       );
       try {
-        const { isSuccess, message: msg } = await this.$api(
-          'user/lesson/book',
-          {
-            type: this.lessonType,
-            lessonsData: lessons,
-            tutorId: this.selectedTutorId,
-          } as BookParam
-        );
+        const {
+          isSuccess,
+          message: msg,
+          code,
+        } = await this.$api('user/lesson/book', {
+          type: this.lessonType,
+          lessonsData: lessons,
+          tutorId: this.selectedTutorId,
+        } as BookParam);
 
         const count = lessons.length;
         const message = !isSuccess
           ? msg
           : this.$tc('success.lesson.book', count, { count });
         this.showSnackbar({ isSuccess, message });
+        if (code === 401) {
+          // unauthenticated
+          this.isConfirmVisible = true;
+        }
       } catch (err) {
         this.$rollbar.error(err);
       } finally {
