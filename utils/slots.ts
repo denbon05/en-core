@@ -13,6 +13,8 @@ const momentRange = require('moment-range');
 
 const moment: MomentRange = momentRange.extendMoment(m);
 
+// TODO create a class instance and use it in BookLesson component
+// todo with predefined config there
 export const stepInMinutes = 30;
 
 /**

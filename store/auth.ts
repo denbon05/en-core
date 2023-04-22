@@ -1,8 +1,8 @@
+import jwtDecode, { InvalidTokenError } from 'jwt-decode';
+import { ActionTree, GetterTree, MutationTree } from 'vuex';
 import { ApiParams } from '@/types/api';
 import type { UserDataOrNull } from '@/types/api/user';
 import type { AuthState } from '@/types/store';
-import jwtDecode, { InvalidTokenError } from 'jwt-decode';
-import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 export const state = (): AuthState => ({
   accessToken: '',
@@ -37,8 +37,8 @@ export const mutations: MutationTree<AuthState> = {
 };
 
 export const actions: ActionTree<AuthState, AuthState> = {
-  async logIn({ commit }, { email, password }: ApiParams<'auth/login'>) {
-    const res = await this.$api('auth/login', {
+  async logIn({ commit }, { email, password }: ApiParams<'user/auth/signup'>) {
+    const res = await this.$api('user/auth/login', {
       email,
       password,
     });
@@ -62,9 +62,9 @@ export const actions: ActionTree<AuthState, AuthState> = {
 
   async signUp(
     { commit },
-    { email, password, firstName, lastName }: ApiParams<'auth/signup'>
+    { email, password, firstName, lastName }: ApiParams<'user/auth/signup'>
   ) {
-    const res = await this.$api('auth/signup', {
+    const res = await this.$api('user/auth/signup', {
       email,
       password,
       firstName,

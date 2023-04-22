@@ -1,13 +1,19 @@
+<!-- eslint-disable @intlify/vue-i18n/no-raw-text -->
 <template>
   <footer id="appFooter" class="d-flex justify-space-around align-center">
     <section class="d-flex flex-column justify-end h-100 w-25 text-uppercase">
-      <div id="footerMedia" class="d-flex flex-column justify-end h-50">
-        <img id="footerLogo" src="/logo_black.png" alt="'EN' on the Moon" />
+      <div
+        id="footerMedia"
+        class="d-flex flex-column justify-end align-start h-50"
+      >
+        <v-btn fab plain href="/" class="ml-5 mb-4">
+          <img id="footerLogo" src="/logo_black.png" alt="'EN' on the Moon" />
+        </v-btn>
         <div id="footerSiteInfo" class="d-flex flex-column mt-15 mt-md-10">
           <h3>{{ $t('main.name') }}</h3>
           <h3>{{ $t('main.description') }}</h3>
         </div>
-        <div id="footerMediaIcons" class="d-flex mt-10">
+        <div id="footerMediaIcons" class="d-flex mt-10 ml-n4">
           <img
             v-for="mediaName in mediaNames"
             :key="mediaName"
@@ -16,6 +22,13 @@
             class="px-3"
           />
         </div>
+        <a
+          class="text--secondary caption pt-5"
+          href="https://github.com/denbon05"
+          target="_blank"
+        >
+          © Denys Bondarenko
+        </a>
       </div>
     </section>
 
@@ -37,9 +50,16 @@
       id="footerMenuItems"
       class="d-flex flex-column justify-md-space-around justify-end align-end h-80 w-25 text-uppercase pt-md-15 pt-lg-0"
     >
-      <span class="pt-sm-10">{{ $t('menu.about.title') }}</span>
-      <span class="pt-sm-10">{{ $t('menu.programs.title') }}</span>
-      <span class="pt-sm-10">{{ $t('menu.contact.title') }}</span>
+      <v-btn
+        v-for="{ name, key } of menuItems"
+        :key="key"
+        text
+        plain
+        class="subtitle-1"
+        :to="`#${key}`"
+      >
+        {{ name }}
+      </v-btn>
     </section>
   </footer>
 </template>
@@ -56,9 +76,12 @@ export default Vue.extend({
   name: 'MainFooter',
 
   props: {
-    menuItemNames: {
+    menuItems: {
       required: true,
-      type: Array<string>,
+      type: Array<{
+        name: string;
+        key: string;
+      }>,
     },
   },
 

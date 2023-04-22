@@ -1,6 +1,6 @@
 import type { IncomingMessage } from 'http';
 import type { ApiReturn as CommonApiReturn } from './common';
-import * as auth from '@/server/api/auth';
+import * as auth from '@/server/api/user/auth';
 import * as googleAuth from '@/server/api/google/auth';
 import * as googleCalendar from '@/server/api/google/calendar';
 import * as manageUsers from '@/server/api/manage/users';
@@ -39,8 +39,8 @@ type ApiManageUsers = {
 };
 
 export interface AppApi {
-  auth: ApiAuth;
   user: {
+    auth: ApiAuth;
     data: ApiUserData;
     schedule: ApiUserSchedule;
     lesson: ApiUserLesson;

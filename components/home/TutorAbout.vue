@@ -65,10 +65,8 @@ export default Vue.extend({
   z-index: 0;
 }
 
-#programs {
-  #programsBG {
-    width: 100%;
-    object-fit: cover;
-  }
+#programsBG {
+  width: 100%;
+  object-fit: cover;
 }
 </style>

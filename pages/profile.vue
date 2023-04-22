@@ -7,7 +7,7 @@
     </v-row>
     <v-row justify="center" class="pb-15">
       <v-col md="10" xl="8">
-        <user-settings />
+        <UserSettings />
       </v-col>
     </v-row>
 
@@ -32,7 +32,6 @@ export default Vue.extend({
 
   methods: {
     logOut() {
-      console.log('LOGOUT');
       this.$store.dispatch('auth/logOut');
       this.$router.push('/auth');
     },

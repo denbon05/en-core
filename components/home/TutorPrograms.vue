@@ -9,7 +9,8 @@
       />
 
       <div
-        class="programs d-flex flex-column justify-start justify-md-space-between"
+        id="programs"
+        class="d-flex flex-column justify-start justify-md-space-between"
       >
         <div>
           <h3
@@ -58,7 +59,7 @@ export default Vue.extend({
       object-fit: cover;
     }
 
-    .programs {
+    #programs {
       position: absolute;
       top: 0;
       width: 100%;
@@ -80,10 +81,10 @@ export default Vue.extend({
       }
     }
   }
+}
 
-  #programCards {
-    .program-card {
-    }
-  }
+.programs-audience {
+  font-size: 2rem;
+  font-weight: 400;
 }
 </style>

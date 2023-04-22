@@ -1,6 +1,6 @@
 <template>
   <section id="mainAction" class="d-flex justify-center">
-    <v-btn elevation="2" class="btn-lg">{{ $t('action.book') }}</v-btn>
+    <v-btn elevation="2" class="btn-lg">{{ $tc('action.book.lesson') }}</v-btn>
   </section>
 </template>
 

@@ -6,13 +6,13 @@
       </v-snackbar>
     </div>
 
-    <AppBar :menu-item-names="menuItemNames" />
+    <AppBar :menu-items="menuItems" />
 
     <v-main>
       <Nuxt />
     </v-main>
 
-    <AppFooter :menu-item-names="menuItemNames" />
+    <AppFooter :menu-items="menuItems" />
   </v-app>
 </template>
 
@@ -21,6 +21,7 @@ import Vue from 'vue';
 import AppBar from '@/components/default/AppBar.vue';
 import AppFooter from '@/components/default/AppFooter.vue';
 import { ShowSnackbarParam } from '@/types/global/vue';
+import { MenuItem } from '@/types/components/default';
 
 export default Vue.extend({
   name: 'DefaultLayout',
@@ -35,7 +36,6 @@ export default Vue.extend({
 
   data() {
     return {
-      menuItems: ['about', 'contact', 'programs'],
       snackbar: {
         isVisible: false,
         message: '',
@@ -45,11 +45,13 @@ export default Vue.extend({
   },
 
   computed: {
-    menuItemNames(): string[] {
-      const names = this.menuItems.map((item: string) =>
-        this.$t(`menu.${item}.title`)
-      );
-      return names as string[];
+    menuItems(): MenuItem[] {
+      const idKeys = ['about', 'contact', 'programs'];
+      const items = idKeys.map((key: string) => ({
+        name: this.$t(`menu.${key}.title`),
+        key,
+      }));
+      return items;
     },
   },
 
@@ -58,7 +60,7 @@ export default Vue.extend({
       const color = isWarn
         ? 'lime darken-2'
         : isSuccess
-        ? 'lime darken-2'
+        ? 'light-green darken-1'
         : 'red darken-2';
 
       this.$set(this, 'snackbar', {
@@ -72,6 +74,10 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+html {
+  scroll-behavior: smooth;
+}
+
 #appRoot {
   background-color: $app-bg-color-root;
 }

@@ -107,8 +107,7 @@ export default Vue.extend({
           this.$router.push('/profile');
         }
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
+        this.$logger.error(err);
         // TODO handle err
       }
       this.loginQuery.isLoading = false;

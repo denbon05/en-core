@@ -44,9 +44,9 @@ export default Vue.extend({
 
   data() {
     return {
-      settings: ['calendar', 'data'],
+      settings: ['data', 'calendar'],
       tab: null,
-      components: [CalendarSettings, DataSettings],
+      components: [DataSettings, CalendarSettings],
     };
   },
 

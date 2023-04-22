@@ -1,5 +1,5 @@
-import 'vue';
 import rollbar from 'rollbar';
+import 'vue';
 
 import type { ApiControllerPath, ApiParams, ApiResponse } from '../api';
 
@@ -16,7 +16,7 @@ declare module 'vue/types/vue' {
       params?: Params
     ) => ApiResponse<CPath>;
 
-    $rollbar: rollbar;
+    $logger: rollbar;
 
     showSnackbar(param: ShowSnackbarParam): void;
   }

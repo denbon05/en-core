@@ -6,13 +6,14 @@
     >
       <v-list-item-group v-model="calendarListSelected" multiple>
         <v-list-item
-          :key="id"
           v-for="{ summary, id } in calendarList"
+          :key="id"
           :value="id"
           active-class="text--accent-4"
         >
           <template #default="{ active }">
             <v-list-item-content>
+              <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->
               <v-list-item-title v-text="summary"></v-list-item-title>
             </v-list-item-content>
 
@@ -70,6 +71,12 @@ export default Vue.extend({
     };
   },
 
+  computed: {
+    calendarListShouldBeVisible(): boolean {
+      return this.gStatus?.isAuthenticated;
+    },
+  },
+
   watch: {
     query: {
       deep: true,
@@ -86,12 +93,6 @@ export default Vue.extend({
     if (this.calendarListShouldBeVisible) {
       await this.fetchCalendarList();
     }
-  },
-
-  computed: {
-    calendarListShouldBeVisible(): boolean {
-      return this.gStatus.isAuthenticated;
-    },
   },
 
   methods: {
@@ -117,7 +118,7 @@ export default Vue.extend({
           message,
         };
       } catch (err) {
-        console.error('syncSelected err', err);
+        this.$logger.error(err);
         this.query = {
           isLoading: false,
           isSuccess: false,
@@ -139,7 +140,7 @@ export default Vue.extend({
           message: '',
         };
       } catch (err) {
-        console.error(err);
+        this.$logger.error(err);
         this.query = {
           isLoading: false,
           isSuccess: false,
@@ -165,7 +166,7 @@ export default Vue.extend({
           message,
         };
       } catch (err) {
-        console.error(err);
+        this.$logger.error(err);
         this.query = {
           isLoading: false,
           isSuccess: false,
@@ -187,7 +188,7 @@ export default Vue.extend({
           message,
         };
       } catch (err) {
-        console.error(err);
+        this.$logger.error(err);
         this.query.isLoading = false;
       }
     },

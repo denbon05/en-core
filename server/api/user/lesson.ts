@@ -1,19 +1,15 @@
 import type { UserLessons } from '@prisma/client';
 import prisma from '../../modules/prisma';
 import { BookParam } from '@/types/api/lesson';
-import { UserData } from '@/types/api/user';
+import { UserDataOrNull } from '@/types/api/user';
 
 export async function book(
   { lessonsData, tutorId, type }: BookParam,
-  { id: studentId }: UserData
+  userDataOrNull: UserDataOrNull
 ) {
   // get tutor schedule
   const tutorSchedule = await prisma.userSchedule.findUniqueOrThrow({
     where: { userId: tutorId },
-  });
-  // get student schedule
-  const studentSchedule = await prisma.userSchedule.findUniqueOrThrow({
-    where: { userId: studentId },
   });
   // format lessons
   const tutorLessons: Omit<UserLessons, 'id'>[] = lessonsData.map((values) => ({
@@ -21,6 +17,21 @@ export async function book(
     ...values,
     type,
   }));
+
+  if (!userDataOrNull?.id && type === 'TRIAL') {
+    // book trial for unauthorized user
+    await prisma.userLessons.createMany({
+      data: tutorLessons,
+    });
+    return {
+      isSuccess: true,
+    };
+  }
+
+  // get student schedule
+  const studentSchedule = await prisma.userSchedule.findUniqueOrThrow({
+    where: { userId: userDataOrNull?.id },
+  });
   const studentLessons: Omit<UserLessons, 'id'>[] = tutorLessons.map(
     (values) => ({
       ...values,

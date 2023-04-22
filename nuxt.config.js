@@ -44,7 +44,7 @@ export default {
     '@/plugins/api-context.server.ts',
     '@/plugins/axios.client.ts',
     '@/plugins/components.client.ts',
-    '@/plugins/rollbar.client.ts',
+    '@/plugins/logger.client.ts',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -131,18 +131,7 @@ export default {
     extend(config) {
       config.resolve.alias['node-fetch-native'] = require.resolve('node-fetch');
     },
-    // ? https://github.com/nuxt/typescript/issues/339#issuecomment-802891723
-    // extend(config, _ctx) {
-    //   if (!config.resolve) {
-    //     config.resolve = {};
-    //   }
-    //   if (!config.resolve.plugins) {
-    //     config.resolve.plugins = [];
-    //   }
-    //   config.resolve.plugins.push(
-    //     new TsconfigPathsPlugin({ configFile: './tsconfig.json' })
-    //   );
-    // },
+    transpile: ['vee-validate/dist/rules'],
   },
 
   serverMiddleware: [

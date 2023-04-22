@@ -1,100 +1,82 @@
 <template>
-  <section id="tutorQuestion" class="tutor-question mb-10">
+  <section id="contact" class="tutor-question mb-10">
     <h3 class="tutor-question-header mb-5">
       {{ $t('tutor.question.header') }}
     </h3>
-    <v-form
-      id="questionForm"
-      ref="question-form"
-      v-model="isFormValid"
-      class="d-flex flex-column pr-md-10 pr-lg-15"
-      lazy-validation
-    >
-      <div class="d-flex">
-        <v-text-field
-          v-model="name"
-          class="question-input pr-2 pr-md-5"
-          :rules="nameRules"
-          :label="$t('user.name')"
-          required
+    <ValidationObserver v-slot="{ invalid, validated }">
+      <v-form id="questionForm" class="d-flex flex-column pr-md-10 pr-lg-15">
+        <div class="d-flex">
+          <VTextFieldWithValidation
+            v-model="name"
+            class="question-input pr-2 pr-md-5"
+            rules="required"
+            :label="$t('user.name')"
+            outlined
+            :height="65"
+            background-color="#FFFFCC"
+          ></VTextFieldWithValidation>
+
+          <VTextFieldWithValidation
+            v-model="email"
+            class="question-input pl-2 pl-md-5"
+            rules="required|email"
+            :label="$t('user.email')"
+            outlined
+            :height="65"
+            background-color="#FFFFCC"
+          ></VTextFieldWithValidation>
+        </div>
+
+        <VTextAreaWithValidation
+          v-model="message"
+          class="question-input"
+          rules="required"
           outlined
-          :height="65"
           background-color="#FFFFCC"
-        ></v-text-field>
+          :label="$t('tutor.question.message')"
+        ></VTextAreaWithValidation>
 
-        <v-text-field
-          v-model="email"
-          class="question-input pl-2 pl-md-5"
-          :rules="emailRules"
-          :label="$t('user.email')"
-          required
-          outlined
-          :height="65"
-          background-color="#FFFFCC"
-        ></v-text-field>
-      </div>
-
-      <v-textarea
-        v-model="message"
-        class="question-input"
-        :rules="messageRules"
-        outlined
-        background-color="#FFFFCC"
-        :label="$t('tutor.question.message')"
-      ></v-textarea>
-
-      <div class="d-flex justify-end">
-        <v-btn class="btn-md" @click="validate">
-          {{ $t('action.send') }}
-        </v-btn>
-      </div>
-    </v-form>
+        <div class="d-flex justify-end">
+          <v-btn
+            class="btn-md"
+            :disabled="invalid || !validated"
+            @click="sendQuestion"
+          >
+            {{ $t('action.send') }}
+          </v-btn>
+        </div>
+      </v-form>
+    </ValidationObserver>
   </section>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { VFormRef } from '@/types/vue-specified';
-import validator from '@/utils/validator';
+import { ValidationObserver } from 'vee-validate';
+import VTextFieldWithValidation from '../common/inputs/VTextFieldWithValidation.vue';
+import VTextAreaWithValidation from '../common/inputs/VTextAreaWithValidation.vue';
 
 export default Vue.extend({
   name: 'TutorQuestion',
 
-  data() {
-    const minNameLength = validator.getMinNameLength();
-    const nameRules = validator.getRules({
-      required: this.$t('error.required', { title: this.$t('user.name') }),
-      len: this.$t('error.lenMin', {
-        title: this.$t('user.name'),
-        len: minNameLength,
-      }),
-    });
-    const emailRules = validator.getRules({
-      required: this.$t('error.required', {
-        title: this.$t('user.email'),
-      }),
-      emailValid: this.$t('error.valid', { title: this.$t('user.email') }),
-    });
-    const messageRules = validator.getRules({
-      required: this.$t('error.required', {
-        title: this.$t('tutor.question.message'),
-      }),
-    });
+  components: {
+    ValidationObserver,
+    VTextFieldWithValidation,
+    VTextAreaWithValidation,
+  },
 
+  data() {
     return {
-      isFormValid: true,
       name: '',
       email: '',
       message: '',
-      nameRules,
-      emailRules,
-      messageRules,
     };
   },
 
   methods: {
-    validate() {
-      (this.$refs['question-form'] as VFormRef).validate();
+    sendQuestion() {
+      // todo
+      console.log('sendQuestion!!!');
     },
   },
 });

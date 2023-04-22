@@ -38,6 +38,10 @@ export default Vue.extend({
       type: Boolean,
       default: true,
     },
+    userShouldBeAuthorized: {
+      type: Boolean,
+      default: true,
+    },
     value: {
       type: Number,
       default: null,
@@ -46,6 +50,7 @@ export default Vue.extend({
 
   data() {
     return {
+      isUserAuthenticated: this.$store.getters['user/isAuthenticated'],
       tutors: [] as UserList,
     };
   },
@@ -95,18 +100,17 @@ export default Vue.extend({
           }
         );
 
-        const isWarn = isSuccess && Boolean(message);
-        if (!isSuccess || isWarn) {
+        if (!this.isUserAuthenticated && this.userShouldBeAuthorized) {
           this.showSnackbar({
-            isSuccess,
-            message,
-            isWarn,
+            message: this.$t('warn.unauthorized'),
+            isWarn: true,
           });
+        } else if (message) {
+          this.showSnackbar({ message, isSuccess });
         }
         this.tutors = list ?? [];
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
+        this.$logger.error(err);
       } finally {
         this.$emit('set-loading', false);
       }

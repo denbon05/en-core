@@ -19,14 +19,16 @@
         id="appNavMenu"
         class="d-flex align-center flex-basis-half justify-end mt-3 mr-md-15 mr-0"
       >
-        <!-- todo: use v-btn 'to' -->
-        <a
-          v-for="name of menuItemNames"
-          :key="name"
-          class="menu-item text-uppercase text-decoration-none white--text pr-2 pr-sm-5 pr-lg-10"
-          href="#"
-          >{{ name }}</a
+        <v-btn
+          v-for="{ name, key } of menuItems"
+          :key="key"
+          text
+          plain
+          class="menu-item white--text pr-2 pr-sm-5 pr-lg-10"
+          :to="`#${key}`"
         >
+          {{ name }}
+        </v-btn>
 
         <v-btn id="profileIcon" href="/profile" fab plain>
           <img src="/icons8-male-user-50.png" alt="Profile icon" />
@@ -43,9 +45,12 @@ export default Vue.extend({
   name: 'AppBar',
 
   props: {
-    menuItemNames: {
+    menuItems: {
       required: true,
-      type: Array<string>,
+      type: Array<{
+        name: string;
+        key: string;
+      }>,
     },
   },
 });

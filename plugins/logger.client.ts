@@ -15,8 +15,8 @@ export default (
 
   if (appMode.isProd()) {
     // inject rollbar only in prod mode
-    inject('rollbar', rollbar);
+    inject('logger', rollbar);
   } else {
-    inject('rollbar', console);
+    inject('logger', console);
   }
 };

@@ -27,7 +27,7 @@ const en = {
   lesson: {
     trial: {
       price: 'Just {amount} $ for trial lesson',
-      description: 'Start with a 30 minute trial lesson',
+      description: 'Start with a 30 minutes trial lesson',
     },
     normal: {
       // eslint-disable-next-line no-template-curly-in-string
@@ -119,7 +119,11 @@ const en = {
 
   action: {
     book: {
-      lesson: 'Book a lesson',
+      lesson: 'Book a lesson | Book lessons',
+      trial: 'Book trial',
+    },
+    lesson: {
+      pickTime: 'Pick time',
     },
     signUp: 'Sign Up',
     logIn: 'Log In',
@@ -145,6 +149,10 @@ const en = {
     },
     common: 'Something went wrong 👽',
     unauthorized: 'Authenticate first',
+    http: {
+      common: '@:error:common',
+      '401': '@:error.unauthorized',
+    },
   },
 
   success: {
@@ -159,6 +167,7 @@ const en = {
         unreached: 'Google calendar events are not reached',
       },
     },
+    unauthorized: 'You are not authorized',
   },
 
   notification: {

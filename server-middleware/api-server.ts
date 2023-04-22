@@ -35,8 +35,7 @@ export default async <CPath extends ApiControllerPath>(
         log(`token expired %p`, err.message);
         // if user was logged in but jwt expired
         // send message that account data is not synced
-        message =
-          'The session expired. To sync your account you should be Logged In.';
+        message = 'To sync your account you should be Logged In.';
       } else {
         throw err;
       }
@@ -61,7 +60,7 @@ export default async <CPath extends ApiControllerPath>(
       })
     );
   } catch (err) {
-    log(`api "${url}${funcName}" error %O`, err);
+    log(`API "${url}${funcName}" error %O`, err);
     res.end(
       JSON.stringify({
         isSuccess: false,

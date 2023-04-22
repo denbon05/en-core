@@ -1,4 +1,8 @@
-import { Context } from '@nuxt/types';
+import debug from 'debug';
+import type { Context } from '@nuxt/types';
+import { HttpException } from '@/utils/errors';
+
+const log = debug('app:axios:client');
 
 export default function ({
   store,
@@ -19,9 +23,10 @@ export default function ({
 
   $axios.onError(async (error) => {
     const statusCode = error.response ? error.response.status : -1;
-
     if (statusCode === 401 || statusCode === 422) {
+      // todo implement refreshToken logic
       const refreshToken = store.state.auth.refreshToken;
+      log('onErr %O', error);
       if (
         error.response!.data.errorCode === 'JWT_TOKEN_EXPIRED' &&
         refreshToken
@@ -29,23 +34,36 @@ export default function ({
         if (
           Object.prototype.hasOwnProperty.call(error.config, 'retryAttempts')
         ) {
-          store.commit('auth/logout');
+          store.dispatch('auth/logOut');
           return redirect('/auth');
         }
         const config = { retryAttempts: 1, ...error.config };
         try {
           await store.dispatch('auth/refresh');
           return Promise.resolve($axios(config));
-        } catch (e) {
-          store.commit('auth/logout');
-          return redirect('/auth');
+        } catch (err) {
+          log('refresh err %O', err);
+          store.dispatch('auth/logOut');
+          // return redirect('/auth');
+          return;
         }
       }
 
-      store.commit('auth/logout');
+      log('Log Out');
+      store.dispatch('auth/logOut');
       return redirect('/auth');
     }
 
     return Promise.reject(error);
   });
+
+  $axios.interceptors.response.use(
+    (response) => response,
+    (err) => {
+      const { status } = err.response;
+      const httpError: HttpException = new HttpException(err.message);
+      httpError.statusCode = status;
+      return Promise.reject(httpError);
+    }
+  );
 }

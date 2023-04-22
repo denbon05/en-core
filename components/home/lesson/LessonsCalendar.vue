@@ -33,16 +33,16 @@
 </template>
 
 <script lang="ts">
-import moment, { Moment } from 'moment';
-import Vue, { VueConstructor } from 'vue';
-import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
-import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
-import { differenceBy } from 'lodash';
-import generateCalendarSlots, { stepInMinutes } from '@/utils/slots';
 import {
   ILessonCalendar,
   ScheduledTimes,
 } from '@/types/components/lesson-calendar';
+import generateCalendarSlots from '@/utils/slots';
+import { differenceBy } from 'lodash';
+import moment, { Moment } from 'moment';
+import Vue, { VueConstructor } from 'vue';
+import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
+import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
 
 // todo make calendar scrollable
 // TODO move all schedule logic to the class TutorSchedule
@@ -62,6 +62,10 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
     },
     canUserSelectFewLessons: {
       type: Boolean,
+      required: true,
+    },
+    additionalTime: {
+      type: Number,
       required: true,
     },
   },
@@ -131,13 +135,13 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
         ? differenceBy(newLessons, oldLessons, 'date')
         : differenceBy(oldLessons, newLessons, 'date');
       const changedMoment = moment(changedValue.date);
-      const nextSlotMoment = changedMoment.add(stepInMinutes, 'minutes');
+      const nextSlotMoment = changedMoment.add(this.additionalTime, 'minutes');
 
       if (isLessonTimeAdded) {
         this.scheduledTimes.push({
           since: nextSlotMoment.toISOString(),
           until: moment(nextSlotMoment)
-            .add(stepInMinutes, 'minutes')
+            .add(this.additionalTime, 'minutes')
             .toISOString(),
         });
       } else {
@@ -167,7 +171,7 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
 
     initAutoRefreshSchedule() {
       const minutesUntilThreshold =
-        Math.abs(this.fromDate.get('minutes') - stepInMinutes) || 30; // 30 min if 0 minutes
+        Math.abs(this.fromDate.get('minutes') - this.additionalTime) || 30; // 30 min if 0 minutes
       const msUntilThreshold = minutesUntilThreshold * 60000;
       this.autoRefreshId = setTimeout(async () => {
         await this.fetchUserSchedule();
@@ -193,7 +197,7 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
         }
         this.scheduledTimes = scheduledTimes ?? [];
       } catch (err) {
-        this.$rollbar.error('fetchUserCalendarConfig err', err);
+        this.$logger.error('fetchUserCalendarConfig err', err);
       } finally {
         this.$emit('set-loading', false);
       }
