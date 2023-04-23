@@ -56,7 +56,7 @@ export default async <CPath extends ApiControllerPath>(
       JSON.stringify({
         isSuccess: true,
         ...result,
-        message,
+        message: result.message || message,
       })
     );
   } catch (err) {

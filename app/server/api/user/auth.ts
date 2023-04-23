@@ -1,10 +1,12 @@
+import debug from 'debug';
 import { getJWT } from '../../modules/auth';
 import { hashValue } from '../../modules/crypto';
 import prisma from '../../modules/prisma';
 import type { LoginParam, SignupParam } from '@/types/api/auth';
 
+const log = debug('app:user:auth');
+
 export async function login({ email, password }: LoginParam) {
-  const isSuccess = false;
   const user = await prisma.user.findFirst({
     where: {
       email,
@@ -12,10 +14,11 @@ export async function login({ email, password }: LoginParam) {
     },
   });
 
+  log('login user %O', user);
   if (!user) {
     return {
-      isSuccess,
-      message: 'There is no such user.',
+      isSuccess: false,
+      message: 'There is no such user',
     };
   }
   return {

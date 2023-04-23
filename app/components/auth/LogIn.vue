@@ -5,7 +5,6 @@
         <v-text-field
           ref="email"
           v-model="form.email"
-          :rules="emailRules"
           :label="$t('user.email')"
           required
           @keyup.enter="logIn"
@@ -13,7 +12,6 @@
 
         <v-text-field
           v-model="form.password"
-          :rules="passwordRules"
           :label="$t('user.password')"
           :append-icon="form.isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
           :type="form.isPasswordVisible ? 'text' : 'password'"
@@ -56,12 +54,6 @@ export default Vue.extend({
       isSuccess: false,
       message: '',
     },
-    emailRules: [
-      // (v) => !!v || 'E-mail is required',
-      // (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-      // (v) => allowedEmails.has(v) || 'E-mail is not allowed',
-    ],
-    passwordRules: [(v: string) => !!v || 'Password is required'],
   }),
 
   watch: {

@@ -1,38 +1,9 @@
-all: lint test build
+init:
+	npm i
 
-ANSIBLE_PATH = 'services/ansible'
+# vault
+vault-encrypt:
+	make -C ansible vault-encrypt
 
-setup:
-	npm ci
-	make -C $(ANSIBLE_PATH) setup
-
-fix:
-	npm run lintfix
-	npx prisma format
-
-lint:
-	npm run lint
-
-test:
-	npm run test
-
-start:
-	DEBUG=app:* npm run dev
-
-build:
-	npm run build
-
-# Database
-
-init-db:
-	make -C $(ANSIBLE_PATH) init-db
-	make migrate-db
-	make seed-db
-
-migrate-db:
-	npm run migrate-db
-
-seed-db:
-	npm run seed-db
-
-.PHONY: test
+vault-decrypt:
+	make -C ansible vault-decrypt

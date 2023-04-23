@@ -1,6 +1,9 @@
 <template>
   <v-dialog id="bookLesson" v-model="isVisible" max-width="900" rounded="xl">
-    <ConfirmDialogVue v-model="isConfirmVisible" @confirm="redirectToAuthPage">
+    <ConfirmDialogVue
+      v-model="isAuthConfirmVisible"
+      @confirm="redirectToAuthPage"
+    >
       {{ $t('question.auth') }}
     </ConfirmDialogVue>
     <v-card :loading="isLoading" color="#FFF" min-height="700">
@@ -38,7 +41,7 @@
             <AvailableTutors
               v-model="selectedTutorId"
               :is-loading="isLoading"
-              :user-should-be-authorized="userShouldBeAuthorized"
+              :user-should-be-authorized="userShouldBeAuthenticated"
               @select-tutor="selectTutor"
               @set-loading="setLoading"
             />
@@ -119,7 +122,7 @@ export default Vue.extend({
       selectedTutorId: null as number | null,
       lessonTimes: [] as MeetingSlot[],
 
-      isConfirmVisible: false,
+      isAuthConfirmVisible: false,
     };
   },
 
@@ -147,7 +150,7 @@ export default Vue.extend({
       return stepInMinutes; // 30 minutes
     },
 
-    userShouldBeAuthorized(): boolean {
+    userShouldBeAuthenticated(): boolean {
       return this.lessonType !== 'TRIAL';
     },
 
@@ -178,17 +181,17 @@ export default Vue.extend({
     },
 
     redirectToAuthPage() {
-      this.$router.push({
-        path: '/auth',
-      });
       const intervalId = setInterval(async () => {
         // wait until user auth
         if (this.$store.getters['user/isAuthenticated']) {
-          clearInterval(intervalId);
           this.$router.push('/');
+          clearInterval(intervalId);
           await this.bookLesson();
         }
-      }, 500);
+      }, 1000);
+      this.$router.push({
+        path: '/auth',
+      });
     },
 
     selectTutor(tutorId: number) {
@@ -213,32 +216,39 @@ export default Vue.extend({
       ).toTimeScheduled(this.lessonTimes);
 
       try {
-        const { isSuccess, message: msg } = await this.$api(
-          'user/lesson/book',
-          {
-            type: this.lessonType,
-            lessonsData: lessons,
-            tutorId: this.selectedTutorId,
-          } as BookParam
-        );
+        if (
+          !this.$store.getters['user/isAuthenticated'] &&
+          this.userShouldBeAuthenticated
+        ) {
+          this.isAuthConfirmVisible = true;
+        } else {
+          const { isSuccess, message: msg } = await this.$api(
+            'user/lesson/book',
+            {
+              type: this.lessonType,
+              lessonsData: lessons,
+              tutorId: this.selectedTutorId,
+            } as BookParam
+          );
 
-        const count = lessons.length;
+          const count = lessons.length;
 
-        if (isSuccess) {
-          // reset selected
-          this.isVisible = false;
-          this.selectedTutorId = null;
-          this.step = 1; // select tutor step
+          if (isSuccess) {
+            // reset selected
+            this.isVisible = false;
+            this.selectedTutorId = null;
+            this.step = 1; // select tutor step
+          }
+          const message = !isSuccess
+            ? msg
+            : this.$tc('success.lesson.book', count, { count });
+          this.showSnackbar({ isSuccess, message });
         }
-        const message = !isSuccess
-          ? msg
-          : this.$tc('success.lesson.book', count, { count });
-        this.showSnackbar({ isSuccess, message });
       } catch (err) {
         this.$logger.error(err);
         if (err.statusCode === 401) {
           // unauthenticated
-          this.isConfirmVisible = true;
+          this.isAuthConfirmVisible = true;
           return;
         }
         const message =
