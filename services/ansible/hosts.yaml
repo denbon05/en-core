@@ -1,0 +1,17 @@
+---
+all:
+  children:
+    dev:
+      hosts:
+        localhost:
+          ansible_connection: local
+
+    test:
+      hosts:
+        localhost:
+          ansible_connection: local
+
+    db:
+      children:
+        dev:
+        test:

@@ -1,6 +1,6 @@
 ---
 - name: Init database
-  hosts: local
+  hosts: db
   gather_facts: true
   become: true
 

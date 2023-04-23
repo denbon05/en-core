@@ -159,6 +159,9 @@ const en = {
     lesson: {
       book: 'You booked a lesson | You booked {count} lessons',
     },
+    message: {
+      sent: 'Message sent',
+    },
   },
 
   warn: {

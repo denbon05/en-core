@@ -7,7 +7,9 @@ import * as manageUsers from '@/server/api/manage/users';
 import * as userData from '@/server/api/user/data';
 import * as userSchedule from '@/server/api/user/schedule';
 import * as userLesson from '@/server/api/user/lesson';
+import * as email from '@/server/api/user/email';
 
+type EmailFunName = keyof typeof email;
 type AuthFuncName = keyof typeof auth;
 type GoogleCalendarFuncName = keyof typeof googleCalendar;
 type GoogleAuthFuncName = keyof typeof googleAuth;
@@ -16,6 +18,9 @@ type UserScheduleFuncName = keyof typeof userSchedule;
 type ManageUsersFuncName = keyof typeof manageUsers;
 type UserLessonFuncName = keyof typeof userLesson;
 
+type ApiEmail = {
+  [K in EmailFunName]: (typeof email)[K];
+};
 type ApiUserLesson = {
   [K in UserLessonFuncName]: (typeof userLesson)[K];
 };
@@ -44,6 +49,7 @@ export interface AppApi {
     data: ApiUserData;
     schedule: ApiUserSchedule;
     lesson: ApiUserLesson;
+    email: ApiEmail;
   };
   manage: {
     users: ApiManageUsers;

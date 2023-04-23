@@ -1,16 +1,16 @@
 /* eslint-disable no-console */
-import {
-  CalendarEvent,
-  CalendarEventsParam,
-  SyncParam,
-} from '@/types/api/google';
-import { UserDataOrNull } from '@/types/api/user';
-import { EncryptedData } from '@/types/utils/crypto';
 import debug from 'debug';
 import { google } from 'googleapis';
 import { GOOGLE_API_KEY } from '../../config';
 import { decryptData } from '../../modules/crypto';
 import prisma from '../../modules/prisma';
+import { EncryptedData } from '@/types/utils/crypto';
+import { UserDataOrNull } from '@/types/api/user';
+import {
+  CalendarEvent,
+  CalendarEventsParam,
+  SyncParam,
+} from '@/types/api/google';
 
 const log = debug('app:api:google:calendar');
 

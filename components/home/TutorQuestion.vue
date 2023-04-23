@@ -3,7 +3,7 @@
     <h3 class="tutor-question-header mb-5">
       {{ $t('tutor.question.header') }}
     </h3>
-    <ValidationObserver v-slot="{ invalid, validated }">
+    <ValidationObserver ref="questionObserver" v-slot="{ invalid, validated }">
       <v-form id="questionForm" class="d-flex flex-column pr-md-10 pr-lg-15">
         <div class="d-flex">
           <VTextFieldWithValidation
@@ -17,7 +17,7 @@
           ></VTextFieldWithValidation>
 
           <VTextFieldWithValidation
-            v-model="email"
+            v-model.lazy="email"
             class="question-input pl-2 pl-md-5"
             rules="required|email"
             :label="$t('user.email')"
@@ -39,7 +39,7 @@
         <div class="d-flex justify-end">
           <v-btn
             class="btn-md"
-            :disabled="invalid || !validated"
+            :disabled="invalid || !validated || isLoading"
             @click="sendQuestion"
           >
             {{ $t('action.send') }}
@@ -65,18 +65,44 @@ export default Vue.extend({
     VTextAreaWithValidation,
   },
 
+  inject: ['showSnackbar'],
+
   data() {
     return {
       name: '',
       email: '',
       message: '',
+      isLoading: false,
     };
   },
 
   methods: {
-    sendQuestion() {
-      // todo
-      console.log('sendQuestion!!!');
+    async sendQuestion() {
+      this.isLoading = true;
+      const userId = this.$store.getters['user/userId'];
+      try {
+        const { isSuccess, message: msg } = await this.$api('user/email/send', {
+          email: this.email,
+          name: this.name,
+          message: this.message,
+          userId,
+        });
+
+        const message = isSuccess ? this.$t('success.message.sent') : msg;
+        this.showSnackbar({
+          isSuccess,
+          message,
+        });
+        if (isSuccess) {
+          // reset the form
+          this.name = this.email = this.message = '';
+          (this.$refs.questionObserver as any).reset();
+        }
+      } catch (err) {
+        this.$logger.error(err);
+      } finally {
+        this.isLoading = false;
+      }
     },
   },
 });

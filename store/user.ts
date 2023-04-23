@@ -1,9 +1,9 @@
-import { ApiParams } from '@/types/api';
-import { UserDataOrNull } from '@/types/api/user';
-import { UserState } from '@/types/store';
 import { Role } from '@prisma/client';
 import debug from 'debug';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
+import { ApiParams } from '@/types/api';
+import { UserDataOrNull } from '@/types/api/user';
+import { UserState } from '@/types/store';
 
 const log = debug('app:store:user');
 
@@ -30,6 +30,10 @@ export const getters: GetterTree<UserState, UserState> = {
       userData.roleName = name;
     }
     return userData;
+  },
+
+  userId({ data: { id } }): number {
+    return id;
   },
 
   isAuthenticated({ data: { email } }): boolean {

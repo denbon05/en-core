@@ -5,7 +5,7 @@
     :rules="rules"
   >
     <v-text-field
-      v-model="innerValue"
+      v-model.lazy="innerValue"
       :error-messages="errors"
       :success="valid"
       v-bind="$attrs"
@@ -18,6 +18,20 @@
 import Vue from 'vue';
 import { ValidationProvider, extend } from 'vee-validate';
 import { required, email } from 'vee-validate/dist/rules';
+
+// setInteractionMode('debounce', ({ errors }) => {
+//   if (errors.length) {
+//     return {
+//       on: ['input'],
+//       debounce: 200,
+//     };
+//   }
+
+//   return {
+//     on: ['change'],
+//     debounce: 0,
+//   };
+// });
 
 extend('required', required);
 extend('email', email);

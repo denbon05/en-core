@@ -1,0 +1,14 @@
+---
+- name: Setup project vars
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Add vars for project
+      ansible.builtin.blockinfile:
+        block: "{{ lookup('ansible.builtin.template', 'env.j2') }}"
+        insertbefore: 'BOF'
+        path: '{{ app_path }}/.env'
+        mode: '0644'
+        owner: '{{ ansible_env.USER }}'
+        create: true

@@ -9,8 +9,8 @@ export default {
   mode: 'universal',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s-core',
-    title: 'EN',
+    // titleTemplate: '%s-core',
+    title: 'lang-core',
     htmlAttrs: {
       lang: 'en',
     },

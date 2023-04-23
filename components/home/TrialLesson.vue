@@ -9,7 +9,7 @@
           {{ $t('lesson.trial.description') }}
         </h5>
         <ValidationObserver
-          ref="obs"
+          ref="trialObserver"
           v-slot="{ invalid, validated }"
           class="w-50"
         >
@@ -88,7 +88,7 @@ export default Vue.extend({
     openBookLesson() {
       this.isBookLessonOpen = true;
       // reset form
-      (this.$refs.obs as any).reset();
+      (this.$refs.trialObserver as any).reset();
     },
   },
 });

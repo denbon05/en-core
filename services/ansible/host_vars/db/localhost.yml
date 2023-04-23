@@ -1,0 +1,4 @@
+db_port: 5432
+db_user: en_core
+db_host: localhost
+db_state: present # absent

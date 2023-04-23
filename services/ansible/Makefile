@@ -1,9 +1,9 @@
 setup:
 	ansible-galaxy install -r requirements.yml
-	ansible-playbook playbooks/project-vars.yml
+	ansible-playbook project-vars.yml --limit dev
 
 init-db:
-	ansible-playbook playbooks/manage-db.yml
+	ansible-playbook manage-db.yml
 
 remove-db:
-	ansible-playbook playbooks/manage-db.yml -e "db_state=absent"
+	ansible-playbook manage-db.yml -e "db_state=absent"

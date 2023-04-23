@@ -1,4 +1,5 @@
 import http from 'http';
+import { execSync } from 'child_process';
 import url from 'url';
 import { Prisma, User } from '@prisma/client';
 import { OAuth2Client } from 'google-auth-library';
@@ -33,13 +34,14 @@ export const getAuthenticatedClient = (
       access_type: 'offline',
       scope: 'https://www.googleapis.com/auth/calendar',
     });
+    // clear the port for server
+    execSync('npx kill-port 3000');
 
     // Open an http server to accept the oauth callback. In this simple example, the
     // only request to our webserver is to /oauth2callback?code=<code>
     const server = http
       .createServer(async (req, res) => {
         try {
-          console.log({ reqUrl: req.url });
           if (req.url!.includes('/oauth2callback')) {
             // acquire the code from the querystring, and close the web server.
             const qs = new url.URL(req.url!, 'http://localhost:3000')
