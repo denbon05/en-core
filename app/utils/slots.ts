@@ -88,6 +88,8 @@ const generateCalendarSlots = ({
   toDate,
   unavailableTimeRanges,
 }: GenerateCalendarSlotsParam): MeetingsDay[] => {
+  const userTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  console.log({ userTZ });
   const totalRange = moment.range(fromDate, toDate);
   // convert to moment ranges
   const ranges = unavailableTimeRanges.map(({ since, until }) =>

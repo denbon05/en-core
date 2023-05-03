@@ -81,12 +81,15 @@ export default Vue.extend({
       this.isLoading = true;
       const userId = this.$store.getters['user/userId'];
       try {
-        const { isSuccess, message: msg } = await this.$api('user/email/send', {
-          email: this.email,
-          name: this.name,
-          message: this.message,
-          userId,
-        });
+        const { isSuccess, message: msg } = await this.$api(
+          'v1/user/email/send',
+          {
+            email: this.email,
+            name: this.name,
+            message: this.message,
+            userId,
+          }
+        );
 
         const message = isSuccess ? this.$t('success.message.sent') : msg;
         this.showSnackbar({

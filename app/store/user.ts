@@ -75,10 +75,13 @@ export const mutations: MutationTree<UserState> = {
 export const actions: ActionTree<UserState, UserState> = {
   async updateData(
     { commit },
-    { lastName, firstName }: ApiParams<'user/data/update'>
+    { lastName, firstName }: ApiParams<'v1/user/data/update'>
   ) {
     try {
-      const res = await this.$api('user/data/update', { lastName, firstName });
+      const res = await this.$api('v1/user/data/update', {
+        lastName,
+        firstName,
+      });
 
       if (typeof res === 'string') {
         throw new TypeError(res);

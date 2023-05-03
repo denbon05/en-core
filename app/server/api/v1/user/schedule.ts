@@ -1,10 +1,10 @@
 import { UserUnavailableType } from '@prisma/client';
 import debug from 'debug';
 import { DateRange, MomentRange } from 'moment-range';
-import prisma from '../../modules/prisma';
-import { generateUnavailableTimes } from '../../utils/schedule';
+import prisma from '../../../modules/prisma';
+import { generateUnavailableTimes } from '../../../utils/schedule';
 import { events as fetchUserGoogleCalendarEvents } from '../google/calendar';
-import { t } from '../../utils/i18n';
+import { t } from '../../../utils/i18n';
 import { UserDataOrNull } from '@/types/api/user';
 import {
   FetchParam,

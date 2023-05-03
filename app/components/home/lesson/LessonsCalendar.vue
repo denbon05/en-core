@@ -33,16 +33,16 @@
 </template>
 
 <script lang="ts">
-import {
-  ILessonCalendar,
-  ScheduledTimes,
-} from '@/types/components/lesson-calendar';
-import generateCalendarSlots from '@/utils/slots';
 import { differenceBy } from 'lodash';
 import moment, { Moment } from 'moment';
 import Vue, { VueConstructor } from 'vue';
 import type MeetingsDay from 'vue-meeting-selector/src/interfaces/MeetingsDay.interface';
 import MeetingSlot from 'vue-meeting-selector/src/interfaces/MeetingSlot.interface';
+import generateCalendarSlots from '@/utils/slots';
+import {
+  ILessonCalendar,
+  ScheduledTimes,
+} from '@/types/components/lesson-calendar';
 
 // todo make calendar scrollable
 // TODO move all schedule logic to the class TutorSchedule
@@ -183,7 +183,7 @@ export default (Vue as VueConstructor<Vue & ILessonCalendar>).extend({
       this.$emit('set-loading', true);
       try {
         const { scheduledTimes, isSuccess, message } = await this.$api(
-          'user/schedule/fetch',
+          'v1/user/schedule/fetch',
           {
             timeMin: this.fromDate.toISOString(),
             timeMax: moment(this.fromDate)

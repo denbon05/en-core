@@ -6,11 +6,10 @@ const { ROLLBAR_CLIENT_ACCESS_TOKEN } = process.env;
 const apiPath = '/api';
 
 export default {
-  mode: 'universal',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     // titleTemplate: '%s-core',
-    title: 'lang-core',
+    title: 'EN-core',
     htmlAttrs: {
       lang: 'en',
     },

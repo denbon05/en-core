@@ -2,15 +2,11 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       NODE_ENV: 'development' | 'production' | 'test';
-      PWD: string;
 
       GOOGLE_API_KEY: string;
       GOOGLE_CLIENT_ID: string;
       GOOGLE_CLIENT_SECRET: string;
       GOOGLE_REDIRECT_URI_PROD: string;
-      PROD_DB_CONNECTION_STRING: string;
-      DEV_DB_CONNECTION_STRING: string;
-      TEST_DB_CONNECTION_STRING: string;
       SUPER_ADMIN_EMAIL: string;
       SUPER_ADMIN_PASS: string;
       SUPER_ADMIN_FIRST_NAME: string;

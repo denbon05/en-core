@@ -2,21 +2,10 @@
 
 ## Dev-mode
 
-<p>
-  <b>Prerequisites</b>
-  <ul>
-    <li>
-      <a href="https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html">
-        ansible
-      </a>
-    </li>
-  </ul>
-</p>
-
 ```shell
-make setup    # prepare project
-make init-db  # init local db
-make start    # launch the app
+make setup      # prepare project
+make db-latest  # create local db
+make start      # launch the app
 ```
 
 <p>
@@ -25,7 +14,7 @@ make start    # launch the app
 </p>
 
 <i>
-  NOTE: The app should be registered in Google.
+  NOTE: The app should be registered in GCP.
 </i>
 
 ### Auth
@@ -40,7 +29,7 @@ make start    # launch the app
 ### API - server
 
 <p>
-  <b>Underscored ('_')</b> function names will be ignored for usage by the client.
+  API simplified just for client needs.
 </p>
 
 ### Tests
@@ -60,7 +49,7 @@ make start    # launch the app
 make test
 ```
 
-### Build Setup
+### Nuxt Build Setup
 
 ```bash
 # install dependencies

@@ -1,5 +1,5 @@
 import debug from 'debug';
-import prisma from '../../modules/prisma';
+import prisma from '../../../modules/prisma';
 import { UserData } from '@/types/api/user';
 import { UpdateUserData } from '@/types/auth/person';
 

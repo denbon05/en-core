@@ -223,7 +223,7 @@ export default Vue.extend({
           this.isAuthConfirmVisible = true;
         } else {
           const { isSuccess, message: msg } = await this.$api(
-            'user/lesson/book',
+            'v1/user/lesson/book',
             {
               type: this.lessonType,
               lessonsData: lessons,

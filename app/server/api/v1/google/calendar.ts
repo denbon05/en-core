@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 import debug from 'debug';
 import { google } from 'googleapis';
-import { GOOGLE_API_KEY } from '../../config';
-import { decryptData } from '../../modules/crypto';
-import prisma from '../../modules/prisma';
+import { GOOGLE_API_KEY } from '../../../config';
+import { decryptData } from '../../../modules/crypto';
+import prisma from '../../../modules/prisma';
 import { EncryptedData } from '@/types/utils/crypto';
 import { UserDataOrNull } from '@/types/api/user';
 import {
@@ -101,7 +101,7 @@ export async function list(
   { id }: Exclude<UserDataOrNull, null>
 ) {
   try {
-    const user = await prisma.user.findUnique({
+    await prisma.user.findUnique({
       where: { id },
       select: {
         google: {

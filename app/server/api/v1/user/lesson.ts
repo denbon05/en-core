@@ -1,5 +1,5 @@
 import type { UserLessons } from '@prisma/client';
-import prisma from '../../modules/prisma';
+import prisma from '../../../modules/prisma';
 import { BookParam } from '@/types/api/lesson';
 import { UserDataOrNull } from '@/types/api/user';
 

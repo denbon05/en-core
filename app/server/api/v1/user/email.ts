@@ -1,8 +1,8 @@
 import debug from 'debug';
-import { SUPPORT_EMAIL } from '../../config';
-import createEmailTransporter from '../../modules/email-transporter';
-import prisma from '../../modules/prisma';
-import nuxtConfig from '../../../nuxt.config';
+import { SUPPORT_EMAIL } from '../../../config';
+import createEmailTransporter from '../../../modules/email-transporter';
+import prisma from '../../../modules/prisma';
+import nuxtConfig from '../../../../nuxt.config';
 import type { SendParam } from '@/types/api/email';
 
 const log = debug('app:email');

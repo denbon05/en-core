@@ -1,9 +1,9 @@
-import { UserDataOrNull } from '@/types/api/user';
-import { EncryptedData } from '@/types/utils/crypto';
 import debug from 'debug';
-import { getAuthenticatedClient } from '../../helpers/google';
-import { decryptData, encryptData } from '../../modules/crypto';
-import prisma from '../../modules/prisma';
+import { getAuthenticatedClient } from '../../../helpers/google';
+import { decryptData, encryptData } from '../../../modules/crypto';
+import prisma from '../../../modules/prisma';
+import { EncryptedData } from '@/types/utils/crypto';
+import { UserDataOrNull } from '@/types/api/user';
 
 const log = debug('app:api:google:auth');
 
@@ -20,9 +20,7 @@ export async function login(
   const oauthClient = await getAuthenticatedClient(id);
   log('Logged In - google');
   oauthClient.on('tokens', async (tokens) => {
-    console.log('TOKENS!!!!!!!!');
     if (tokens.refresh_token) {
-      console.log('REFRESH TOKEN!!!!!!!!!!', { id });
       const encryptedOAuth = encryptData(tokens);
       await prisma.user.update({
         where: { id },
@@ -68,6 +66,7 @@ export async function status(
     const {
       google: { oauth, calendarIds },
     } = user;
+    // eslint-disable-next-line camelcase
     const { expiry_date } = decryptData(oauth as Cast<EncryptedData>);
 
     return {

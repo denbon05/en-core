@@ -1,10 +1,7 @@
 all: lint test build
 
-ANSIBLE_PATH = 'services/ansible'
-
 setup:
 	npm ci
-	make -C $(ANSIBLE_PATH) setup
 
 fix:
 	npm run lintfix
@@ -24,15 +21,14 @@ build:
 
 # Database
 
-init-db:
-	make -C $(ANSIBLE_PATH) init-db
-	make migrate-db
-	make seed-db
+db-latest:
+	make db-migrate
+	make db-seed
 
-migrate-db:
+db-migrate:
 	npm run migrate-db
 
-seed-db:
+db-seed:
 	npm run seed-db
 
 .PHONY: test

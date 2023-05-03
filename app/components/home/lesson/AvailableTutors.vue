@@ -94,7 +94,7 @@ export default Vue.extend({
       this.$emit('set-loading', true);
       try {
         const { isSuccess, list, message } = await this.$api(
-          'manage/users/fetch',
+          'v1/manage/users/fetch',
           {
             roleName: Role.TUTOR,
           }

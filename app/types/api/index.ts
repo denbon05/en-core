@@ -1,13 +1,13 @@
 import type { IncomingMessage } from 'http';
 import type { ApiReturn as CommonApiReturn } from './common';
-import * as auth from '@/server/api/user/auth';
-import * as googleAuth from '@/server/api/google/auth';
-import * as googleCalendar from '@/server/api/google/calendar';
-import * as manageUsers from '@/server/api/manage/users';
-import * as userData from '@/server/api/user/data';
-import * as userSchedule from '@/server/api/user/schedule';
-import * as userLesson from '@/server/api/user/lesson';
-import * as email from '@/server/api/user/email';
+import * as auth from '@/server/api/v1/user/auth';
+import * as googleAuth from '@/server/api/v1/google/auth';
+import * as googleCalendar from '@/server/api/v1/google/calendar';
+import * as manageUsers from '@/server/api/v1/manage/users';
+import * as userData from '@/server/api/v1/user/data';
+import * as userSchedule from '@/server/api/v1/user/schedule';
+import * as userLesson from '@/server/api/v1/user/lesson';
+import * as email from '@/server/api/v1/user/email';
 
 type EmailFunName = keyof typeof email;
 type AuthFuncName = keyof typeof auth;
@@ -44,19 +44,21 @@ type ApiManageUsers = {
 };
 
 export interface AppApi {
-  user: {
-    auth: ApiAuth;
-    data: ApiUserData;
-    schedule: ApiUserSchedule;
-    lesson: ApiUserLesson;
-    email: ApiEmail;
-  };
-  manage: {
-    users: ApiManageUsers;
-  };
-  google: {
-    calendar: ApiGoogleCalendar;
-    auth: ApiGoogleAuth;
+  v1: {
+    user: {
+      auth: ApiAuth;
+      data: ApiUserData;
+      schedule: ApiUserSchedule;
+      lesson: ApiUserLesson;
+      email: ApiEmail;
+    };
+    manage: {
+      users: ApiManageUsers;
+    };
+    google: {
+      calendar: ApiGoogleCalendar;
+      auth: ApiGoogleAuth;
+    };
   };
 }
 

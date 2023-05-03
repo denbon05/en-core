@@ -37,8 +37,11 @@ export const mutations: MutationTree<AuthState> = {
 };
 
 export const actions: ActionTree<AuthState, AuthState> = {
-  async logIn({ commit }, { email, password }: ApiParams<'user/auth/signup'>) {
-    const res = await this.$api('user/auth/login', {
+  async logIn(
+    { commit },
+    { email, password }: ApiParams<'v1/user/auth/signup'>
+  ) {
+    const res = await this.$api('v1/user/auth/login', {
       email,
       password,
     });
@@ -62,9 +65,9 @@ export const actions: ActionTree<AuthState, AuthState> = {
 
   async signUp(
     { commit },
-    { email, password, firstName, lastName }: ApiParams<'user/auth/signup'>
+    { email, password, firstName, lastName }: ApiParams<'v1/user/auth/signup'>
   ) {
-    const res = await this.$api('user/auth/signup', {
+    const res = await this.$api('v1/user/auth/signup', {
       email,
       password,
       firstName,

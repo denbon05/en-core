@@ -62,7 +62,9 @@ export default Vue.extend({
         isAuthenticated: false,
       },
       calendarListSelected: [],
-      calendarList: [] as Awaited<ApiResponse<'google/calendar/list'>>['list'],
+      calendarList: [] as Awaited<
+        ApiResponse<'v1/google/calendar/list'>
+      >['list'],
       query: {
         isLoading: false,
         isSuccess: true,
@@ -107,7 +109,7 @@ export default Vue.extend({
       this.query.isLoading = true;
       try {
         const { isSuccess, message = '' } = await this.$api(
-          'google/calendar/sync',
+          'v1/google/calendar/sync',
           {
             calendarIds: this.calendarListSelected,
           }
@@ -133,7 +135,7 @@ export default Vue.extend({
     async authToGoogle() {
       this.query.isLoading = true;
       try {
-        await this.$api('google/auth/login');
+        await this.$api('v1/google/auth/login');
         this.query = {
           isLoading: false,
           isSuccess: true,
@@ -157,7 +159,7 @@ export default Vue.extend({
           message,
           list,
         }: Awaited<ApiResponse<'google/calendar/list'>> = await this.$api(
-          'google/calendar/list'
+          'v1/google/calendar/list'
         );
         this.calendarList = list;
         this.query = {
@@ -179,7 +181,7 @@ export default Vue.extend({
       this.query.isLoading = true;
       try {
         const { isSuccess, status, message } = await this.$api(
-          'google/auth/status'
+          'v1/google/auth/status'
         );
         this.gStatus = status;
         this.query = {

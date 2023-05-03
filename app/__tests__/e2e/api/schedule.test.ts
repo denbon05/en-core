@@ -4,7 +4,7 @@ import schedules from '@/__fixtures__/user-schedule';
 import userUnavailable from '@/__fixtures__/user-unavailable';
 import users from '@/__fixtures__/users';
 import { seedDB } from '@/__tests__/helpers/server';
-import { fetch as fetchSchedule } from '@/server/api/user/schedule';
+import { fetch as fetchSchedule } from '@/server/api/v1/user/schedule';
 import { generateUnavailableTimes, spreadTime } from '@/server/utils/schedule';
 // TODO change to import after https://github.com/rotaready/moment-range/issues/295
 const m = require('moment');

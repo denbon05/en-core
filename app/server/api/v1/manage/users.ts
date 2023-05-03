@@ -1,4 +1,4 @@
-import prisma from '../../modules/prisma';
+import prisma from '../../../modules/prisma';
 import { ApiReturnPromise } from '@/types/api/common';
 import { UserList, UsersFetchParam } from '@/types/api/manage';
 
