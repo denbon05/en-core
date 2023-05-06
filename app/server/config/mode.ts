@@ -7,17 +7,11 @@ class AppMode {
     this.mode = NODE_ENV;
   }
 
-  isDev(): boolean {
-    return NODE_ENV === 'development' || !NODE_ENV;
-  }
+  isDev: boolean = NODE_ENV === 'development' || !NODE_ENV;
 
-  isProd(): boolean {
-    return NODE_ENV === 'production';
-  }
+  isProd: boolean = NODE_ENV === 'production';
 
-  isTest(): boolean {
-    return NODE_ENV === 'test';
-  }
+  isTest: boolean = NODE_ENV === 'test';
 }
 
 export default new AppMode();

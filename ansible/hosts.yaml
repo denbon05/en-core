@@ -1,17 +1,22 @@
 ---
 all:
   children:
-    dev:
+    local:
       hosts:
         localhost:
           ansible_connection: local
 
-    test:
+    webservers:
+# BEGIN ANSIBLE MANAGED BLOCK
       hosts:
-        localhost:
-          ansible_connection: local
+        web-server-1:
+          ansible_host: ec2-3-67-189-158.eu-central-1.compute.amazonaws.com
+          ansible_user: ubuntu
+        web-server-2:
+          ansible_host: ec2-3-66-174-7.eu-central-1.compute.amazonaws.com
+          ansible_user: ubuntu
+# END ANSIBLE MANAGED BLOCK
 
-    db:
+    database:
       children:
-        dev:
-        test:
+        local:

@@ -100,7 +100,7 @@ const enableAutoManager = (cronExpression = '0 0 */5 * *') =>
     },
     {
       timezone: 'Europe/Berlin',
-      runOnInit: !appMode.isProd(),
+      runOnInit: !appMode.isProd,
     }
   );
 

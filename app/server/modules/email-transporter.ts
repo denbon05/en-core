@@ -12,7 +12,7 @@ import {
 
 const createEmailTransporter =
   (): Transporter<SMTPTransport.SentMessageInfo> => {
-    if (appMode.isProd()) {
+    if (appMode.isProd) {
       return createTransport({
         secure: true, // use SSL
         host: 'smtp.gmail.com',

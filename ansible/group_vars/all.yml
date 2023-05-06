@@ -1,1 +1,2 @@
-app_path: "../../../" # relative for 'playbook' dir
+app_dirpath: "../app/" # relative for ansible root dir
+terraform_dirpath: "../terraform/"

@@ -5,9 +5,7 @@ import appMode from '../config/mode';
 const log = debug('app:db');
 
 const prisma = new PrismaClient({
-  log: appMode.isProd()
-    ? ['warn', 'error']
-    : ['query', 'info', 'warn', 'error'],
+  log: appMode.isProd ? ['warn', 'error'] : ['query', 'info', 'warn', 'error'],
 });
 
 (async () => {

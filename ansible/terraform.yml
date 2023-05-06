@@ -1,0 +1,36 @@
+---
+- name: Setup infra
+  hosts: local
+  tasks:
+    - name: Add secrets.auto.tfvars
+      ansible.builtin.template:
+        src: secrets.auto.tfvars.j2
+        dest: '{{ terraform_dirpath }}/secrets.auto.tfvars'
+        mode: '0644'
+
+    - name: Apply terraform infrastructure (webservers, loadbalancer, domain)
+      community.general.terraform:
+        project_path: '{{ terraform_dirpath }}'
+        force_init: true
+        purge_workspace: false
+        workspace: 'en-core'
+        lock: true
+        state: '{{ infra_state }}'
+      register: infra
+
+    # - ansible.builtin.debug:
+    #     var: infra
+
+    - name: Add hosts
+      ansible.builtin.blockinfile:
+        block: "{{ lookup('ansible.builtin.template', 'hosts.yml.j2') }}"
+        mode: '0644'
+        path: hosts.yaml
+        insertafter: 'webservers:'
+      changed_when: infra_state == 'present'
+
+    # - name: Update env file
+    #   ansible.builtin.template:
+    #     src: env.j2
+    #     dest: files/.env
+    #     mode: '0644'

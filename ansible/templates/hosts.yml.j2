@@ -1,0 +1,6 @@
+      hosts:
+{% for ipv4 in infra.outputs.server_dns.value %}
+        web-server-{{loop.index}}:
+          ansible_host: {{ipv4}}
+          ansible_user: ubuntu
+{% endfor %}

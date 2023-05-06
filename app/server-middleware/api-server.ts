@@ -41,7 +41,7 @@ export default async <CPath extends ApiControllerPath>(
       }
     }
 
-    if (!appMode.isProd()) {
+    if (!appMode.isProd) {
       log('api path %O', {
         reqUrl: url,
         apiPath,

@@ -1,4 +1,22 @@
+import { join } from 'path';
+import { config } from 'dotenv';
 import appMode from './mode';
+
+// load env variables
+(() => {
+  if (!appMode.isProd) {
+    // load dev variables
+    config({
+      debug: true,
+      path: join(process.cwd(), '.env.dev'),
+    });
+  }
+
+  config({
+    debug: !appMode.isProd,
+    path: join(process.cwd(), '.env'),
+  });
+})();
 
 const {
   APP_GMAIL,
@@ -16,7 +34,7 @@ const {
   SUPPORT_EMAIL,
 } = process.env;
 
-const GOOGLE_REDIRECT_URI = appMode.isProd()
+const GOOGLE_REDIRECT_URI = appMode.isProd
   ? GOOGLE_REDIRECT_URI_PROD
   : 'http://localhost:3000/api/google/oauth2callback';
 

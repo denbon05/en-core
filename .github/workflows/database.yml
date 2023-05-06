@@ -16,10 +16,8 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: postgres:15.2-alpine
-# BEGIN ANSIBLE MANAGED BLOCK
           options: |
             -p 5432:5432
             -e POSTGRES_USER=en_core
             -e POSTGRES_PASSWORD=supersecret
             -e POSTGRES_DB=en_core_test
-# END ANSIBLE MANAGED BLOCK
