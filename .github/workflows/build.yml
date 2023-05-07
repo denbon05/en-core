@@ -9,6 +9,10 @@ on:
     types:
       - completed
 
+defaults:
+  run:
+    working-directory: ./app
+
 env:
   APP_IMAGE_NAME: denbon05/en-core
 
@@ -28,6 +32,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: ./app
+          context: .
           push: true
           tags: "${{ env.APP_IMAGE_NAME }}:latest"

@@ -10,10 +10,10 @@ all:
 # BEGIN ANSIBLE MANAGED BLOCK
       hosts:
         web-server-1:
-          ansible_host: ec2-3-67-189-158.eu-central-1.compute.amazonaws.com
+          ansible_host: 3.122.54.103
           ansible_user: ubuntu
         web-server-2:
-          ansible_host: ec2-3-66-174-7.eu-central-1.compute.amazonaws.com
+          ansible_host: 52.59.248.169
           ansible_user: ubuntu
 # END ANSIBLE MANAGED BLOCK
 

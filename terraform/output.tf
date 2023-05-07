@@ -1,3 +1,3 @@
-output "server_dns" {
-  value = aws_instance.servers.*.public_dns
+output "server_ips" {
+  value = aws_instance.servers.*.public_ip
 }

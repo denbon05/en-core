@@ -1,7 +1,3 @@
-locals {
-  home_dir = pathexpand("~")
-}
-
 variable "aws_server_instances_amount" {
   type    = number
   default = 2
@@ -17,11 +13,11 @@ variable "aws_secret_key" {
   sensitive = true
 }
 
-variable "aws_region" {
-  type = string
+variable "app_port" {
+  type      = number
+  sensitive = true
 }
 
-variable "aws_cidr_range" {
-  type    = string
-  default = "172.16.10.0/24"
+variable "region" {
+  default = "eu-central-1"
 }
