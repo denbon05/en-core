@@ -14,15 +14,15 @@ const prisma = new PrismaClient();
 export const predefinedUserId = 1;
 
 async function main() {
-  if (!appMode.isProd()) {
+  if (!appMode.isProd) {
     await prisma.google.deleteMany();
     await prisma.aclPermission.deleteMany();
     await prisma.aclRole.deleteMany();
     await prisma.rolesPermissions.deleteMany();
     await prisma.userUnavailable.deleteMany();
-    await prisma.userSchedule.deleteMany();
     await prisma.userRoles.deleteMany();
     await prisma.user.deleteMany();
+    await prisma.userSchedule.deleteMany();
   }
 
   const defaultPermissions = [
@@ -148,7 +148,7 @@ async function main() {
     console.error(err);
   }
 
-  if (!appMode.isProd()) {
+  if (!appMode.isProd) {
     // make superadmin tutor in dev mode
     await prisma.userRoles.create({
       data: {

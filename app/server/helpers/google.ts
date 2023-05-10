@@ -48,16 +48,14 @@ export const getAuthenticatedClient = (
               .searchParams;
             const code = qs.get('code') as string;
             // TODO close tab and return to home page
-            res.end('Authentication successful! Please return to the console.');
+            res.end('Authentication successful! Please close the tab.');
             server.close();
 
             // Now that we have the code, use that to acquire tokens.
             const authData = await oAuth2Client.getToken(code);
-            console.log({ authData });
             // Make sure to set the credentials on the OAuth2 client.
             oAuth2Client.setCredentials(authData.tokens);
             const oauthEncrypted = encryptData(authData.tokens);
-            console.log({ TOKEN: authData.tokens, oauthEncrypted });
             await prisma.user.update({
               where: { id: userId },
               data: {

@@ -1,0 +1,8 @@
+# deploy
+app_container_name: en-core-app
+image_with_tag: denbon05/en-core-app
+container_state: started
+
+# notification
+app_gmail: langcoresender@gmail.com
+support_email: langcoresender@gmail.com

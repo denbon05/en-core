@@ -4,7 +4,7 @@
   gather_facts: true
 
   tasks:
-    - name: Add vars for project
+    - name: Add vars for the app
       ansible.builtin.blockinfile:
         block: "{{ lookup('ansible.builtin.template', 'env.j2') }}"
         insertbefore: 'BOF'
@@ -12,3 +12,13 @@
         mode: '0644'
         owner: '{{ ansible_env.USER }}'
         create: true
+
+    - name: Manage docker app
+      community.docker.docker_container:
+        name: '{{ app_container_name }}'
+        image: '{{ image_with_tag }}'
+        restart_policy: always
+        state: '{{ container_state }}'
+        ports:
+          - '{{ app_port }}:{{ app_port }}'
+        env_file: /.env

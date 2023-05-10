@@ -1,6 +1,21 @@
 # This file is maintained automatically by "terraform init".
 # Manual edits may be lost in future updates.
 
+provider "registry.terraform.io/eddycharly/kops" {
+  version = "1.25.3"
+  hashes = [
+    "h1:XZSRHRuXvIOuLk6m4J8LZUqHTUYotCDE5GQLaYVH7G8=",
+    "zh:2d7fe4c386b86b0b31fd0e89f0ee47e0af48e79e938bee4cf3f0d4f907ffe232",
+    "zh:30c4a7eb6b7dc359187b26007234042c3651bab78f6fe43b89936c278be1cf6d",
+    "zh:48213f354391b0693eecae02f263f9dbc8cd7c98e79f493195c24d4d7390fd60",
+    "zh:668df3d623242985886440313fac1233de451814822093bee25fe79d937eee1d",
+    "zh:7887ff17df08be18e3b4054bdfc9be0f23d57af6cdcdea075fd885a870867e25",
+    "zh:82ca38e2918777e6fead91f7b11a972bd196c321999d459d6b6b75ab37d8a4e2",
+    "zh:eb5c78dfc9092b642df5cd4be8f8b827f8ee5109745a132f511b69b506a3f3cc",
+    "zh:f17551a7ab41a9844b2fc7c4aed901e7e5915eb3497bc891dbd20de0bbd08839",
+  ]
+}
+
 provider "registry.terraform.io/hashicorp/aws" {
   version     = "4.65.0"
   constraints = "~> 4.0"

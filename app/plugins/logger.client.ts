@@ -10,10 +10,10 @@ export default (
     accessToken: rollbarClientAccessToken,
     captureUncaught: true,
     captureUnhandledRejections: true,
-    enabled: appMode.isProd(),
+    enabled: appMode.isProd,
   });
 
-  if (appMode.isProd()) {
+  if (appMode.isProd) {
     // inject rollbar only in prod mode
     inject('logger', rollbar);
   } else {

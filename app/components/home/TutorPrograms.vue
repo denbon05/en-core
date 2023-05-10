@@ -69,7 +69,7 @@ export default Vue.extend({
         font-family: Inter, sans-serif !important;
         font-style: italic;
         font-weight: 500;
-        font-size: 2em;
+        font-size: 1.7em;
       }
 
       &-audience {

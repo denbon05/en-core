@@ -6,6 +6,10 @@ resource "aws_lb" "app_lb" {
   security_groups = [aws_security_group.lb_sg.id]
   subnets         = [for subnet in aws_subnet.app_subnets : subnet.id]
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   tags = {
     Environment = "production"
   }

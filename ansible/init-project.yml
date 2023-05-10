@@ -1,0 +1,12 @@
+---
+- name: Init project
+  hosts: local
+
+  tasks:
+    - name: Init local variables
+      ansible.builtin.blockinfile:
+        block: "{{ lookup('ansible.builtin.template', 'env.dev.j2') }}"
+        path: '{{ app_dirpath }}/.env'
+        insertbefore: 'BOF'
+        mode: '0644'
+        owner: '{{ ansible_env.USER }}'

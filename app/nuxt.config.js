@@ -9,7 +9,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     // titleTemplate: '%s-core',
-    title: 'lang-core',
+    title: 'en-core',
     htmlAttrs: {
       lang: 'en',
     },
@@ -21,7 +21,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' },
       { name: 'darkreader-lock' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/icon.svg' }],
   },
 
   publicRuntimeConfig: {

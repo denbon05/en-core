@@ -9,6 +9,10 @@ vault-decrypt:
 	$(eval cmd := decrypt)
 	$(vault_cmd)
 
+# init project locally
+init-local:
+	ansible-playbook init-project.yml
+
 # setup project
 setup:
 	ansible-galaxy install -r requirements.yml

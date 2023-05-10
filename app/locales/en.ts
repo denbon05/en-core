@@ -1,6 +1,9 @@
 // this is etalon locale type
 const en = {
   menu: {
+    home: {
+      title: 'Home',
+    },
     about: {
       title: 'About',
     },

@@ -3,6 +3,6 @@ resource "aws_s3_bucket" "alb_logs" {
 
   tags = {
     Name        = "App LB bucket"
-    Environment = "Prod"
+    Environment = "prod"
   }
 }

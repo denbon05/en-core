@@ -1,2 +1,0 @@
-app_dirpath: "../app/" # relative for ansible root dir
-terraform_dirpath: "../terraform/"

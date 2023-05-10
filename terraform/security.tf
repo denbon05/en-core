@@ -14,7 +14,7 @@ resource "aws_security_group" "lb_sg" {
 resource "aws_security_group" "allow_traffic" {
   name        = "allow-tcp"
   description = "Allow ssh connection"
-  vpc_id = aws_vpc.app_vpc.id
+  vpc_id      = aws_vpc.app_vpc.id
 
   tags = {
     Name = "Allow SSH"
