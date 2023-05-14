@@ -4,14 +4,7 @@ init-local:
 init: init-local
 	make -C ansible setup
 	npm i
-	cd app && npm ci
-
-# app
-app-build:
-	docker-compose build app
-
-app-run:
-	docker-compose up
+	cd en-core && npm ci
 
 # vault
 vault-encrypt:
@@ -19,3 +12,8 @@ vault-encrypt:
 
 vault-decrypt:
 	make -C ansible vault-decrypt
+
+# style
+fix:
+	make -C en-core fix
+	make -C terraform format

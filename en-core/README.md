@@ -4,8 +4,7 @@
 
 ```shell
 make setup      # prepare project
-make db-latest  # create local db
-make start      # launch the app
+make compose-up # run app with db
 ```
 
 <p>

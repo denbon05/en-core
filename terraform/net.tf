@@ -12,15 +12,31 @@ resource "aws_vpc" "app_vpc" {
   }
 }
 
-# subnet for each EC2 instance
-resource "aws_subnet" "app_subnets" {
-  count      = local.subnet_amount
-  vpc_id     = aws_vpc.app_vpc.id
-  cidr_block = cidrsubnet(aws_vpc.app_vpc.cidr_block, 2, count.index)
+# subnets for EC2 instances
+resource "aws_subnet" "app_subnet1" {
+  vpc_id            = aws_vpc.app_vpc.id
+  cidr_block        = cidrsubnet(aws_vpc.app_vpc.cidr_block, 2, 1)
+  availability_zone = "${var.region}a"
 
   tags = {
-    Name = "app-subnet-${count.index + 1}"
+    Name = "app-subnet-1"
   }
+}
+
+resource "aws_subnet" "app_subnet2" {
+  vpc_id            = aws_vpc.app_vpc.id
+  cidr_block        = cidrsubnet(aws_vpc.app_vpc.cidr_block, 2, 2)
+  availability_zone = "${var.region}b"
+
+  tags = {
+    Name = "app-subnet-2"
+  }
+}
+
+# subnet for db
+resource "aws_subnet" "db_subnet" {
+  vpc_id     = aws_vpc.app_vpc.id
+  cidr_block = cidrsubnet(aws_vpc.app_vpc.cidr_block, 2, 0)
 }
 
 # allow internet in VPC
@@ -47,8 +63,22 @@ resource "aws_route_table" "app_route_table" {
 }
 
 # associate a route table with a subnet within a VPC
-resource "aws_route_table_association" "app_rta" {
-  count          = length(aws_subnet.app_subnets)
-  subnet_id      = aws_subnet.app_subnets[count.index].id
+resource "aws_route_table_association" "app_rta1" {
+  subnet_id      = aws_subnet.app_subnet1.id
   route_table_id = aws_route_table.app_route_table.id
+}
+
+resource "aws_route_table_association" "app_rta2" {
+  subnet_id      = aws_subnet.app_subnet2.id
+  route_table_id = aws_route_table.app_route_table.id
+}
+
+# database subnet group allows connection for EC2 instances
+resource "aws_db_subnet_group" "app_db_sg" {
+  name       = "app-db-subnet-group"
+  subnet_ids = [aws_subnet.db_subnet.id, aws_subnet.app_subnet1.id, aws_subnet.app_subnet2.id]
+
+  tags = {
+    Name = "en-core-db-subnet-group"
+  }
 }

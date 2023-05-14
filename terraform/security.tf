@@ -21,6 +21,16 @@ resource "aws_security_group" "allow_traffic" {
   }
 }
 
+# DB
+resource "aws_security_group" "app_db" {
+  name   = "allow-db-connection"
+  vpc_id = aws_vpc.app_vpc.id
+
+  tags = {
+    Name = "Allow db connection"
+  }
+}
+
 # Rules
 resource "aws_security_group_rule" "allow_ssh_inbound" {
   type              = "ingress"
@@ -60,4 +70,13 @@ resource "aws_security_group_rule" "allow_inbound_port" {
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.lb_sg.id
+}
+
+resource "aws_security_group_rule" "allow_db" {
+  type              = "ingress"
+  from_port         = var.app_db_port
+  to_port           = var.app_db_port
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.app_db.id
 }

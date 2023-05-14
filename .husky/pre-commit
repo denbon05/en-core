@@ -3,8 +3,9 @@
 const { execSync } = require('child_process');
 
 const checkVaultEncrypted = () => {
+  const arg = process.argv[2];
   console.warn('Going to check decrypted files, one sec 👀');
-  const vaultFiles = execSync(`find ansible -name "*vault.y*ml"`)
+  const vaultFiles = execSync(`find ${arg ?? 'ansible'} -name "*vault.y*ml"`)
     .toString()
     .split('\n')
     .filter(Boolean);

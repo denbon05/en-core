@@ -21,8 +21,9 @@ async function main() {
     await prisma.rolesPermissions.deleteMany();
     await prisma.userUnavailable.deleteMany();
     await prisma.userRoles.deleteMany();
-    await prisma.user.deleteMany();
+    await prisma.userLessons.deleteMany();
     await prisma.userSchedule.deleteMany();
+    await prisma.user.deleteMany();
   }
 
   const defaultPermissions = [

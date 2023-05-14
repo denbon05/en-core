@@ -6,12 +6,17 @@
 
   roles:
     - role: geerlingguy.docker
-    # - role: geerlingguy.kubernetes
 
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: true
+
+    - name: Install apt packages
+      ansible.builtin.apt:
+        state: present
+        pkg:
+          - postgresql-client
 
     - name: Install pip
       ansible.builtin.apt:

@@ -10,3 +10,10 @@
         insertbefore: 'BOF'
         mode: '0644'
         owner: '{{ ansible_env.USER }}'
+        create: true
+
+    - name: Define db version
+      ansible.builtin.replace:
+        path: '{{ app_dirpath }}/docker-compose.override.yml'
+        regexp: 'image: .*'
+        replace: 'image: {{ db.engine }}:{{ db.version }}'

@@ -15,17 +15,15 @@
   <li>Terraform >=1.4</li>
 </ul>
 
-### Env
+### Docker
 
 <ul>
-  <li>ansible/.vault-password</li>
-  <li>Clear port <b>5432</b> for the db</li>
-  <li>Clear port <b>3000</b> for the app</li>
+  <li>Default db port <b>5432</b></li>
+  <li>Default app port <b>3000</b></li>
 </ul>
 
 ## Dev-mode
 
 ```bash
 make init    # init project locally
-make app-run # run app with db
 ```

@@ -133,6 +133,8 @@ export default {
     transpile: ['vee-validate/dist/rules'],
   },
 
+  presets: ['@nuxt/babel-preset-app', '@babel/preset-env'],
+
   serverMiddleware: [
     { path: apiPath, handler: require('body-parser').json() },
     { path: apiPath, handler: require('cookie-parser')() },

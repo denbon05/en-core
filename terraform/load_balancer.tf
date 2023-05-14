@@ -4,11 +4,11 @@ resource "aws_lb" "app_lb" {
   load_balancer_type = "application"
 
   security_groups = [aws_security_group.lb_sg.id]
-  subnets         = [for subnet in aws_subnet.app_subnets : subnet.id]
+  subnets         = [aws_subnet.app_subnet1.id, aws_subnet.app_subnet2.id]
 
-  lifecycle {
-    prevent_destroy = true
-  }
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 
   tags = {
     Environment = "production"
@@ -53,6 +53,6 @@ resource "aws_lb_listener" "lb_listener" {
 resource "aws_lb_target_group_attachment" "lb_tg_attachment" {
   count            = var.aws_server_instances_amount
   target_group_arn = aws_lb_target_group.target_group.arn
-  target_id        = aws_instance.servers[count.index].id
+  target_id        = [aws_instance.server1.id, aws_instance.server2.id][count.index]
   port             = 80
 }

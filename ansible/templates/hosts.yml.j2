@@ -4,3 +4,7 @@
           ansible_host: {{ipv4}}
           ansible_user: ubuntu
 {% endfor %}
+
+    load_balancer:
+      hosts:
+        ansible_host: {{infra.outputs.app_lb_public_ip.value}}

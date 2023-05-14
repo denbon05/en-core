@@ -1,1 +1,1 @@
-app_dirpath: "../app" # relative for ansible root dir
+app_dirpath: "../en-core" # relative for ansible root dir

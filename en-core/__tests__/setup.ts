@@ -6,12 +6,17 @@ import Vuetify from 'vuetify';
 // @ts-ignore
 process.env.DATABASE_URL = global.DB_TEST_URL;
 
+const i18nMock = function (key: string, _opts: any) {
+  return key;
+};
+
 const i18nMockPlugin: PluginObject<Vue> = {
   // called by Vue.use(FirstPlugin)
   install(Vue) {
-    Vue.prototype.$t = function (key: string, _opts: any) {
-      return key;
-    };
+    Vue.prototype.$t = i18nMock;
+    Vue.prototype.$tc = i18nMock;
+    // eslint-disable-next-line no-console
+    Vue.prototype.showSnackbar = console.log;
   },
 };
 

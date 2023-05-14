@@ -21,3 +21,33 @@ variable "app_port" {
 variable "region" {
   default = "eu-central-1"
 }
+
+variable "app_db_name" {
+  type      = string
+  sensitive = true
+}
+
+variable "app_db_engine" {
+  type      = string
+  sensitive = true
+}
+
+variable "app_db_engine_version" {
+  type      = string
+  sensitive = true
+}
+
+variable "app_db_port" {
+  type      = number
+  sensitive = true
+}
+
+variable "app_db_user" {
+  type      = string
+  sensitive = true
+}
+
+variable "app_db_pass" {
+  type      = string
+  sensitive = true
+}

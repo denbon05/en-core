@@ -20,7 +20,6 @@ build:
 	npm run build
 
 # Database
-
 db-latest:
 	make db-migrate
 	make db-seed
@@ -30,5 +29,12 @@ db-migrate:
 
 db-seed:
 	npm run seed-db
+
+# app
+compose-build:
+	docker-compose -f docker-compose.yml build
+
+compose-up:
+	docker-compose up --abort-on-container-exit
 
 .PHONY: test
