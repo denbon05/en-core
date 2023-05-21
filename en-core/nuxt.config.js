@@ -28,6 +28,8 @@ export default {
     rollbarClientAccessToken: ROLLBAR_CLIENT_ACCESS_TOKEN,
   },
 
+  target: 'server',
+
   server: {
     port: 8000,
     host: '0.0.0.0',

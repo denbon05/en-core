@@ -7,6 +7,6 @@ output "app_lb_public_ip" {
 }
 
 output "app_db_host" {
-  value = aws_db_instance.app_db.address
+  value     = aws_db_instance.app_db.address
   sensitive = true
 }

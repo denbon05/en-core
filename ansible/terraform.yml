@@ -5,10 +5,11 @@
   pre_tasks:
     - name: Check encrypted vault files
       ansible.builtin.command:
-        cmd: pwd && ../.husky/pre-commit
+        cmd: ../.husky/pre-commit
       ignore_errors: true
       changed_when: infra_state == 'present'
       register: encrypted_result
+      no_log: true
 
     - name: Fail if there are encrypted files
       when: not encrypted_result.failed
@@ -16,6 +17,13 @@
         msg: 'You should decrypt vault files first to be able to add db host'
 
   tasks:
+    - name: Set AWS credentials
+      ansible.builtin.set_fact:
+        aws:
+          access_key: "{{ lookup('ansible.builtin.ini', 'aws_access_key_id', section='default', file='~/.aws/credentials') }}"
+          secret_key: "{{ lookup('ansible.builtin.ini', 'aws_secret_access_key', section='default', file='~/.aws/credentials') }}"
+      no_log: true
+
     - name: Add secrets.auto.tfvars
       ansible.builtin.template:
         src: secrets.auto.tfvars.j2

@@ -12,6 +12,18 @@ const {
 const prisma = new PrismaClient();
 
 export const predefinedUserId = 1;
+export const defaultUnavailableRanges = [
+  {
+    since: new Date('2023-04-06T00:00:00'),
+    until: new Date('2023-04-06T08:00:00'),
+    type: UserUnavailableType.DAILY,
+  },
+  {
+    since: new Date('2023-04-06T19:00:00'),
+    until: new Date('2023-04-06T23:59:00'),
+    type: UserUnavailableType.DAILY,
+  },
+];
 
 async function main() {
   if (!appMode.isProd) {
@@ -126,18 +138,7 @@ async function main() {
           create: {
             userUnavailable: {
               createMany: {
-                data: [
-                  {
-                    since: new Date('2023-04-06T00:00:00'),
-                    until: new Date('2023-04-06T08:00:00'),
-                    type: UserUnavailableType.DAILY,
-                  },
-                  {
-                    since: new Date('2023-04-06T19:00:00'),
-                    until: new Date('2023-04-06T23:59:00'),
-                    type: UserUnavailableType.DAILY,
-                  },
-                ],
+                data: defaultUnavailableRanges,
               },
             },
           },

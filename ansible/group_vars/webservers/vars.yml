@@ -1,6 +1,7 @@
 # deploy
 app_container_name: en-core-app
-image_with_tag: denbon05/en-core-app
+app_image_tag: 0.3.0
+app_image_name: denbon05/en-core
 container_state: started
 
 # notification
