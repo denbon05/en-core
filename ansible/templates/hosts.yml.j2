@@ -5,6 +5,6 @@
           ansible_user: ubuntu
 {% endfor %}
 
-    load_balancer:
+    {# load_balancer:
       hosts:
-        ansible_host: {{infra.outputs.app_lb_public_ip.value}}
+        ansible_host: {{infra.outputs.app_lb_public_ip.value}} #}

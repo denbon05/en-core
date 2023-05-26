@@ -6,9 +6,9 @@ resource "aws_lb" "app_lb" {
   security_groups = [aws_security_group.lb_sg.id]
   subnets         = [aws_subnet.app_subnet1.id, aws_subnet.app_subnet2.id]
 
-  lifecycle {
-    prevent_destroy = true
-  }
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 
   access_logs {
     bucket  = aws_s3_bucket.lb_logs.id

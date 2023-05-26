@@ -42,21 +42,22 @@ resource "aws_security_group_rule" "allow_ssh_inbound" {
   security_group_id = aws_security_group.ec2_traffic.id
 }
 
-resource "aws_security_group_rule" "allow_all_inbound" {
-  type              = "ingress"
-  description       = "All inbound - remove"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.ec2_traffic.id
-}
+# resource "aws_security_group_rule" "allow_all_inbound" {
+#   type              = "ingress"
+#   description       = "All inbound - remove"
+#   from_port         = var.app_port
+#   to_port           = var.app_port
+#   protocol          = "-1"
+#   # cidr_blocks       = ["0.0.0.0/0"]
+#   security_group_id = aws_security_group.ec2_traffic.id
+#   source_security_group_id = aws_security_group.lb_sg.id
+# }
 
 resource "aws_security_group_rule" "allow_all_traffic_outbound" {
   type              = "egress"
   description       = "Allow externall traffic"
-  from_port         = var.app_port
-  to_port           = var.app_port
+  from_port         = 0
+  to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ec2_traffic.id

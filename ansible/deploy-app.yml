@@ -17,14 +17,14 @@
       ansible.builtin.command: "grep -oP '(?<=EXPOSE.)\\d+' {{ app_dirpath }}/Dockerfile.prod"
       register: prod_dockerfile
       delegate_to: localhost
-      changed_when: container_state == 'started'
+      changed_when: app_container_state == 'started'
 
     - name: Manage docker app
       community.docker.docker_container:
         name: '{{ app_container_name }}'
         image: '{{ app_image_name }}:{{ app_image_tag }}'
         restart_policy: unless-stopped
-        state: '{{ container_state }}'
+        state: '{{ app_container_state }}'
         ports:
           - '{{ app_port }}:{{ prod_dockerfile.stdout }}'
         env_file: ./.env

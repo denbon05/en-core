@@ -1,0 +1,12 @@
+http {
+  server {
+    listen 80;
+    server_name en-core.club;
+
+    location / {
+      proxy_pass http://en-core_app_1:{{app_port}}
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+    }
+  }
+}

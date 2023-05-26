@@ -9,17 +9,8 @@ all:
 # BEGIN ANSIBLE MANAGED BLOCK
       hosts:
         web-server-1:
-          ansible_host: 3.67.132.129
-          ansible_user: ubuntu
-        web-server-2:
-          ansible_host: 3.68.89.74
+          ansible_host: 3.76.252.114
           ansible_user: ubuntu
 
-    load_balancer:
-      hosts:
-        ansible_host: app-lb-15849018.eu-central-1.elb.amazonaws.com
+    
 # END ANSIBLE MANAGED BLOCK
-
-    database:
-      children:
-        local:

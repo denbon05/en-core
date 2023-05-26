@@ -1,0 +1,65 @@
+---
+- name: Deploy app
+  hosts: webservers
+  gather_facts: true
+
+  tasks:
+    - name: Add vars for the app
+      ansible.builtin.blockinfile:
+        block: "{{ lookup('ansible.builtin.template', 'env.j2') }}"
+        insertbefore: 'BOF'
+        path: './.env'
+        mode: '0644'
+        owner: '{{ ansible_env.USER }}'
+        create: true
+
+    - name: Retrieve app exposed port
+      tags: [compose]
+      ansible.builtin.command: "grep -oP '(?<=EXPOSE.)\\d+' {{ app_dirpath }}/Dockerfile.prod"
+      register: prod_dockerfile
+      delegate_to: localhost
+      changed_when: app_container_state == 'started'
+
+    # - name: Manage docker app
+    #   community.docker.docker_container:
+    #     name: '{{ app_container_name }}'
+    #     image: '{{ app_image_name }}:{{ app_image_tag }}'
+    #     restart_policy: unless-stopped
+    #     state: '{{ app_container_state }}'
+    #     # allows connection to local db from container
+    #     etc_hosts: { 'host.docker.internal': 172.17.0.1 }
+    #     ports:
+    #       - '80:{{ prod_dockerfile.stdout }}'
+    #     env_file: ./.env
+
+    - name: Compose up
+      tags: [compose]
+      block:
+        - name: Set nginx config
+          ansible.builtin.template:
+            src: nginx.conf.j2
+            dest: '{{ ansible_env.HOME }}/nginx.conf'
+            mode: '0644'
+
+        - name: Launch compose app
+          community.docker.docker_compose:
+            project_name: en-core
+            state: '{{ app_compose_state }}'
+            definition:
+              services:
+                nginx:
+                  image: nginx:alpine
+                  restart: unless-stopped
+                  volumes:
+                    - '{{ ansible_env.HOME }}/nginx.conf:/etc/nginx/nginx.conf:ro'
+                  ports:
+                    - '80:80'
+                    - '443:443'
+                app:
+                  image: '{{ app_image_name }}:{{ app_image_tag }}'
+                  restart: unless-stopped
+                  # allows connection to local db from container
+                  extra_hosts: { 'host.docker.internal': 172.17.0.1 }
+                  ports:
+                    - '{{ app_container_port }}:{{ prod_dockerfile.stdout }}'
+                  env_file: '{{ ansible_env.HOME }}/.env'

@@ -4,10 +4,45 @@
   gather_facts: true
   become: true
 
+  collections:
+    - community.docker
+    - docker.docker_compose
+
   roles:
     - role: geerlingguy.docker
+      tags: [roles]
       docker_users:
         - '{{ ansible_env.USER }}'
+    - role: geerlingguy.postgresql
+      tags: [db, roles]
+      become: true
+      postgresql_version: '{{ db.version }}'
+      postgresql_users:
+        - name: postgres
+          password: '{{ db.pg_pass }}'
+        - name: '{{ db.username }}'
+          password: '{{ db.password }}'
+          role_attr_flags: CREATEDB
+      postgresql_databases:
+        - name: '{{ db.name }}'
+          owner: '{{ db.username }}'
+      postgresql_hba_entries:
+        - { type: local, database: all, user: postgres, auth_method: peer }
+        - { type: local, database: all, user: all, auth_method: md5 }
+        - {
+            type: host,
+            database: all,
+            user: all,
+            address: '0.0.0.0/0',
+            auth_method: md5,
+          }
+        - {
+            type: host,
+            database: all,
+            user: all,
+            address: '::1/128',
+            auth_method: md5,
+          }
 
   tasks:
     - name: Allow docker.sock access
@@ -15,13 +50,49 @@
         path: /var/run/docker.sock
         mode: '0666'
 
+    - name: Register postgresql.conf filepath
+      ansible.builtin.find:
+        paths:
+          - /etc/postgresql/
+        file_type: file
+        recurse: true
+        patterns:
+          - 'postgresql.conf'
+      register: find_result
+
+    - name: Allow external connection to db
+      ansible.builtin.lineinfile:
+        path: '{{ find_result.files[0].path }}'
+        regexp: "listen_addresses = '.+'"
+        line: "listen_addresses = '*'"
+        owner: postgres
+        group: postgres
+        mode: '0644'
+      notify:
+        - Restart pg server
+
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: true
 
     - name: Install apt packages
+      tags: [apt]
       ansible.builtin.apt:
         state: present
         pkg:
-          - postgresql-client
           - python3-pip
+          - python3-docker
+
+    - name: Install and upgrade pip
+      tags: [pip]
+      ansible.builtin.pip:
+        extra_args: --upgrade
+        executable: pip3
+        name:
+          - docker-compose
+
+  handlers:
+    - name: Restart pg server
+      ansible.builtin.service:
+        name: postgresql
+        state: restarted

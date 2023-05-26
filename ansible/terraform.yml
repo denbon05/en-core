@@ -2,19 +2,14 @@
 - name: Setup infra
   hosts: local
 
-  pre_tasks:
-    - name: Check encrypted vault files
-      ansible.builtin.command:
-        cmd: ../.husky/pre-commit
-      ignore_errors: true
-      changed_when: infra_state == 'present'
-      register: encrypted_result
-      no_log: true
-
-    - name: Fail if there are encrypted files
-      when: not encrypted_result.failed
-      ansible.builtin.fail:
-        msg: 'You should decrypt vault files first to be able to add db host'
+  # pre_tasks:
+  #   - name: Check decrypted file for DB ip collection
+  #     ansible.builtin.command:
+  #       cmd: grep '$ANSIBLE_VAULT' group_vars/all/vault.yml
+  #     changed_when: infra_state == 'present'
+  #     failed_when: "'$ANSIBLE_VAULT' in encrypted_result.stdout"
+  #     register: encrypted_result
+  #     no_log: true
 
   tasks:
     - name: Set AWS credentials
@@ -30,7 +25,7 @@
         dest: '{{ terraform_dirpath }}/secrets.auto.tfvars'
         mode: '0644'
 
-    - name: Apply terraform infrastructure (webservers, lb, db, domain)
+    - name: Apply terraform infrastructure (webservers, domain)
       community.general.terraform:
         project_path: '{{ terraform_dirpath }}'
         force_init: true
@@ -51,9 +46,9 @@
         insertafter: 'webservers:'
       changed_when: infra_state == 'present'
 
-    - name: Add db host to vault
-      ansible.builtin.lineinfile:
-        path: group_vars/all/vault.yml
-        insertafter: 'db:'
-        mode: '0644'
-        line: '  host: {{ infra.outputs.app_db_host.value }}'
+    # - name: Add db host to vault
+    #   ansible.builtin.lineinfile:
+    #     path: group_vars/all/vault.yml
+    #     insertafter: 'db:'
+    #     mode: '0644'
+    #     line: '  host: {{ infra.outputs.app_db_host.value }}'
