@@ -31,6 +31,15 @@ resource "aws_security_group_rule" "allow_http_inbound" {
   security_group_id = aws_security_group.ec2_traffic.id
 }
 
+resource "aws_security_group_rule" "https_inbound_rule" {
+  security_group_id = aws_security_group.ec2_traffic.id
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]  # Allow traffic from anywhere
+}
+
 resource "aws_security_group_rule" "allow_all_traffic_outbound" {
   type              = "egress"
   description       = "Allow externall traffic"

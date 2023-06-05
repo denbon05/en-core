@@ -1,9 +1,14 @@
 # deploy
-app_container_name: en-core-app
+app_name: en-core
+app_container_name: '{{ app_name }}-app'
 app_image_tag: 0.3.0
 app_image_name: denbon05/en-core
 app_container_state: started
 app_compose_state: present
+ssl:
+  privatekey_filepath: '/etc/ssl/private/{{ app_name }}.club.pem'
+  csr_filepath: '/etc/ssl/csr/{{ app_name }}.club.csr'
+  cert_filepath: '/etc/ssl/certs/{{ app_name }}.club.crt'
 
 # notification
 app_gmail: langcoresender@gmail.com
